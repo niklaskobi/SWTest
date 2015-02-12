@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="SWTtest">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../eclipse/"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="SWTtest.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.osgi_3.10.0.v20140606-1445.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.commands_3.6.100.v20140528-1422.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.equinox.registry_3.5.400.v20140428-1507.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.103.0.v20140605-2012.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.jface_3.10.0.v20140604-0740.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.jface.text_3.9.0.v20140521-1657.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.ui.workbench_3.106.0.v20140530-0732.jar"/>
+        <pathelement location="../../eclipse/plugins/com.ibm.icu_52.1.0.v201404241930.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.ui.forms_3.6.100.v20140422-1825.jar"/>
+        <pathelement location="../../Tinkerforge/tinkerforge_java_bindings_2_1_2/Tinkerforge.jar"/>
+        <pathelement location="../../download/jfreechart-1.0.19/jfreechart-1.0.19-demo.jar"/>
+        <pathelement location="swing2swt.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.databinding_1.4.1.v20140214-0004.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.databinding.beans_1.2.200.v20140214-0004.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.databinding.observable_1.4.1.v20140210-1835.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.core.databinding.property_1.4.200.v20140214-0004.jar"/>
+        <pathelement location="../../eclipse/plugins/org.eclipse.jface.databinding_1.6.200.v20140528-1422.jar"/>
+        <pathelement location="../../download/javatuples-1.2.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="SWTtest.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="essaijfree2">
+        <java classname="windows.essaijfree2" failonerror="true" fork="yes">
+            <classpath refid="SWTtest.classpath"/>
+        </java>
+    </target>
+    <target name="main (1)">
+        <java classname="windows.main" failonerror="true" fork="yes">
+            <classpath refid="SWTtest.classpath"/>
+        </java>
+    </target>
+    <target name="mainWindow">
+        <java classname="windows.mainWindow" failonerror="true" fork="yes">
+            <classpath refid="SWTtest.classpath"/>
+        </java>
+    </target>
+    <target name="settingsWindow (1)">
+        <java classname="windows.settingsWindow" failonerror="true" fork="yes">
+            <classpath refid="SWTtest.classpath"/>
+        </java>
+    </target>
+    <target name="testWindow">
+        <java classname="windows.testWindow" failonerror="true" fork="yes">
+            <classpath refid="SWTtest.classpath"/>
+        </java>
+    </target>
+</project>
