@@ -23,6 +23,6 @@
 	<classpathentry kind="lib" path="U:/eclipse/plugins/org.eclipse.core.databinding.property_1.4.200.v20140214-0004.jar" sourcepath="U:/eclipse/plugins/org.eclipse.core.databinding.property.source_1.4.200.v20140214-0004.jar"/>
 	<classpathentry kind="lib" path="U:/eclipse/plugins/org.eclipse.jface.databinding_1.6.200.v20140528-1422.jar" sourcepath="U:/eclipse/plugins/org.eclipse.jface.databinding.source_1.6.200.v20140528-1422.jar"/>
 	<classpathentry kind="lib" path="U:/download/javatuples-1.2.jar"/>
-	<classpathentry kind="lib" path="U:/workspace/SWTtest/pluginns/commons.collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="U:/git_workspace/SWTest/SWTtest/pluginns/commons.collections-3.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
