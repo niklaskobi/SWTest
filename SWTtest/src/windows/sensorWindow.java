@@ -107,6 +107,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	public static boolean sliderUpdate 				= false;// true means we have moved the slider at least once, but now it is on its start position
 															// which means we want to auto-update the charts
+	
 
 	Slider sliderData = new Slider(sliderValuesNumber);
 	static JSlider slider;
@@ -149,6 +150,24 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	
     public static Map<String, Measurement> valuesMap = new HashMap<String, Measurement>();
     public static Map<String, Measurement> values2Map = new HashMap<String, Measurement>();
+    
+    public static Map<String, Boolean> avrgCtrl1Enabled = new HashMap<String, Boolean>(); // flag for enabling/disabling average control elements, 1st sensor
+    public static Map<String, Boolean> avrgCtrl2Enabled = new HashMap<String, Boolean>(); // flag for enabling/disabling average control elements, 2nd sensor
+    
+    public static Map<String, ValueMarker> avrg1High = new HashMap<String, ValueMarker> ();
+    public static Map<String, ValueMarker> avrg1Low  = new HashMap<String, ValueMarker> ();
+    public static Map<String, ValueMarker> avrg2High = new HashMap<String, ValueMarker> ();
+    public static Map<String, ValueMarker> avrg2Low  = new HashMap<String, ValueMarker> ();
+    
+    /**
+     * map with int states of the plot
+     * 0 = OK
+     * 1 = average control line trespassed
+     * 2 = warning level trespassed
+     * 3 = critical value trespassed
+     */
+    public static Map<String, Integer> plotStateMap = new HashMap<String, Integer> ();
+   
 
     XYLineAndShapeRenderer renderer0 = new XYLineAndShapeRenderer(); 
     
@@ -173,7 +192,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			Measurement m2 = new Measurement(maxValues, maxCycles, newBrick.uid, 1);
 			values2Map.put(newBrick.uid, m2);
 		}
-
+		
+		//create entry in state map
+		plotStateMap.put(newBrick.uid, 0);
+		
+		//create avrgCtrlEnabled maps
+		if (newBrick.controlAverage == true) avrgCtrl1Enabled.put(newBrick.uid, true);
+		else avrgCtrl1Enabled.put(newBrick.uid, false);
+		if (newBrick.controlAverage2 == true) avrgCtrl2Enabled.put(newBrick.uid, true);
+		else avrgCtrl2Enabled.put(newBrick.uid, false);
 
 		//create series map entry
 		seriesMap.put(newBrick.uid, newSeries);
@@ -249,7 +276,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.setBackgroundPaint(Color.white);
 			tmpSubPlot.setDomainGridlinePaint(Color.lightGray);
 			tmpSubPlot.setRangeGridlinePaint(Color.lightGray);
-			//tmpSubPlot.setRenderer(renderer2);
 			
 			//----------------------------------------------------------------------------------
 			//create min1 critical map value
@@ -257,20 +283,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			markerMapMin2Critical.put(newBrick.uid, vm5);		
 			// set critical line				
 			markerMapMin2Critical.get(newBrick.uid).setPaint(Color.red);
-			/// .setLabel("critical");
 			markerMapMin2Critical.get(newBrick.uid).setLabel(String.valueOf(constants.brick2ndUnitMap.get(newBrick.deviceIdentifier))+" critical min");
 			markerMapMin2Critical.get(newBrick.uid).setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			markerMapMin2Critical.get(newBrick.uid).setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			tmpSubPlot.addRangeMarker(1, markerMapMin2Critical.get(newBrick.uid), Layer.BACKGROUND);
-			//tmpSubPlot.addRangeMarker(markerMapMin2Critical.get(newBrick.uid));
 			
 			//create min1 warning map value
 			ValueMarker vm6 = new ValueMarker(newBrick.tresholdMin2+newBrick.tresholdMin2*warningPercentage/100);
 			markerMapMin2Warning.put(newBrick.uid, vm6);		
 			// set warning line				
 			markerMapMin2Warning.get(newBrick.uid).setPaint(Color.orange);
-			//marker2Map.get(newBrick.uid).setPaint(Color.);
-			/// marker2Map.get(newBrick.uid).setLabel("warning");
 			markerMapMin2Warning.get(newBrick.uid).setLabel(String.valueOf(constants.brick2ndUnitMap.get(newBrick.deviceIdentifier))+" warning min");
 			markerMapMin2Warning.get(newBrick.uid).setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			markerMapMin2Warning.get(newBrick.uid).setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -282,12 +304,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			markerMapMax2Critical.put(newBrick.uid, vm7);		
 			// set critical line				
 			markerMapMax2Critical.get(newBrick.uid).setPaint(Color.red);
-			/// .setLabel("critical");
 			markerMapMax2Critical.get(newBrick.uid).setLabel(String.valueOf(constants.brick2ndUnitMap.get(newBrick.deviceIdentifier))+" critical max");
 			markerMapMax2Critical.get(newBrick.uid).setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			markerMapMax2Critical.get(newBrick.uid).setLabelTextAnchor(TextAnchor.TOP_RIGHT);
-			//tmpSubPlot.addRangeMarker(markerMapMax2Critical.get(newBrick.uid));
-			//tmpSubPlot.addRangeMarker(1, markerMapMin2Critical.get(newBrick.uid), null);
 			tmpSubPlot.addRangeMarker(1, markerMapMax2Critical.get(newBrick.uid), Layer.BACKGROUND);
 			
 			//create max1 warning map value
@@ -295,13 +314,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			markerMapMax2Warning.put(newBrick.uid, vm8);		
 			// set warning line				
 			markerMapMax2Warning.get(newBrick.uid).setPaint(Color.orange);
-			//marker2Map.get(newBrick.uid).setPaint(Color.);
-			/// marker2Map.get(newBrick.uid).setLabel("warning");
 			markerMapMax2Warning.get(newBrick.uid).setLabel(String.valueOf(constants.brick2ndUnitMap.get(newBrick.deviceIdentifier))+" warning max");
 			markerMapMax2Warning.get(newBrick.uid).setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			markerMapMax2Warning.get(newBrick.uid).setLabelTextAnchor(TextAnchor.TOP_RIGHT);
-			//tmpSubPlot.addRangeMarker(markerMapMax2Warning.get(newBrick.uid));
-			//tmpSubPlot.addRangeMarker(1, markerMapMin2Critical.get(newBrick.uid), null);
 			tmpSubPlot.addRangeMarker(1, markerMapMax2Warning.get(newBrick.uid), Layer.BACKGROUND);
 			
 			// create and add min, max and average markers
@@ -332,6 +347,28 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.addRangeMarker(1, vmMin, Layer.BACKGROUND);
 			tmpSubPlot.addRangeMarker(1, vmAvg, Layer.BACKGROUND);
 			
+			// create and add avrgCntrMarkers
+			// create upper marker
+			ValueMarker avrgCtrl2high = new ValueMarker(newBrick.getAvg2high());
+			avrgCtrl2high.setPaint(Color.orange);
+			avrgCtrl2high.setLabel("avrg high");
+			avrgCtrl2high.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+			avrgCtrl2high.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+			// create lower marker
+			ValueMarker avrgCtrl2low = new ValueMarker(newBrick.getAvg2low());
+			avrgCtrl2high.setPaint(Color.orange);
+			avrgCtrl2low.setLabel("avrg low");
+			avrgCtrl2low.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+			avrgCtrl2low.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+			// add both markers
+			avrg2High.put(newBrick.uid, avrgCtrl2high);
+			avrg2Low.put(newBrick.uid, avrgCtrl2low);
+			// add both to plot
+			if (newBrick.controlAverage2)
+			{
+				tmpSubPlot.addRangeMarker(1, avrgCtrl2high, Layer.BACKGROUND);
+				tmpSubPlot.addRangeMarker(1, avrgCtrl2low, Layer.BACKGROUND);
+			}					
 			//----------------------------------------------------------------------------------
 						
 			// put everything to the map
@@ -415,6 +452,28 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		plotMap.get(newBrick.uid).addRangeMarker(vmMin);
 		plotMap.get(newBrick.uid).addRangeMarker(vmAvg);
 
+		// create and add avrgCntrMarkers
+		// create upper marker
+		ValueMarker avrgCtrl1high = new ValueMarker(newBrick.getAvg1high());
+		avrgCtrl1high.setPaint(Color.orange);
+		avrgCtrl1high.setLabel("avrg high");
+		avrgCtrl1high.setLabelAnchor(RectangleAnchor.TOP_LEFT);
+		avrgCtrl1high.setLabelTextAnchor(TextAnchor.TOP_LEFT);		
+		// create lower marker
+		ValueMarker avrgCtrl1low = new ValueMarker(newBrick.getAvg1low());
+		avrgCtrl1high.setPaint(Color.orange);
+		avrgCtrl1low.setLabel("avrg low");
+		avrgCtrl1low.setLabelAnchor(RectangleAnchor.TOP_LEFT);
+		avrgCtrl1low.setLabelTextAnchor(TextAnchor.TOP_LEFT);
+		// add both markers
+		avrg1High.put(newBrick.uid, avrgCtrl1high);
+		avrg1Low.put(newBrick.uid, avrgCtrl1low);
+		// add both to plot
+		if (newBrick.controlAverage)
+		{
+			plotMap.get(newBrick.uid).addRangeMarker(avrgCtrl1high);
+			plotMap.get(newBrick.uid).addRangeMarker(avrgCtrl1low);
+		}
 		// -----------------------------------------------------------------------------------------------------
 				
 								
@@ -458,6 +517,49 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}		
 	}
 	
+	
+	/**
+	 * update average control values
+	 * @param UID	uid of the brick
+	 * @param value	new value
+	 * @param index	1=sensor1, 2=sensor2
+	 * @param high	true = upper line, false = lower line 
+	 */
+	public static void updateAvrgCtrl(String UID, double value,  int index, boolean high)
+	{
+		switch (index)
+		{
+			case 1:
+					if (high==true)
+					{
+						ValueMarker vm = avrg1High.get(UID);
+						vm.setValue(value);
+						avrg1High.put(UID, vm);
+					}
+					if (high==false)
+					{
+						ValueMarker vm = avrg1Low.get(UID);
+						vm.setValue(value);
+						avrg1Low.put(UID, vm);
+					}
+					break;
+					
+			case 2:				
+					if (high==true)
+					{
+						ValueMarker vm = avrg2High.get(UID);
+						vm.setValue(value);
+						avrg2High.put(UID, vm);
+					}
+					if (high==false)
+					{
+						ValueMarker vm = avrg2Low.get(UID);
+						vm.setValue(value);
+						avrg2Low.put(UID, vm);
+					}
+					break;			
+		}		
+	}
 	
 	
 	/**
@@ -508,8 +610,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}		
 	}
 
-	
-	
+		
 	/**
 	 * updates the threshold marker on the graph of the given sensor 
 	 * @param UID UID of the sensor
@@ -604,6 +705,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				ValueMarker vm = markerAverage.get(UID);
 				vm.setValue(value);
 				markerAverage.put(UID, vm);
+				
+				// verify whether we are between admissible average control lines
+	    		if ( (value > Brick.getBrick(connectionData.BrickList, UID).getAvg1high()) ||
+		    				(value < Brick.getBrick(connectionData.BrickList, UID).getAvg1low()) )
+	    		{
+	    			if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(UID,1);
+	    		}
+	    		else if (plotStateMap.get(UID)==1)
+	    		{
+	    			plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(UID,0);
+	    		}
 			}
 		}
 		if (index == 1)
@@ -613,6 +727,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				ValueMarker vm = marker2Average.get(UID);
 				vm.setValue(value);
 				marker2Average.put(UID, vm);
+				
+				// verify whether we are between admissible average control lines
+	    		if ( (value > Brick.getBrick(connectionData.BrickList, UID).getAvg2high()) ||
+		    				(value < Brick.getBrick(connectionData.BrickList, UID).getAvg2low()) )
+	    		{
+	    			if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(UID,1);
+	    		}
+	    		else if (plotStateMap.get(UID)==1)
+	    		{
+	    			plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(UID,0);
+	    		}	    		
 			}
 		}
 	}
@@ -786,7 +913,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    	
     }
     
-	// selection -------------------------------------------------------------------------------
+		
+	/**
+	 * mouse select
+	 * @author kv1
+	 *
+	 */
 	private final static class  MouseMarker extends MouseAdapter{
         private Marker marker;
         private Double markerStart = Double.NaN;
@@ -893,10 +1025,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             }
         }
     }
-	// -----------------------------------------------------------------------------------------------
-	
-    
-    
+
+	    
     /**
      * Handles a click on the button by adding new (random) data.
      *
@@ -933,6 +1063,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 */
     public void add2ndValue(String sensorUID, double value)
     {
+    	//TODO: make this method more elegant by evolving plotStateMap.get-things
+    	
 		if (seriesCollectionMap2.containsKey(sensorUID)) seriesCollectionMap2.get(sensorUID).getSeries(0).addOrUpdate(new Millisecond(), value);
 		
     	// add measurement value
@@ -946,11 +1078,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				(value <= (markerMapMin2Warning.get(sensorUID).getValue())) )
     		{
     			//under warning level
+    			plotStateMap.put(sensorUID,2);
     			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     		}
     		else if (value <= markerMapMin2Critical.get(sensorUID).getValue())
     		{
     			//under threshold level
+    			plotStateMap.put(sensorUID,3);
     			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     		}
     		else 
@@ -965,11 +1099,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    				(value >= (markerMapMax2Warning.get(sensorUID).getValue())) )
     	    		{
     	    			//between the warning and critical
+    	    			plotStateMap.put(sensorUID,2);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     	    		}
     	    		else if (value >= markerMapMax2Critical.get(sensorUID).getValue())
     	    		{
     	    			//above the max threshold level
+    	    			plotStateMap.put(sensorUID,3);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     	    		}
     	    		else 
@@ -979,7 +1115,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    			if (!(plotMap.get(sensorUID).getBackgroundPaint() == Color.pink) &&
     	    			    !(plotMap.get(sensorUID).getBackgroundPaint() == Color.yellow))
     	    			    */
-    	    			plotMap.get(sensorUID).setBackgroundPaint(Color.white);
+    	    			if (plotStateMap.get(sensorUID) != 1)
+    	    			{
+    	    				plotStateMap.put(sensorUID,0);
+    	    				plotMap.get(sensorUID).setBackgroundPaint(Color.white);
+    	    			}
     	    		}
     	    	}
 
@@ -996,6 +1136,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
      */
     public void addValue(String sensorUID, double value)
     {        
+    	//TODO: make this method more elegant by evolving plotStateMap.get-things
+    	
 		//if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).add(new Millisecond(), value);
     	Millisecond ms = new Millisecond();
     	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	
@@ -1022,11 +1164,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				(value <= (markerMapMin1Warning.get(sensorUID).getValue())) )
     		{
     			//under warning level
+    			plotStateMap.put(sensorUID,2); 
     			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     		}
     		else if (value <= markerMapMin1Critical.get(sensorUID).getValue())
     		{
     			//under threshold level
+    			plotStateMap.put(sensorUID,3);
     			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     		}
     		else 
@@ -1041,11 +1185,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    				(value >= (markerMapMax1Warning.get(sensorUID).getValue())) )
     	    		{
     	    			//between the warning and critical
+    	    			plotStateMap.put(sensorUID,2);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     	    		}
     	    		else if (value >= markerMapMax1Critical.get(sensorUID).getValue())
     	    		{
     	    			//above the max threshold level
+    	    			plotStateMap.put(sensorUID,3);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     	    		}
     	    		else 
@@ -1055,12 +1201,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    			if (!(plotMap.get(sensorUID).getBackgroundPaint() == Color.pink) &&
         	    			    !(plotMap.get(sensorUID).getBackgroundPaint() == Color.yellow))
         	    			    */
-    	    			plotMap.get(sensorUID).setBackgroundPaint(Color.white);
+    	    			if (plotStateMap.get(sensorUID) != 1)
+    	    			{
+    	    				plotStateMap.put(sensorUID,0);
+    	    				plotMap.get(sensorUID).setBackgroundPaint(Color.white);
+    	    			}
     	    		}
     	    	}
     		}
     	}    	    
     }
+    
     
     /**
      * add value to the main map
@@ -1085,8 +1236,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	slider.setEnabled(true);
     }
 
-    
-    
+        
     /**
      * hide or unhide (depending on previous state) a graph
      * @param br
@@ -1105,8 +1255,50 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	}
     }
     
-               
+                   
+    /**
+     * hide or show average control elements (depending on previous state)
+     * @param br brick object
+     */
+    public static void hideUnhideAvgCtrl(Brick br, int index)
+    {
+    	if (index == 1)
+    	{
+    		if (avrgCtrl1Enabled.get(br.uid) == false)
+    		{
+    			avrgCtrl1Enabled.put(br.uid, true);
+    			// add range markers to the plot again
+    			plotMap.get(br.uid).addRangeMarker(avrg1High.get(br.uid));
+    			plotMap.get(br.uid).addRangeMarker(avrg1Low.get(br.uid));    			
+    		}
+    		else if (avrgCtrl1Enabled.get(br.uid) == true)
+    		{
+    			avrgCtrl1Enabled.put(br.uid, false);    			
+    			//remove range markers
+    			plotMap.get(br.uid).removeRangeMarker(avrg1High.get(br.uid));
+    			plotMap.get(br.uid).removeRangeMarker(avrg1Low.get(br.uid));
+    		}
+    	}
+    	if (index == 2)
+    	{
+    		if (avrgCtrl2Enabled.get(br.uid) == false)
+    		{
+    			avrgCtrl2Enabled.put(br.uid, true);    			
+    			// add both markers
+    			plotMap.get(br.uid).addRangeMarker(1, avrg2High.get(br.uid), Layer.BACKGROUND);
+    			plotMap.get(br.uid).addRangeMarker(1, avrg2Low.get(br.uid), Layer.BACKGROUND);
+    		}
+    		else if (avrgCtrl2Enabled.get(br.uid) == true)
+    		{
+    			avrgCtrl2Enabled.put(br.uid, false);    			
+    			//remove range markers
+    			plotMap.get(br.uid).removeRangeMarker(1, avrg2High.get(br.uid), Layer.BACKGROUND);
+    			plotMap.get(br.uid).removeRangeMarker(1, avrg2Low.get(br.uid), Layer.BACKGROUND);    			
+    		}
+    	}    	    	
+    }
 
+    
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("ACTION PERFORMED!!!!");

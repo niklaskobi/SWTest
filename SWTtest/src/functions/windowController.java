@@ -11,30 +11,21 @@ import windows.sensorWindow;
 
 public class windowController {
 	
-    //public final static sensorWindow demo = new sensorWindow("sensor data", );
-	public static sensorWindow demo;
-	//static DualAxisDemo2 sWin;
-	
-    public static boolean existsSensorWindow = false;
-    public static boolean existsSettingWindow = false;
-	
+	public static sensorWindow 		demo;	
+    public static boolean			existsSensorWindow 		= false;
+    public static boolean 			existsSettingWindow		= false;
+	    
     
     public static void updateTresholdMin1(String UID, double threshold)
     {
     	sensorWindow.updateTresholdMin1(UID, threshold);
     }
     
-    public static void updateAvgHigh(String UID, double threshold, int index)
+    public static void updateAvgCtrl(String UID, double value, int index, boolean high)
     {
-    	// TODO::
+    	sensorWindow.updateAvrgCtrl(UID, value, index, high);
     }
-    
-    public static void updateAvgLow(String UID, double threshold, int index)
-    {
-    	// TODO::
-    }    
-    
-    
+            
     public static void updateTresholdMin2(String UID, double threshold)
     {
     	sensorWindow.updateTresholdMin2(UID, threshold);
@@ -50,12 +41,10 @@ public class windowController {
     	sensorWindow.updateTresholdMax2(UID, threshold);
     }
 
-    
     public static void removePlot(String UID)
     {
     	if (existsSensorWindow == true)sensorWindow.removePlot(UID);
     }
-    
     
     public static void addPlot(Brick br)
     {
@@ -66,12 +55,19 @@ public class windowController {
     	}
     }
     
-    
     public static void hideUnhidePlot(Brick br)
     {
     	if (existsSensorWindow == true) sensorWindow.hideUnhide(br);
     }
     
+    public static void hideUnhideAvgControl(Brick br, int index)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		sensorWindow.hideUnhideAvgCtrl(br,index);
+    	}
+    }
+        
     public static void openSettingsWindow()
     {
 		if (existsSettingWindow == false)

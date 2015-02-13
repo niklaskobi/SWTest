@@ -152,9 +152,20 @@ public class Events {
 	 * called when user enables average control
 	 * @param UID
 	 */
-	public static void enableAverageControl(String UID)
+	public static void enableAverageControl(String UID, int index)
 	{
-		
+		if (index == 1)
+		{
+			// check the item
+			Brick.checkAvrgCntrl(Brick.getBrick(connectionData.BrickList,UID));
+			windowController.hideUnhideAvgControl(Brick.getBrick(connectionData.BrickList, UID), index);
+		}
+		if (index == 2)
+		{
+			// check the item
+			Brick.checkAvrgCntrl2(Brick.getBrick(connectionData.BrickList,UID));
+			windowController.hideUnhideAvgControl(Brick.getBrick(connectionData.BrickList, UID), index);
+		}
 	}
 
 	
@@ -162,11 +173,45 @@ public class Events {
 	 * called when user disables average control
 	 * @param UID
 	 */
-	public static void disableAverageControl(String UID)
+	public static void disableAverageControl(String UID, int index)
 	{
-		
+		if (index == 1)
+		{
+			// uncheck the item
+			Brick.uncheckAvrgCntrl(Brick.getBrick(connectionData.BrickList,UID));
+			windowController.hideUnhideAvgControl(Brick.getBrick(connectionData.BrickList, UID), index);
+		}
+		if (index == 2)
+		{
+			// uncheck the item
+			Brick.uncheckAvrgCntrl2(Brick.getBrick(connectionData.BrickList,UID));
+			windowController.hideUnhideAvgControl(Brick.getBrick(connectionData.BrickList, UID), index);
+		}
 	}
+
 	
+	/**
+	 * handles event of updating the average control values 
+	 * @param UID	uid of the brick
+	 * @param value	new value
+	 * @param index index of the sensor (1 or 2)
+	 * @param high  true = upper line, false = bottom line 
+	 */
+	public static void updateAvgCntrlValues(String UID, double value, int index, boolean high)
+	{
+		if (high == true)
+		{
+			Brick.setAvgHigh(connectionData.BrickList, UID, value, index);
+			Brick.setAvgHigh(connectionData.presentedBrickList, UID, value, index);
+			windowController.updateAvgCtrl(UID, value, index, high);			
+		}
+		else if (high == false)
+		{
+			Brick.setAvgLow(connectionData.BrickList, UID, value, index);
+			Brick.setAvgLow(connectionData.presentedBrickList, UID, value, index);
+			windowController.updateAvgCtrl(UID, value, index, high);			
+		}
+	}
 	
 	/**
 	 * event which should be called after a disconnect has occurred

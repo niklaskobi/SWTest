@@ -113,7 +113,6 @@ public class mainWindow {
 		});
 	}
 
-
 	/**
 	 * Open the window.
 	 */
@@ -145,7 +144,6 @@ public class mainWindow {
 			}
 		}		
 	}
-
 
 	/**
 	 * Create contents of the window.
@@ -401,12 +399,8 @@ public class mainWindow {
 		button.setText("New Button");
 		*/
 
-
-		// ---------------------------------------------------------------------------------
-
 	}
 	
-
 	/**
 	 * supervise and handle the connection setup
 	 */
@@ -451,9 +445,7 @@ public class mainWindow {
 				});
 		 }}).start();
 	}
-	
-	
-	
+			
 	public static void forbidFileStorage() 
 	{
 		new Thread(new Runnable() {
@@ -470,8 +462,7 @@ public class mainWindow {
 		               }
 		});}}).start();
 	}
-	
-	
+		
 	/**
 	 * set the boolean corresponding to availability of any connection
 	 */
@@ -495,8 +486,7 @@ public class mainWindow {
 		               }
 		});}}).start();
 	}
-	
-	
+		
 	/**
 	 * handle a disconnect event
 	 * set the boolean corresponding to availability of any connection
@@ -524,8 +514,7 @@ public class mainWindow {
 		        		}
 		});}}).start();		
 	}
-		
-	
+			
 	public static void allowFileStorage() 
 	{
 		new Thread(new Runnable() {
@@ -542,7 +531,6 @@ public class mainWindow {
 		               }});}
 		   }).start();
 	}		
-
 	
 	public static void updateSettingTabs()
 	{						
@@ -1104,7 +1092,7 @@ public class mainWindow {
 				    	  }
 				    	  if (update == true)
 				    	  {
-				    		  updateAvgHigh(updBr, perspectiveValue, 1);
+				    		  updateAvg(updBr, perspectiveValue, 1, true);
 				    		  System.out.println("new avg high : "+perspectiveValue);
 				    	  }
 				        ;}});
@@ -1125,7 +1113,7 @@ public class mainWindow {
 					    	  }
 					    	  if (update == true)
 					    	  {
-					    		  updateAvgHigh(updBr, perspectiveValue, 1);
+					    		  updateAvg(updBr, perspectiveValue, 1, true);
 					    		  System.out.println("new avg high : "+perspectiveValue);
 					    	  }
 				    	  }
@@ -1184,7 +1172,7 @@ public class mainWindow {
 					    	  }
 					    	  if (update == true)
 					    	  {
-					    		  updateAvgHigh(updBr, perspectiveValue, 2);
+					    		  updateAvg(updBr, perspectiveValue, 2, true);
 					    		  System.out.println("new avg2 high : "+perspectiveValue);
 					    	  }
 					        ;}});
@@ -1205,7 +1193,7 @@ public class mainWindow {
 						    	  }
 						    	  if (update == true)
 						    	  {
-						    		  updateAvgHigh(updBr, perspectiveValue, 2);
+						    		  updateAvg(updBr, perspectiveValue, 2, true);
 						    		  System.out.println("new avg2 high : "+perspectiveValue);
 						    	  }
 					    	  }
@@ -1268,7 +1256,7 @@ public class mainWindow {
 				    	  }
 				    	  if (update == true)
 				    	  {
-				    		  updateAvgLow(updBr, perspectiveValue, 1);
+				    		  updateAvg(updBr, perspectiveValue, 1, false);
 				    		  System.out.println("new avg1 low : "+perspectiveValue);
 				    	  }
 				        ;}});
@@ -1289,7 +1277,7 @@ public class mainWindow {
 					    	  }
 					    	  if (update == true)
 					    	  {
-					    		  updateAvgLow(updBr, perspectiveValue, 1);
+					    		  updateAvg(updBr, perspectiveValue, 1, false);
 					    		  System.out.println("new avg1 low : "+perspectiveValue);
 					    	  }
 				    	  }
@@ -1346,7 +1334,7 @@ public class mainWindow {
 					    	  }
 					    	  if (update == true)
 					    	  {
-					    		  updateAvgLow(updBr, perspectiveValue, 2);
+					    		  updateAvg(updBr, perspectiveValue, 2, false);
 					    		  System.out.println("new avg2 low : "+perspectiveValue);
 					    	  }
 					        ;}});
@@ -1358,16 +1346,16 @@ public class mainWindow {
 					    		  boolean update = true;
 						    	  try 
 						    	  {				 
-						    		  perspectiveValue = Double.parseDouble(txtL1max4.getText());
+						    		  perspectiveValue = Double.parseDouble(txtL1max5.getText());
 						    	  }
 						    	  catch (NumberFormatException e)
 						    	  {
-						    		  txtL1max4.setText(Double.toString( Brick.getAvgLow(connectionData.BrickList, updBr.uid, 2))); 
+						    		  txtL1max5.setText(Double.toString( Brick.getAvgLow(connectionData.BrickList, updBr.uid, 2))); 
 						    		  update = false;
 						    	  }
 						    	  if (update == true)
 						    	  {
-						    		  updateAvgLow(updBr, perspectiveValue, 2);
+						    		  updateAvg(updBr, perspectiveValue, 2, false);
 						    		  System.out.println("new avg2 low : "+perspectiveValue);
 						    	  }
 					    	  }
@@ -1446,10 +1434,7 @@ public class mainWindow {
 		//group.setBounds(settingRegionStartX, shellStartHeight + settingRegionSeparateHeight, settingRegionWidth, cnt*settingRegionHeight);
 		//------------------------------------------------------------------------		
 	}
-	
-	
-	
-	
+				
 	/**
 	 * updates both Brick-lists and calls the corresponding function in windowController to update the treshold  
 	 * @param tmpBr	Brick object
@@ -1461,34 +1446,17 @@ public class mainWindow {
 		Brick.setThresholdMin1(connectionData.presentedBrickList, tmpBr.uid, perspectiveValue);
 		windowController.updateTresholdMin1(tmpBr.uid, perspectiveValue);
 	}		
-
 	
 	/**
 	 * updates both Brick-lists and calls the corresponding function in windowController to update the upper deviation of the average  
 	 * @param tmpBr	Brick object
 	 * @param perspectiveValue	new threshold value
 	 */
-	public static void updateAvgHigh(Brick tmpBr, double perspectiveValue, int index)
+	public static void updateAvg(Brick tmpBr, double perspectiveValue, int index, boolean high)
 	{
-		Brick.setAvgHigh(connectionData.BrickList, tmpBr.uid, perspectiveValue, index);
-		Brick.setAvgHigh(connectionData.presentedBrickList, tmpBr.uid, perspectiveValue, index);
-		windowController.updateAvgHigh(tmpBr.uid, perspectiveValue, index);
+		functions.Events.updateAvgCntrlValues(tmpBr.uid, perspectiveValue, index, high);
 	}
-	
-	
-	/**
-	 * updates both Brick-lists and calls the corresponding function in windowController to update the upper deviation of the average  
-	 * @param tmpBr	Brick object
-	 * @param perspectiveValue	new threshold value
-	 */
-	public static void updateAvgLow(Brick tmpBr, double perspectiveValue, int index)
-	{
-		Brick.setAvgLow(connectionData.BrickList, tmpBr.uid, perspectiveValue, index);
-		Brick.setAvgLow(connectionData.presentedBrickList, tmpBr.uid, perspectiveValue, index);
-		windowController.updateAvgLow(tmpBr.uid, perspectiveValue, index);
-	}	
-	
-
+			
 	/**
 	 * updates both Brick-lists and calls the corresponding function in windowController to update the treshold  
 	 * @param tmpBr	Brick object
@@ -1545,8 +1513,7 @@ public class mainWindow {
 		// switch on or off the "start button"
 		showOrHideStartButton();
 	}
-	
-	
+		
 	/**
 	 * switch on/off "start button" due to the existence of any presented Bricks
 	 */
@@ -1561,8 +1528,7 @@ public class mainWindow {
 			btnNewButton_1.setEnabled(true);
 		}
 	}
-	
-	
+		
 	/**
 	 * set start button text to "start"
 	 */
@@ -1571,8 +1537,7 @@ public class mainWindow {
 		btnNewButton_1.setText("Start");
 		buttonStart = true;
 	}
-	
-	
+		
 	/**
 	 * set start button to "stop"
 	 */
@@ -1581,8 +1546,7 @@ public class mainWindow {
 		btnNewButton_1.setText("Stop");
 		buttonStart = false;		
 	}
-	
-	
+		
 	/**
 	 * update Brick item and view in sensor window
 	 * @param UID UID of the Brick
@@ -1603,7 +1567,6 @@ public class mainWindow {
 		}
 	}
 
-
 	/**
 	 * update Brick item and view in sensor window
 	 * @param UID UID of the Brick
@@ -1612,19 +1575,14 @@ public class mainWindow {
 	{		
 		if (Brick.getBrick(connectionData.BrickList,UID).controlAverage == false)
 		{
-			// check the item
-			Brick.checkAvrgCntrl(Brick.getBrick(connectionData.BrickList,UID));
-			functions.Events.enableAverageControl(UID);
+			functions.Events.enableAverageControl(UID, 1);
 		}
 		else
 		{
-			// uncheck the item
-			Brick.uncheckAvrgCntrl(Brick.getBrick(connectionData.BrickList,UID));
-			functions.Events.disableAverageControl(UID);
+			functions.Events.disableAverageControl(UID, 1);
 		}
 	}
-	
-	
+		
 	/**
 	 * update Brick item and view in sensor window
 	 * @param UID UID of the Brick
@@ -1633,20 +1591,14 @@ public class mainWindow {
 	{		
 		if (Brick.getBrick(connectionData.BrickList,UID).controlAverage == false)
 		{
-			// check the item
-			Brick.checkAvrgCntrl2(Brick.getBrick(connectionData.BrickList,UID));
-			functions.Events.enableAverageControl(UID);
+			functions.Events.enableAverageControl(UID, 2);
 		}
 		else
 		{
-			// uncheck the item
-			Brick.uncheckAvrgCntrl2(Brick.getBrick(connectionData.BrickList,UID));
-			functions.Events.disableAverageControl(UID);
+			functions.Events.disableAverageControl(UID, 2);
 		}
 	}	
-	
-	
-	
+			
 	/**
 	 * update Brick item and the view in sensor window
 	 * @param UID UID of the Brick
@@ -1666,8 +1618,7 @@ public class mainWindow {
 		windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID));
 	}
 }	
-	
-	
+		
 	/**
 	 * if a new Brick was added into the configuration we have to 
 	 * add it to the Brick-list and update the presented tree
@@ -1731,8 +1682,6 @@ public class mainWindow {
 					}}});
 		}
 
-
-	
 	private static class FeaturePropertyDialogContentProvider implements ITreeContentProvider {
 
 	    @Override
