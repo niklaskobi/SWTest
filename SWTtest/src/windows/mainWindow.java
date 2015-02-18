@@ -1557,13 +1557,13 @@ public class mainWindow {
 		{
 			// check the item
 			Brick.check2Brick(Brick.getBrick(connectionData.BrickList,UID));		
-			windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID));			
+			windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID),1);			
 		}
 		else
 		{
 			// uncheck the item
 			Brick.uncheck2Brick(Brick.getBrick(connectionData.BrickList,UID));
-			windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID));
+			windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID),1);
 		}
 	}
 
@@ -1609,13 +1609,13 @@ public class mainWindow {
 	{
 		// check the item
 		Brick.check3Brick(Brick.getBrick(connectionData.BrickList,UID));		
-		windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID));			
+		windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID),2);			
 	}
 	else
 	{
 		// uncheck the item
 		Brick.uncheck3Brick(Brick.getBrick(connectionData.BrickList,UID));
-		windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID));
+		windowController.hideUnhidePlot(Brick.getBrick(connectionData.BrickList, UID),2);
 	}
 }	
 		

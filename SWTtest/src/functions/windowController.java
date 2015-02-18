@@ -55,9 +55,9 @@ public class windowController {
     	}
     }
     
-    public static void hideUnhidePlot(Brick br)
+    public static void hideUnhidePlot(Brick br, int index)
     {
-    	if (existsSensorWindow == true) sensorWindow.hideUnhide(br);
+    	if (existsSensorWindow == true) sensorWindow.hideUnhidePlot(br, index);
     }
     
     public static void hideUnhideAvgControl(Brick br, int index)

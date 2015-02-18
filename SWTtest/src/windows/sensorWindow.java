@@ -710,12 +710,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	    		if ( (value > Brick.getBrick(connectionData.BrickList, UID).getAvg1high()) ||
 		    				(value < Brick.getBrick(connectionData.BrickList, UID).getAvg1low()) )
 	    		{
-	    			if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
-	    			plotStateMap.put(UID,1);
+	    			if (avrgCtrl1Enabled.get(UID) == true)
+	    			{
+	    				if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    				plotStateMap.put(UID,1);
+	    			}
 	    		}
 	    		else if (plotStateMap.get(UID)==1)
 	    		{
-	    			plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotMap.get(UID).setBackgroundPaint(Color.white);
 	    			plotStateMap.put(UID,0);
 	    		}
 			}
@@ -732,12 +735,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	    		if ( (value > Brick.getBrick(connectionData.BrickList, UID).getAvg2high()) ||
 		    				(value < Brick.getBrick(connectionData.BrickList, UID).getAvg2low()) )
 	    		{
-	    			if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
-	    			plotStateMap.put(UID,1);
+	    			if (avrgCtrl2Enabled.get(UID) == true)
+	    			{	    			
+	    				if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    				plotStateMap.put(UID,1);
+	    			}
 	    		}
 	    		else if (plotStateMap.get(UID)==1)
 	    		{
-	    			plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    			plotMap.get(UID).setBackgroundPaint(Color.white);
 	    			plotStateMap.put(UID,0);
 	    		}	    		
 			}
@@ -777,7 +783,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		markerMapMax2Critical.remove(UID);
 		markerMapMax2Warning.remove(UID);			
 	}
-	
 	
 	
 	/**
@@ -1241,17 +1246,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
      * hide or unhide (depending on previous state) a graph
      * @param br
      */
-    public static void hideUnhide(Brick br)
+    public static void hideUnhidePlot(Brick br, int index)
     {
-    	if (rendererMap.get(br.uid) != null)
+    	if ((index == 1) && (rendererMap.get(br.uid) != null))
     	{
     		rendererMap.get(br.uid).setSeriesVisible(0, br.checked2);
     		axisMap.get(br.uid).setVisible(br.checked2);
+    		// hide/show average control elements    		
+    		hideUnhideAvgCtrl(br, 1);
     	}
-    	if (rendererMap2.get(br.uid) != null)
+    	if ((index == 2) && (rendererMap2.get(br.uid) != null))
     	{
     		rendererMap2.get(br.uid).setSeriesVisible(0, br.checked3);
     		axisMap2.get(br.uid).setVisible(br.checked3);
+    		// hide/show average control elements
+    		hideUnhideAvgCtrl(br, 2);
     	}
     }
     
@@ -1277,6 +1286,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			//remove range markers
     			plotMap.get(br.uid).removeRangeMarker(avrg1High.get(br.uid));
     			plotMap.get(br.uid).removeRangeMarker(avrg1Low.get(br.uid));
+    			// set background color
+	    		if (plotStateMap.get(br.uid)==1)
+	    		{
+	    			plotMap.get(br.uid).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(br.uid,0);
+	    		}
     		}
     	}
     	if (index == 2)
@@ -1293,7 +1308,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			avrgCtrl2Enabled.put(br.uid, false);    			
     			//remove range markers
     			plotMap.get(br.uid).removeRangeMarker(1, avrg2High.get(br.uid), Layer.BACKGROUND);
-    			plotMap.get(br.uid).removeRangeMarker(1, avrg2Low.get(br.uid), Layer.BACKGROUND);    			
+    			plotMap.get(br.uid).removeRangeMarker(1, avrg2Low.get(br.uid), Layer.BACKGROUND);
+    			// set background color
+	    		if (plotStateMap.get(br.uid)==1)
+	    		{
+	    			plotMap.get(br.uid).setBackgroundPaint(Color.GRAY);
+	    			plotStateMap.put(br.uid,0);
+	    		}    			
     		}
     	}    	    	
     }
