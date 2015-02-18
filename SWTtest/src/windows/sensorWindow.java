@@ -356,7 +356,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			avrgCtrl2high.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create lower marker
 			ValueMarker avrgCtrl2low = new ValueMarker(newBrick.getAvg2low());
-			avrgCtrl2high.setPaint(Color.orange);
+			avrgCtrl2low.setPaint(Color.orange);
 			avrgCtrl2low.setLabel("avrg low");
 			avrgCtrl2low.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2low.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -461,7 +461,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		avrgCtrl1high.setLabelTextAnchor(TextAnchor.TOP_LEFT);		
 		// create lower marker
 		ValueMarker avrgCtrl1low = new ValueMarker(newBrick.getAvg1low());
-		avrgCtrl1high.setPaint(Color.orange);
+		avrgCtrl1low.setPaint(Color.orange);
 		avrgCtrl1low.setLabel("avrg low");
 		avrgCtrl1low.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		avrgCtrl1low.setLabelTextAnchor(TextAnchor.TOP_LEFT);
