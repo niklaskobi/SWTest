@@ -490,7 +490,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		plot.add(plotMap.get(newBrick.uid));
 	}
 
-	
 		
 	/**
 	 * updates the threshold marker on the graph of the given sensor 
@@ -586,7 +585,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			
 		}		
 	}
-
 
 	
 	/**
@@ -931,7 +929,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         private XYPlot mouse_plot;
         private final JFreeChart chart;
         private final ChartPanel panel;    
-         private HashMap<XYPlot, Marker> markerMap = new HashMap<XYPlot, Marker>(); 
+        private HashMap<XYPlot, Marker> markerMap = new HashMap<XYPlot, Marker>();
+        private HashMap<XYPlot, Boolean> areaMarked = new HashMap<XYPlot, Boolean>();
 
 
         public MouseMarker(ChartPanel panel) {
@@ -973,6 +972,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             	{
             		//mouse_plot.removeDomainMarker(marker,Layer.BACKGROUND);
             		mouse_plot.removeDomainMarker(markerMap.get(mouse_plot),Layer.BACKGROUND);
+            		areaMarked.put(mouse_plot, false);
+            		System.out.println("delete area");
             	}
             }
             if (!( markerStart.isNaN() && markerEnd.isNaN())){
@@ -981,7 +982,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     markerMap.put(mouse_plot, marker);
                     marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
                     marker.setAlpha(0.5f);
-                    if (mouse_plot != null) mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
+                    System.out.println("3");
+                    if (mouse_plot != null)
+                    {
+                    	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
+                    	areaMarked.put(mouse_plot, true);
+                    	System.out.println("add area");
+                    }
                 }
             }
         }        
@@ -995,8 +1002,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
         @Override
         public void mouseReleased(MouseEvent e) {
+
             markerEnd = getPosition(e);
             updateMarker();
+            System.out.println("marker end pos: "+markerEnd);
         }
 
         @Override
@@ -1004,6 +1013,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             markerStart = getPosition(e);
             //tmp_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
             this.mouse_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
+            
+            // ++++ 18.02.2015
+            System.out.println("marker start pos: "+markerStart);
             /*
             Thread thread = new Thread(){
                 public void run(){
@@ -1026,7 +1038,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                 markerMap.put(mouse_plot, marker);
                 marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
                 marker.setAlpha(0.5f);
-                if (mouse_plot != null) mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
+                if (mouse_plot != null)
+                {
+                	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
+                	System.out.println("6");
+                }
+                System.out.println("7");
+                
             }
         }
     }
@@ -1146,6 +1164,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		//if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).add(new Millisecond(), value);
     	Millisecond ms = new Millisecond();
     	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	
+    	
     	
     	// add timestamp to slider 
     	sliderData.addMS(ms);
