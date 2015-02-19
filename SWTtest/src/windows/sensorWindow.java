@@ -46,6 +46,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Panel;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -54,6 +55,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +77,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
@@ -86,10 +91,12 @@ import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
+import org.jfree.util.ShapeUtilities;
 
 import data.connectionData;
 import data.constants;
@@ -225,12 +232,18 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			rangeAxis.setLabelPaint(Color.BLUE);
 			rangeAxis.setVisible(newBrick.checked2);			
 			tmpSubPlot.setDataset(0, seriesCollectionMap.get(newBrick.uid));
+			
+			//set dot - shape
+			//Shape cross = ShapeUtilities.createDiagonalCross(3, 1);						
 				
 			// create and store renderer
 			XYItemRenderer renderer1 = new XYLineAndShapeRenderer();
 			renderer1 = tmpSubPlot.getRenderer();
 			renderer1.setSeriesPaint(0, Color.BLUE);
-			renderer1.setSeriesStroke( 0, new BasicStroke( 2 ) );
+			//renderer1.setSeriesStroke( 0, new BasicStroke( 3 ) );
+			float dash[] = {5.0f};
+			renderer1.setSeriesStroke( 0, new BasicStroke(3,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+			//renderer1.setSeriesShape(0, cross);
 			tmpSubPlot.setRenderer(0, renderer1);
 				
 			// set colors
@@ -269,7 +282,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			XYItemRenderer renderer2 = new StandardXYItemRenderer();
 			//renderer2 = tmpSubPlot.getRenderer();
 			renderer2.setSeriesPaint(1, Color.RED);
-			renderer2.setSeriesStroke( 0, new BasicStroke( 2 ) );
+			renderer2.setSeriesStroke( 0, new BasicStroke( 3 ) );
 			tmpSubPlot.setRenderer(1, renderer2);				
 
 			// set colors
@@ -854,7 +867,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         chartPanel.setDomainZoomable(false);
         
         // mouse selection
-        chartPanel.addMouseListener(new MouseMarker(chartPanel));
+        chartPanel.addMouseListener(new MouseMarker(chartPanel));        
+        
         
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 470));
         chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -901,9 +915,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         		chartPanel.setPreferredSize(e.getComponent().getPreferredSize());
         		chartPanel.setSize(e.getComponent().getSize());
         		chartPanel.setLocation(0,0);
-        		*/
+        		*/        
         	}
         });
+        
                     
         
     	this.addWindowListener(new WindowAdapter() {
@@ -924,8 +939,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 */
 	private final static class  MouseMarker extends MouseAdapter{
         private Marker marker;
-        private Double markerStart = Double.NaN;
-        private Double markerEnd = Double.NaN;
+        private Double markerStart[] = new Double[2];
+        private Double markerEnd[] = new Double[2];
         private XYPlot mouse_plot;
         private final JFreeChart chart;
         private final ChartPanel panel;    
@@ -973,49 +988,77 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             		//mouse_plot.removeDomainMarker(marker,Layer.BACKGROUND);
             		mouse_plot.removeDomainMarker(markerMap.get(mouse_plot),Layer.BACKGROUND);
             		areaMarked.put(mouse_plot, false);
-            		System.out.println("delete area");
+            		//System.out.println("delete area");
             	}
             }
-            if (!( markerStart.isNaN() && markerEnd.isNaN())){
-                if ( markerEnd > markerStart){                	
-                    marker = new IntervalMarker(markerStart, markerEnd);
+            if (!( markerStart[0].isNaN() && markerEnd[0].isNaN())){
+                if ( markerEnd[0] > markerStart[0]){                	
+                    marker = new IntervalMarker(markerStart[0], markerEnd[0]);
                     markerMap.put(mouse_plot, marker);
                     marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
                     marker.setAlpha(0.5f);
-                    System.out.println("3");
                     if (mouse_plot != null)
                     {
                     	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
                     	areaMarked.put(mouse_plot, true);
-                    	System.out.println("add area");
+                    	//System.out.println("add area");
                     }
                 }
             }
         }        
 
-        private Double getPosition(MouseEvent e){
-            Point2D p = panel.translateScreenToJava2D( e.getPoint());
+        
+        /**
+         * returns x and y value of the given mouse event 
+         * @param e event
+         * @return	double array, 1st value = X, 2nd = Y 
+         */
+        private Double[] getPosition(MouseEvent e)
+        {
+        	Double[]r = new Double[2];
+            //Point2D p = panel.translateScreenToJava2D( e.getPoint());
+        	Point2D p = e.getPoint();
             Rectangle2D plotArea = panel.getScreenDataArea();
             XYPlot plot = (XYPlot) chart.getPlot();
-            return plot.getDomainAxis().java2DToValue(p.getX(), plotArea, plot.getDomainAxisEdge());
+            r[0] = plot.getDomainAxis().java2DToValue(p.getX(), plotArea, plot.getDomainAxisEdge());
+            System.out.println(""+p.getY());
+            r[1] = plot.getRangeAxis().java2DToValue(p.getY(), plotArea, plot.getRangeAxisEdge());
+            return r;
         }
 
+        
         @Override
-        public void mouseReleased(MouseEvent e) {
-
+        public void mouseReleased(MouseEvent e) 
+        {
             markerEnd = getPosition(e);
             updateMarker();
-            System.out.println("marker end pos: "+markerEnd);
+            //System.out.println("marker end pos: "+markerEnd);
         }
 
+        
         @Override
-        public void mousePressed(MouseEvent e) {
+        public void mousePressed(MouseEvent e) 
+        {
             markerStart = getPosition(e);
+            System.out.print("marker = "+doubleToTime(markerStart[0]));
+            System.out.println("value = "+markerStart[1]);
+            
             //tmp_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
             this.mouse_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
             
-            // ++++ 18.02.2015
-            System.out.println("marker start pos: "+markerStart);
+            // begin 19.02.2015
+            XYDataset xydataset= mouse_plot.getDataset();
+            double d = mouse_plot.getDomainCrosshairValue(); //get crosshair X value
+            double r = mouse_plot.getRangeCrosshairValue();  //get crosshair y value
+            System.out.println(""+doubleToTime(d)+",r = "+r);
+            //System.out.println(""+ reportDate+", r = "+r);
+            /*
+            SeriesAndItemIndex index=getItemIndex(d,r,xydataset);
+            if(index != null){
+                System.out.println(index.toString());
+            }
+            */
+            // end 19.02.2015
             /*
             Thread thread = new Thread(){
                 public void run(){
@@ -1031,10 +1074,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             */              
         }
         
-        public void mouseMoved(MouseEvent e){
-            if (( !markerStart.isNaN()) && (markerEnd.isNaN()))
+        public void mouseMoved(MouseEvent e)
+        {
+            if (( !markerStart[0].isNaN()) && (markerEnd[0].isNaN()))
             {
-                marker = new IntervalMarker(markerStart, markerEnd);
+                marker = new IntervalMarker(markerStart[0], markerEnd[0]);
                 markerMap.put(mouse_plot, marker);
                 marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
                 marker.setAlpha(0.5f);
@@ -1344,6 +1388,72 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		System.out.println("ACTION PERFORMED!!!!");
 		// TODO Auto-generated method stub		
 	}       
+
+
+	/**
+	 * 
+	 * @param domainVal
+	 * @param rangeVal
+	 * @param xydataset
+	 * @return
+	 */
+	public static SeriesAndItemIndex getItemIndex(double domainVal, double rangeVal, XYDataset xydataset)
+	{
+		Comparable comparable;
+		int indexOf;
+		
+		for(int i=0;i<xydataset.getSeriesCount();i++)
+		{
+			comparable =  xydataset.getSeriesKey(i);
+		    indexOf=xydataset.indexOf(comparable);
+		    for(int j=0 ; j<xydataset.getItemCount(indexOf);j++)
+		    {
+		    	double x=xydataset.getXValue(indexOf, j);
+		    	double y=xydataset.getYValue(indexOf, j);
+		    	if(x == domainVal && y==rangeVal)
+		    	{
+		    		return  new SeriesAndItemIndex(j,indexOf);//return item index and series index
+		    	}
+            }
+        }
+        return null;
+    }
+
+	
+	
+	private static class SeriesAndItemIndex
+	{ 
+		///inner CLASS to group series and item clicked index
+		public int itemIndex;
+		public int seriesIndex;
+		
+		public SeriesAndItemIndex(int i,int s)
+		{
+			itemIndex=i;
+		    seriesIndex=s;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "itemIndex="+itemIndex+",seriesIndex="+seriesIndex;
+		}
+	}
+	
+	
+	/**
+	 * converts a double value into a string
+	 * @param value
+	 * @return
+	 */
+	public static String doubleToTime(Double v)
+	{
+		double value = v;
+        Date m = new java.sql.Date((long) value);
+        //DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        return df.format(m);
+	}
 }
 
            
