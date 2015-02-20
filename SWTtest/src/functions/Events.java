@@ -270,5 +270,9 @@ public class Events {
 		windows.sensorWindow.activateSlider();
 	}
 
+	public static void handleMouseSelection()
+	{
+		
+	}
 	
 }

@@ -240,9 +240,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			XYItemRenderer renderer1 = new XYLineAndShapeRenderer();
 			renderer1 = tmpSubPlot.getRenderer();
 			renderer1.setSeriesPaint(0, Color.BLUE);
-			//renderer1.setSeriesStroke( 0, new BasicStroke( 3 ) );
-			float dash[] = {5.0f};
-			renderer1.setSeriesStroke( 0, new BasicStroke(3,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+			renderer1.setSeriesStroke( 0, new BasicStroke( 3 ) );
+			// line = dashes:
+			//float dash[] = {5.0f};
+			//renderer1.setSeriesStroke( 0, new BasicStroke(3,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
 			//renderer1.setSeriesShape(0, cross);
 			tmpSubPlot.setRenderer(0, renderer1);
 				
@@ -981,8 +982,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             }
         }
         */
-        private void updateMarker(){
-            if (marker != null){
+        private void updateMarker()
+        {
+            if (marker != null)
+            {
             	if (mouse_plot != null)
             	{
             		//mouse_plot.removeDomainMarker(marker,Layer.BACKGROUND);
@@ -991,8 +994,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             		//System.out.println("delete area");
             	}
             }
-            if (!( markerStart[0].isNaN() && markerEnd[0].isNaN())){
-                if ( markerEnd[0] > markerStart[0]){                	
+            if (!( markerStart[0].isNaN() && markerEnd[0].isNaN()))
+            {
+                if ( markerEnd[0] > markerStart[0])
+                {                	
                     marker = new IntervalMarker(markerStart[0], markerEnd[0]);
                     markerMap.put(mouse_plot, marker);
                     marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
@@ -1002,10 +1007,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
                     	areaMarked.put(mouse_plot, true);
                     	//System.out.println("add area");
+                    	functions.Events.handleMouseSelection();
+                    	collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
                     }
                 }
             }
-        }        
+        }
 
         
         /**
@@ -1019,10 +1026,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             //Point2D p = panel.translateScreenToJava2D( e.getPoint());
         	Point2D p = e.getPoint();
             Rectangle2D plotArea = panel.getScreenDataArea();
-            XYPlot plot = (XYPlot) chart.getPlot();
-            r[0] = plot.getDomainAxis().java2DToValue(p.getX(), plotArea, plot.getDomainAxisEdge());
-            System.out.println(""+p.getY());
-            r[1] = plot.getRangeAxis().java2DToValue(p.getY(), plotArea, plot.getRangeAxisEdge());
+            XYPlot plotLocal = (XYPlot) chart.getPlot();
+            r[0] = plotLocal.getDomainAxis().java2DToValue(p.getX(), plotArea, plotLocal.getDomainAxisEdge());
+            // -------- 20.02
+            XYPlot plotTest = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
+            r[1] = plotTest.getRangeAxis().java2DToValue(p.getY(), plotArea, plotLocal.getRangeAxisEdge());
+            // end 20.02
+            //r[1] = plotLocal.getRangeAxis().java2DToValue(p.getY(), plotArea, plotLocal.getRangeAxisEdge());
             return r;
         }
 
@@ -1073,6 +1083,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             thread.start();
             */              
         }
+        
         
         public void mouseMoved(MouseEvent e)
         {
@@ -1274,6 +1285,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    				plotStateMap.put(sensorUID,0);
     	    				plotMap.get(sensorUID).setBackgroundPaint(Color.white);
     	    			}
+    	    			if (plotStateMap.get(sensorUID) == 1)
+    	    			{
+    	    				plotMap.get(sensorUID).setBackgroundPaint(Color.gray);
+    	    			}
     	    		}
     	    	}
     		}
@@ -1420,6 +1435,36 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     }
 
 	
+	public static void collectPlotValues(double x1, double x2, XYDataset dataSet)
+	{
+		Comparable comparable;
+		int indexOf;
+		
+		for(int i=0;i<dataSet.getSeriesCount();i++)
+		{
+			comparable =  dataSet.getSeriesKey(i);
+		    indexOf=dataSet.indexOf(comparable);
+		    for(int j=0 ; j<dataSet.getItemCount(indexOf);j++)
+		    {
+		    	double x=dataSet.getXValue(indexOf, j);
+		    	double y=dataSet.getYValue(indexOf, j);
+		    	if (x>=x1)
+		    	{
+		    		System.out.println("valueX["+j+"] = "+doubleToTime(x)+", y = "+y);
+		    	}
+		    	if (x>=x2)
+		    	{
+		    		break;
+		    	}
+		    	/*
+		    	if(x == domainVal && y==rangeVal)
+		    	{
+		    		return  new SeriesAndItemIndex(j,indexOf);//return item index and series index
+		    	}
+		    	*/
+            }
+        }
+	}
 	
 	private static class SeriesAndItemIndex
 	{ 
