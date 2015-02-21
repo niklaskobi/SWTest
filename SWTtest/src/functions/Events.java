@@ -272,7 +272,16 @@ public class Events {
 
 	public static void handleMouseSelection()
 	{
-		
+		windowController.openPlotWindow();
+	}
+	
+	
+	/**
+	 * this event should be called when user closes the template window
+	 */
+	public static void closePlotWindow()
+	{
+		windowController.closePlotWindow();
 	}
 	
 }

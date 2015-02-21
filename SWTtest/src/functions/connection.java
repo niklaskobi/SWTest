@@ -357,7 +357,7 @@ public class connection {
 				double il = illuminance / 10.0; 
 				//System.out.println("Illuminance: " + il + " Lux");
 				//windowController.demo.addValue(0, il);
-				if (functions.windowController.existsSensorWindow) windowController.demo.addValue(UID, il);
+				if (functions.windowController.existsSensorWindow) windowController.sensorWindow.addValue(UID, il);
 				Brick.setLastValue(connectionData.BrickList, UID, il);
 				Brick.setLastValue(connectionData.presentedBrickList, UID, il);
 				
@@ -399,7 +399,7 @@ public class connection {
             public void voltage(int voltage) {
             	double volt = voltage/1000.0;
                 //System.out.println("Voltage: " + volt + " V");                
-                if (functions.windowController.existsSensorWindow) windowController.demo.addValue(UID, volt);
+                if (functions.windowController.existsSensorWindow) windowController.sensorWindow.addValue(UID, volt);
 				Brick.setLastValue(connectionData.BrickList, UID, volt);
 				Brick.setLastValue(connectionData.presentedBrickList, UID, volt);
 
@@ -417,7 +417,7 @@ public class connection {
             public void current(int current) {
             	double cur = current/1000.0;
                 //System.out.println("Current: " + cur + " A");
-                if (functions.windowController.existsSensorWindow) windowController.demo.add2ndValue(UID, cur);
+                if (functions.windowController.existsSensorWindow) windowController.sensorWindow.add2ndValue(UID, cur);
 				Brick.setLastValue(connectionData.BrickList, UID, cur);
 				Brick.setLastValue(connectionData.presentedBrickList, UID, cur);
                 

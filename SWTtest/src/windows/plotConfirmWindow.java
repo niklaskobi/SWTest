@@ -1,190 +1,177 @@
-
-/* ===========================================================
- * JFreeChart : a free chart library for the Java(tm) platform
- * ===========================================================
- *
- * (C) Copyright 2000-2004, by Object Refinery Limited and Contributors.
- *
- * Project Info:  http://www.jfree.org/jfreechart/index.html
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with this
- * library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
- *
- * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
- * in the United States and other countries.]
- *
- * -------------------
- * LineChartDemo6.java
- * -------------------
- * (C) Copyright 2004, by Object Refinery Limited and Contributors.
- *
- * Original Author:  David Gilbert (for Object Refinery Limited);
- * Contributor(s):   -;
- *
- * $Id: LineChartDemo6.java,v 1.5 2004/04/26 19:11:55 taqua Exp $
- *
- * Changes
- * -------
- * 27-Jan-2004 : Version 1 (DG);
- * 
- */
-
 package windows;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.swing.AbstractAction;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import objects.MeasurementEntry;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.time.Millisecond;
+import org.jfree.data.time.Second;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
+/** @see http://stackoverflow.com/questions/5522575 */
+public class plotConfirmWindow {
 
-/**
- * A simple demonstration application showing how to create a line chart using data from an
- * {@link XYDataset}.
- *
- */
-public class plotConfirmWindow extends ApplicationFrame {
+    //private static final String title = "Return On Investment";
+	private String title = "Return On Investment";
+    private ChartPanel chartPanel = createChart();
 
-    /**
-     * Creates a new demo.
-     *
-     * @param title  the frame title.
-     */
-    public plotConfirmWindow(final String title) {
+    public plotConfirmWindow(String t) {
+    	this.title = t;
+        JFrame f = new JFrame(title);
+        f.setTitle(title);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setLayout(new BorderLayout(0, 5));
+        f.add(chartPanel, BorderLayout.CENTER);
+        chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setHorizontalAxisTrace(true);
+        chartPanel.setVerticalAxisTrace(true);
 
-        super(title);
-
-        final XYDataset dataset = createDataset();
-        final JFreeChart chart = createChart(dataset);
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-        setContentPane(chartPanel);
-
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(createTrace());
+        panel.add(createDate());
+        panel.add(createZoom());
+        f.add(panel, BorderLayout.SOUTH);
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+        
+        f.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent)
+            {
+            	functions.Events.closePlotWindow();
+            }
+        });
     }
-    
-    /**
-     * Creates a sample dataset.
-     * 
-     * @return a sample dataset.
-     */
+
+    private JComboBox createTrace() {
+        final JComboBox trace = new JComboBox();
+        final String[] traceCmds = {"Enable Trace", "Disable Trace"};
+        trace.setModel(new DefaultComboBoxModel(traceCmds));
+        trace.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (traceCmds[0].equals(trace.getSelectedItem())) {
+                    chartPanel.setHorizontalAxisTrace(true);
+                    chartPanel.setVerticalAxisTrace(true);
+                    chartPanel.repaint();
+                } else {
+                    chartPanel.setHorizontalAxisTrace(false);
+                    chartPanel.setVerticalAxisTrace(false);
+                    chartPanel.repaint();
+                }
+            }
+        });
+        return trace;
+    }
+
+    private JComboBox createDate() {
+        final JComboBox date = new JComboBox();
+        final String[] dateCmds = {"Horizontal Dates", "Vertical Dates"};
+        date.setModel(new DefaultComboBoxModel(dateCmds));
+        date.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFreeChart chart = chartPanel.getChart();
+                XYPlot plot = (XYPlot) chart.getPlot();
+                DateAxis domain = (DateAxis) plot.getDomainAxis();
+                if (dateCmds[0].equals(date.getSelectedItem())) {
+                    domain.setVerticalTickLabels(false);
+                } else {
+                    domain.setVerticalTickLabels(true);
+                }
+            }
+        });
+        return date;
+    }
+
+    private JButton createZoom() {
+        final JButton auto = new JButton(new AbstractAction("Auto Zoom") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chartPanel.restoreAutoBounds();
+            }
+        });
+        return auto;
+    }
+
+    private ChartPanel createChart() {
+        XYDataset roiData = createDataset();
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+            title, "Time", "Value", roiData, true, true, false);
+        XYPlot plot = chart.getXYPlot();
+        XYLineAndShapeRenderer renderer =
+            (XYLineAndShapeRenderer) plot.getRenderer();
+        renderer.setBaseShapesVisible(true);
+        //NumberFormat currency = NumberFormat.getCurrencyInstance();
+        //currency.setMaximumFractionDigits(0);
+        //NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        //rangeAxis.setNumberFormatOverride(currency);
+        return new ChartPanel(chart);
+    }
+
     private XYDataset createDataset() {
-        
-        final XYSeries series1 = new XYSeries("First");
-        series1.add(1.0, 1.0);
-        series1.add(2.0, 4.0);
-        series1.add(3.0, 3.0);
-        series1.add(4.0, 5.0);
-        series1.add(5.0, 5.0);
-        series1.add(6.0, 7.0);
-        series1.add(7.0, 7.0);
-        series1.add(8.0, 8.0);
-
-        final XYSeries series2 = new XYSeries("Second");
-        series2.add(1.0, 5.0);
-        series2.add(2.0, 7.0);
-        series2.add(3.0, 6.0);
-        series2.add(4.0, 8.0);
-        series2.add(5.0, 4.0);
-        series2.add(6.0, 4.0);
-        series2.add(7.0, 2.0);
-        series2.add(8.0, 1.0);
-
-        final XYSeries series3 = new XYSeries("Third");
-        series3.add(3.0, 4.0);
-        series3.add(4.0, 3.0);
-        series3.add(5.0, 2.0);
-        series3.add(6.0, 3.0);
-        series3.add(7.0, 6.0);
-        series3.add(8.0, 3.0);
-        series3.add(9.0, 4.0);
-        series3.add(10.0, 3.0);
-
-        final XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series1);
-        dataset.addSeries(series2);
-        dataset.addSeries(series3);
-                
-        return dataset;
-        
-    }
-    
-    /**
-     * Creates a chart.
-     * 
-     * @param dataset  the data for the chart.
-     * 
-     * @return a chart.
-     */
-    private JFreeChart createChart(final XYDataset dataset) {
-        
-        // create the chart...
-        final JFreeChart chart = ChartFactory.createXYLineChart(
-            "Line Chart Demo 6",      // chart title
-            "X",                      // x axis label
-            "Y",                      // y axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL,
-            true,                     // include legend
-            true,                     // tooltips
-            false                     // urls
-        );
-
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-        chart.setBackgroundPaint(Color.white);
-
-//        final StandardLegend legend = (StandardLegend) chart.getLegend();
-  //      legend.setDisplaySeriesShapes(true);
-        
-        // get a reference to the plot for further customisation...
-        final XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-    //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-        
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, false);
-        renderer.setSeriesShapesVisible(1, false);
-        plot.setRenderer(renderer);
-
-        // change the auto tick unit selection to integer units only...
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        // OPTIONAL CUSTOMISATION COMPLETED.
-                
-        return chart;
-        
+        TimeSeriesCollection tsc = new TimeSeriesCollection();
+        //tsc.addSeries(createSeries("Projected", 200));
+        tsc.addSeries(createSeries("Actual", 100));
+        return tsc;
     }
 
-    // ****************************************************************************
-    // * JFREECHART DEVELOPER GUIDE                                               *
-    // * The JFreeChart Developer Guide, written by David Gilbert, is available   *
-    // * to purchase from Object Refinery Limited:                                *
-    // *                                                                          *
-    // * http://www.object-refinery.com/jfreechart/guide.html                     *
-    // *                                                                          *
-    // * Sales are used to provide funding for the JFreeChart project - please    * 
-    // * support us so that we can continue developing free software.             *
-    // ****************************************************************************
+    private TimeSeries createSeries(String name, double scale) {
+        TimeSeries series = new TimeSeries(name);
+        /*
+        for (int i = 0; i < 6; i++) {
+        	//series.add(new Year(2005 + i), Math.pow(2, i) * scale);
+            series.add(new Millisecond(), Math.pow(2, i) * scale);
+        }
+        */
+        ArrayList<MeasurementEntry> list = sensorWindow.templatePlot.allPoints;
+        for (int i= 0; i< list.size(); i++)
+        {
+        	Date d = new java.sql.Date((long) list.get(i).value1);
+        	String s = d.toString();
+        	series.add(new Second(d), list.get(i).value2);
+        }
+        return series;
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                plotConfirmWindow cpd = new plotConfirmWindow("asdasd");
+            }
+        });
+    }
     
-
-
+    
+    
 }

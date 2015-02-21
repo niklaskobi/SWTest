@@ -5,15 +5,19 @@ import objects.Brick;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+
 //import windows.DualAxisDemo2;
 import windows.mainWindow;
+import windows.plotConfirmWindow;
 import windows.sensorWindow;
 
 public class windowController {
 	
-	public static sensorWindow 		demo;	
-    public static boolean			existsSensorWindow 		= false;
-    public static boolean 			existsSettingWindow		= false;
+	public static sensorWindow 			sensorWindow;
+	public static plotConfirmWindow		plotWindow;
+    public static boolean				existsSensorWindow 		= false;
+    public static boolean 				existsSettingWindow		= false;
+    public static boolean				existsPlotWindow 		= false;
 	    
     
     public static void updateTresholdMin1(String UID, double threshold)
@@ -93,20 +97,20 @@ public class windowController {
 
 		if (existsSensorWindow == false)
 		{
-			demo = new sensorWindow("sensor data");
-			demo.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
-			demo.pack();
-        	RefineryUtilities.centerFrameOnScreen(demo);
-        	demo.setVisible(true);
+			sensorWindow = new sensorWindow("sensor data");
+			sensorWindow.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
+			sensorWindow.pack();
+        	RefineryUtilities.centerFrameOnScreen(sensorWindow);
+        	sensorWindow.setVisible(true);
         	existsSensorWindow = true;
 		}		
 		else 
 		{
-			demo.dispose();			
-			demo = new sensorWindow("sensor data");			
-			demo.pack();
-        	RefineryUtilities.centerFrameOnScreen(demo);
-        	demo.setVisible(true);
+			sensorWindow.dispose();			
+			sensorWindow = new sensorWindow("sensor data");			
+			sensorWindow.pack();
+        	RefineryUtilities.centerFrameOnScreen(sensorWindow);
+        	sensorWindow.setVisible(true);
         	existsSensorWindow = true;
 		}
     	mainWindow.startButtonChangeTo_stop();
@@ -116,13 +120,52 @@ public class windowController {
 	{
 		if (existsSensorWindow)
 		{
-			demo.setVisible(false);
-			demo.dispose();
+			sensorWindow.setVisible(false);
+			sensorWindow.dispose();
 			existsSensorWindow = false;
 			mainWindow.startButtonChangeTo_start();
 		}
 	}
-
+	
+	public static void openPlotWindow()
+	{
+		
+		if (existsPlotWindow == false)
+		{
+			plotWindow = new plotConfirmWindow("template plot");
+			/*
+			plotWindow.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
+			plotWindow.pack();
+        	RefineryUtilities.centerFrameOnScreen(plotWindow);
+        	plotWindow.setVisible(true);
+        	*/
+        	existsPlotWindow = true;
+		}
+		/*
+		else 
+		{
+			plotWindow.dispose();			
+			plotWindow = new plotConfirmWindow("template plot");			
+			plotWindow.pack();
+        	RefineryUtilities.centerFrameOnScreen(plotWindow);
+        	plotWindow.setVisible(true);
+        	existsPlotWindow = true;
+		}
+		*/
+	}
+	
+	public static void closePlotWindow()
+	{
+		if (existsPlotWindow)
+		{
+			/*
+			plotWindow.setVisible(false);
+			plotWindow.dispose();
+			*/
+			existsPlotWindow = false;
+		}
+	}
+	
 	/*
 	public static void displaySensorWindow()
 	{

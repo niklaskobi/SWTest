@@ -45,8 +45,6 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Panel;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -57,6 +55,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,16 +67,17 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import objects.MeasurementEntry;
 import objects.Slider;
 import objects.Brick;
 import objects.Measurement;
+import objects.TemplatePlot;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
@@ -96,8 +96,6 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
-import org.jfree.util.ShapeUtilities;
-
 import data.connectionData;
 import data.constants;
 
@@ -118,6 +116,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 	Slider sliderData = new Slider(sliderValuesNumber);
 	static JSlider slider;
+	
+	public static TemplatePlot templatePlot = new TemplatePlot();
 	
     public static Map<String, TimeSeriesCollection> seriesCollectionMap = new HashMap<String, TimeSeriesCollection>();
     public static Map<String, TimeSeriesCollection> seriesCollectionMap2 = new HashMap<String, TimeSeriesCollection>();       
@@ -1007,8 +1007,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
                     	areaMarked.put(mouse_plot, true);
                     	//System.out.println("add area");
-                    	functions.Events.handleMouseSelection();
                     	collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
+                    	functions.Events.handleMouseSelection();
                     }
                 }
             }
@@ -1435,10 +1435,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     }
 
 	
+	/**
+	 * collects values from the selection and copies them into the templatePlot object
+	 * @param x1
+	 * @param x2
+	 * @param dataSet
+	 */
 	public static void collectPlotValues(double x1, double x2, XYDataset dataSet)
 	{
 		Comparable comparable;
 		int indexOf;
+		ArrayList<MeasurementEntry> entries = new ArrayList<MeasurementEntry>();
 		
 		for(int i=0;i<dataSet.getSeriesCount();i++)
 		{
@@ -1447,24 +1454,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    for(int j=0 ; j<dataSet.getItemCount(indexOf);j++)
 		    {
 		    	double x=dataSet.getXValue(indexOf, j);
-		    	double y=dataSet.getYValue(indexOf, j);
 		    	if (x>=x1)
 		    	{
+		    		double y=dataSet.getYValue(indexOf, j);
 		    		System.out.println("valueX["+j+"] = "+doubleToTime(x)+", y = "+y);
+		    		entries.add(new MeasurementEntry(x,y));
 		    	}
 		    	if (x>=x2)
 		    	{
 		    		break;
 		    	}
-		    	/*
-		    	if(x == domainVal && y==rangeVal)
-		    	{
-		    		return  new SeriesAndItemIndex(j,indexOf);//return item index and series index
-		    	}
-		    	*/
             }
         }
+		templatePlot.replacePointList(entries);
 	}
+	
 	
 	private static class SeriesAndItemIndex
 	{ 
