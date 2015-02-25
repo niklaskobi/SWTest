@@ -1,9 +1,11 @@
 package functions;
 
 import objects.Brick;
+import objects.TemplatePlot;
 
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+
 
 
 //import windows.DualAxisDemo2;
@@ -127,12 +129,12 @@ public class windowController {
 		}
 	}
 	
-	public static void openPlotWindow()
+	public static void openPlotWindow(TemplatePlot t)
 	{
 		
 		if (existsPlotWindow == false)
 		{
-			plotWindow = new plotConfirmWindow("template plot");
+			plotWindow = new plotConfirmWindow("template plot",t);
 			/*
 			plotWindow.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
 			plotWindow.pack();

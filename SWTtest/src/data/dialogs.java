@@ -14,6 +14,15 @@ public class dialogs {
 		        JOptionPane.ERROR_MESSAGE);
 	}
 	
+	public static void fileDataError(String str)
+	{
+		String message = "unable to read file: "
+		        + str +"\n"
+		        + "corrupt data in file";
+		    JOptionPane.showMessageDialog(new JFrame(), message, "error",
+		        JOptionPane.ERROR_MESSAGE);
+	}
+	
 	public static void fileFNFException(String path)
 	{
 		String message = "unable to write to the file: "

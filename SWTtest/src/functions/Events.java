@@ -10,6 +10,7 @@ import com.tinkerforge.TimeoutException;
 
 import data.connectionData;
 import objects.Brick;
+import objects.TemplatePlot;
 
 public class Events {
 	
@@ -270,9 +271,9 @@ public class Events {
 		windows.sensorWindow.activateSlider();
 	}
 
-	public static void handleMouseSelection()
+	public static void handleMouseSelection(TemplatePlot t)
 	{
-		windowController.openPlotWindow();
+		windowController.openPlotWindow(t);
 	}
 	
 	

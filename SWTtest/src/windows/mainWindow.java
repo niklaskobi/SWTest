@@ -217,8 +217,6 @@ public class mainWindow {
 		else btnNewButton_1.setText("Stop");
 		//------------------------------------------------------
 		
-		
-		
 		//CONNECT BUTTON------------------------------------------------
 		btnNewButton = new Button(shell, SWT.NONE);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -257,10 +255,6 @@ public class mainWindow {
 		btnNewButton.setBounds(178, 13, 121, 56);
 		btnNewButton.setText("Connect");		
 		// ---------------------------------------------------------------------------------
-		
-		
-		
-		
 
 		// TREE -----------------------------------------------------------------------------		
 		treeViewer = new CheckboxTreeViewer(shell, SWT.BORDER);

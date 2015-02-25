@@ -1008,7 +1008,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     	areaMarked.put(mouse_plot, true);
                     	//System.out.println("add area");
                     	collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
-                    	functions.Events.handleMouseSelection();
+                    	functions.Events.handleMouseSelection(templatePlot);
                     }
                 }
             }
