@@ -24,32 +24,32 @@ public class windowController {
     
     public static void updateTresholdMin1(String UID, double threshold)
     {
-    	sensorWindow.updateTresholdMin1(UID, threshold);
+    	windows.sensorWindow.updateTresholdMin1(UID, threshold);
     }
     
     public static void updateAvgCtrl(String UID, double value, int index, boolean high)
     {
-    	sensorWindow.updateAvrgCtrl(UID, value, index, high);
+    	windows.sensorWindow.updateAvrgCtrl(UID, value, index, high);
     }
             
     public static void updateTresholdMin2(String UID, double threshold)
     {
-    	sensorWindow.updateTresholdMin2(UID, threshold);
+    	windows.sensorWindow.updateTresholdMin2(UID, threshold);
     }
     
     public static void updateTresholdMax1(String UID, double threshold)
     {
-    	sensorWindow.updateTresholdMax1(UID, threshold);
+    	windows.sensorWindow.updateTresholdMax1(UID, threshold);
     }
     
     public static void updateTresholdMax2(String UID, double threshold)
     {
-    	sensorWindow.updateTresholdMax2(UID, threshold);
+    	windows.sensorWindow.updateTresholdMax2(UID, threshold);
     }
 
     public static void removePlot(String UID)
     {
-    	if (existsSensorWindow == true)sensorWindow.removePlot(UID);
+    	if (existsSensorWindow == true)windows.sensorWindow.removePlot(UID);
     }
     
     public static void addPlot(Brick br)
@@ -57,20 +57,20 @@ public class windowController {
     	// don't show settings for master brick since there are no relevant settings
     	if (br.getDeviceIdentifier() != 13)
     	{
-    		if (existsSensorWindow == true)sensorWindow.addPlot(br);
+    		if (existsSensorWindow == true)windows.sensorWindow.addPlot(br);
     	}
     }
     
     public static void hideUnhidePlot(Brick br, int index)
     {
-    	if (existsSensorWindow == true) sensorWindow.hideUnhidePlot(br, index);
+    	if (existsSensorWindow == true) windows.sensorWindow.hideUnhidePlot(br, index);
     }
     
     public static void hideUnhideAvgControl(Brick br, int index)
     {
     	if (existsSensorWindow == true)
     	{
-    		sensorWindow.hideUnhideAvgCtrl(br,index);
+    		windows.sensorWindow.hideUnhideAvgCtrl(br,index);
     	}
     }
         

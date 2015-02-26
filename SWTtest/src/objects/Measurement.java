@@ -15,20 +15,11 @@ public class Measurement {
 	private double		max;
 	private Buffer		minimaBuffer;
 	private double		min;
-	private boolean 	ascending;
-	private double 		lastValue;	
 	private String		uid;
-	private int 		valuesPerCycle;
 	private int 		valuesPerLastCycle;
-	private int 		cyclesCnt;
 	private Buffer		valuesCnt;
 	private int 		index;						// 0 = primary sensor, 1 = secondary
-	private double 		sum;
 	private double[]	lastValues = new double[3];
-	private double 		prevValue = 0; 
-	private int 		maxValuesNumber = 0;
-	
-	
 	/**
 	 * constructor
 	 * @param max max number of values
@@ -39,15 +30,11 @@ public class Measurement {
 		this.maximaBuffer 		= new CircularFifoBuffer(maxCycles);
 		this.minimaBuffer 		= new CircularFifoBuffer(maxCycles);
 		this.uid				= uid;
-		lastValue 				= 0;
 		max 					= 0;
 		min 					= 999; 
-		cyclesCnt				= 0;
 		valuesPerLastCycle		= 0;
 		this.valuesCnt			= new CircularFifoBuffer(maxCycles);
 		this.index 				= i;
-		sum 					= 0;
-		maxValuesNumber			= maxValues;
 		for (int k=0; k<lastValues.length; k++) lastValues[k] = 0;
 	}
 	
@@ -86,7 +73,6 @@ public class Measurement {
 		if (detectExtrema()==1)
 		{
 			addMax(lastValues[1]);
-			cyclesCnt++;
 			valuesCnt.add(valuesPerLastCycle);
 			valuesPerLastCycle = 0;						
 		}
@@ -148,7 +134,7 @@ public class Measurement {
 	 * returns average number of measurements per cycle, 
 	 * considering maxCycles cycles
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private int getAverageMeasurementsNumber()
 	{
 		long sum=0;

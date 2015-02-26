@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -78,7 +77,7 @@ public class file {
 		Date date = new Date();
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp tstamp = new Timestamp(System.currentTimeMillis()); 
+		//Timestamp tstamp = new Timestamp(System.currentTimeMillis()); 
 
 		entry = br.uid+";";															// UID
 		entry += data.constants.brickIdMap.get(br.deviceIdentifier)+";";			// device type

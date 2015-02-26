@@ -16,10 +16,14 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class TemplatePlot {
-	
-	public ArrayList <MeasurementEntry> allPoints;
+
 	public final static String fileExtention = "tmp";
 	private final static String entriesDescriptionLine = "value1;value2";
+
+	public String dateStr = "";
+	public String fileName = "new plot";
+	public ArrayList <MeasurementEntry> allPoints;
+		
 	
 	
 	/**
@@ -134,11 +138,13 @@ public class TemplatePlot {
 		Date date = new Date();
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+		
+		this.dateStr = dateFormat.format(date);
+		
 		//entry = br.uid+";";															// UID
 		//entry += data.constants.brickIdMap.get(br.deviceIdentifier)+";";				// device type
 		//entry += br.connectedUid+";";													// father UID
-		entry += dateFormat.format(date)+";";											// date+time
+		entry += dateFormat.format(date);												// date+time
 		entry += "\n";
 		entry += entriesDescriptionLine + "\n";
 		
@@ -172,6 +178,7 @@ public class TemplatePlot {
 		}
 
 		String line = sc.nextLine();
+		String date = line;
 		line = sc.nextLine();														// skip 1st line for now
 		if (!entriesDescriptionLine.equals(line))									// check for the right data in file
 		{
@@ -185,7 +192,10 @@ public class TemplatePlot {
 		
 		if (replace)
 		{
-			allPoints.clear();															// delete old entries		
+			allPoints.clear();														// delete old entries
+			this.dateStr = date;
+			String tmp = path.substring(path.lastIndexOf("\\")+1);
+			this.fileName = tmp;
 			System.out.println("start read data from "+path);		
 			// scan file and add values to the array
 			while(sc.hasNextLine())

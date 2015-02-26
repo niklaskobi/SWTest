@@ -36,7 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class plotConfirmWindow {
 
     //private static final String title = "Return On Investment";
-	private String title = "define a template chart";
+	private String title = "";
     private ChartPanel chartPanel;
     private TemplatePlot tPlot;
     JFrame f;
@@ -46,12 +46,14 @@ public class plotConfirmWindow {
     private final String yLabel = "Value";
 
     public plotConfirmWindow(TemplatePlot p) {
+    	
     	this.tPlot = p;
-    	this.title = windowTitle;
+    	this.title = tPlot.fileName;
+    	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
     	chartPanel = createChart();
         //JFrame f = new JFrame(title);
-    	f = new JFrame(title);
-        f.setTitle(title);
+    	f = new JFrame(windowTitle);
+        f.setTitle(windowTitle);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLayout(new BorderLayout(0, 5));
         f.add(chartPanel, BorderLayout.CENTER);
@@ -89,11 +91,13 @@ public class plotConfirmWindow {
     {
     	this.tPlot = new TemplatePlot();
     	tPlot.readTemplateFromFile(path, true);
-    	this.title = windowTitle;
+    	//this.title = windowTitle;
+    	this.title = tPlot.fileName;
+    	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
     	chartPanel = createChart();
     	
-    	f = new JFrame(title);
-        f.setTitle(title);
+    	f = new JFrame(windowTitle);
+        f.setTitle(windowTitle);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLayout(new BorderLayout(0, 5));
         f.add(chartPanel, BorderLayout.CENTER);
