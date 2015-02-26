@@ -1050,7 +1050,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         public void mousePressed(MouseEvent e) 
         {
             markerStart = getPosition(e);
-            System.out.print("marker = "+doubleToTime(markerStart[0]));
+            System.out.print("marker = "+functions.Common.doubleToTime(markerStart[0]));
             System.out.println("value = "+markerStart[1]);
             
             //tmp_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
@@ -1060,7 +1060,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             XYDataset xydataset= mouse_plot.getDataset();
             double d = mouse_plot.getDomainCrosshairValue(); //get crosshair X value
             double r = mouse_plot.getRangeCrosshairValue();  //get crosshair y value
-            System.out.println(""+doubleToTime(d)+",r = "+r);
+            System.out.println(""+functions.Common.doubleToTime(d)+",r = "+r);
             //System.out.println(""+ reportDate+", r = "+r);
             /*
             SeriesAndItemIndex index=getItemIndex(d,r,xydataset);
@@ -1457,7 +1457,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    	if (x>=x1)
 		    	{
 		    		double y=dataSet.getYValue(indexOf, j);
-		    		System.out.println("valueX["+j+"] = "+doubleToTime(x)+", y = "+y);
+		    		System.out.println("valueX["+j+"] = "+functions.Common.doubleToTime(x)+", y = "+y);
 		    		entries.add(new MeasurementEntry(x,y));
 		    	}
 		    	if (x>=x2)
@@ -1490,19 +1490,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	}
 	
 	
-	/**
-	 * converts a double value into a string
-	 * @param value
-	 * @return
-	 */
-	public static String doubleToTime(Double v)
-	{
-		double value = v;
-        Date m = new java.sql.Date((long) value);
-        //DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        DateFormat df = new SimpleDateFormat("HH:mm:ss");
-        return df.format(m);
-	}
+
 }
 
            

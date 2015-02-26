@@ -36,19 +36,19 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class plotConfirmWindow {
 
     //private static final String title = "Return On Investment";
-	private String title = "Return On Investment";
-    private ChartPanel chartPanel = createChart();
-    private String filePath = null;
-    private ArrayList<MeasurementEntry> templateList;
+	private String title = "define a template chart";
+    private ChartPanel chartPanel;
     private TemplatePlot tPlot;
     JFrame f;
     
+    private final String windowTitle = "template chart";
     private final String xLabel = "Time";
     private final String yLabel = "Value";
 
-    public plotConfirmWindow(String t, TemplatePlot p) {
+    public plotConfirmWindow(TemplatePlot p) {
     	this.tPlot = p;
-    	this.title = t;
+    	this.title = windowTitle;
+    	chartPanel = createChart();
         //JFrame f = new JFrame(title);
     	f = new JFrame(title);
         f.setTitle(title);
@@ -78,6 +78,50 @@ public class plotConfirmWindow {
             }
         });
     }
+    
+    
+    /**
+     * constructor with a given path, instead of a plot object
+     * @param t
+     * @param p
+     */
+    public plotConfirmWindow(String path) 
+    {
+    	this.tPlot = new TemplatePlot();
+    	tPlot.readTemplateFromFile(path, true);
+    	this.title = windowTitle;
+    	chartPanel = createChart();
+    	
+    	f = new JFrame(title);
+        f.setTitle(title);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setLayout(new BorderLayout(0, 5));
+        f.add(chartPanel, BorderLayout.CENTER);
+        chartPanel.setMouseWheelEnabled(true);
+        //chartPanel.setHorizontalAxisTrace(true);
+        //chartPanel.setVerticalAxisTrace(true);
+
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(createOpenButton());
+        panel.add(createSaveButton());
+        panel.add(createCloseButton());
+        panel.add(createTrace());
+        panel.add(createDate());
+        f.add(panel, BorderLayout.SOUTH);
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+        
+        f.addWindowListener(new java.awt.event.WindowAdapter() 
+        {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent)
+            {
+            	functions.Events.closePlotWindow();
+            }
+        });
+    }
+
     
     
 
@@ -141,10 +185,12 @@ public class plotConfirmWindow {
             	if (userSelection == JFileChooser.APPROVE_OPTION) 
             	{
             	    File fileToOpen = fileChooser.getSelectedFile();
-            	    System.out.println("Save as file: " + fileToOpen.getAbsolutePath());
-            	    tPlot.readTemplateFromFile(fileToOpen.getAbsolutePath());
-                	//chartPanel = createChart();
-            	    refreshChart();
+            	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
+            	    if (tPlot.readTemplateFromFile(fileToOpen.getAbsolutePath(),false))
+            	    {            	
+            	    	functions.Events.reopenTmpPlot(fileToOpen.getAbsolutePath());
+            	    	closeThisWindow();
+            	    }
             	}
             }
         });
@@ -180,20 +226,18 @@ public class plotConfirmWindow {
         final JButton auto = new JButton(new AbstractAction("Close") {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //chartPanel.restoreAutoBounds();
-            	System.out.println("close dialog");
-            	functions.Events.closePlotWindow();
-            	f.dispose();
+            public void actionPerformed(ActionEvent e) 
+            {
+            	closeThisWindow();
             }
         });
         return auto;
     }
     
-    private ChartPanel createChart() {
+    private ChartPanel createChart() 
+    {
         XYDataset roiData = createDataset();
-        JFreeChart chart = ChartFactory.createTimeSeriesChart(
-            title, xLabel, yLabel, roiData, true, true, false);
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(title, xLabel, yLabel, roiData, true, true, false);
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer =
             (XYLineAndShapeRenderer) plot.getRenderer();
@@ -206,47 +250,38 @@ public class plotConfirmWindow {
         return new ChartPanel(chart);
     }
 
-    private XYDataset createDataset() {
+    private XYDataset createDataset() 
+    {
         TimeSeriesCollection tsc = new TimeSeriesCollection();
         //tsc.addSeries(createSeries("Projected", 200));
         tsc.addSeries(createSeries(xLabel, 100));
         return tsc;
     }
 
-    private TimeSeries createSeries(String name, double scale) {
+    
+    private TimeSeries createSeries(String name, double scale) 
+    {
         TimeSeries series = new TimeSeries(name);
-        /*
-        for (int i = 0; i < 6; i++) {
-        	//series.add(new Year(2005 + i), Math.pow(2, i) * scale);
-            series.add(new Millisecond(), Math.pow(2, i) * scale);
-        }
-        */
-        ArrayList<MeasurementEntry> templateList = sensorWindow.templatePlot.allPoints;
-        for (int i= 0; i< templateList.size(); i++)
+        //ArrayList<MeasurementEntry> templateList = sensorWindow.templatePlot.allPoints;
+        for (int i= 0; i< tPlot.allPoints.size(); i++)
         {
-        	Date d = new java.sql.Date((long) templateList.get(i).value1);
-        	//String s = d.toString();
-        	//series.add(new Second(d), list.get(i).value2);
-        	series.addOrUpdate(new Second(d), templateList.get(i).value2);
+        	Date d = new java.sql.Date((long) tPlot.allPoints.get(i).value1);
+        	series.addOrUpdate(new Second(d), tPlot.allPoints.get(i).value2);
         }
         return series;
     }
 
-    
     private void refreshChart() 
     {
-    	asd
+    	chartPanel.getChart().getXYPlot().setDataset(chartPanel.getChart().getXYPlot().getDataset());
     }
-    /*
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                plotConfirmWindow cpd = new plotConfirmWindow("asdasd");
-            }
-        });
+    
+    private void closeThisWindow()
+    {
+    	System.out.println("close tmp window");
+    	functions.Events.closePlotWindow();
+    	f.dispose();
     }
-    */
     
 }

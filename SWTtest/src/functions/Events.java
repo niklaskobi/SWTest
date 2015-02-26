@@ -285,4 +285,13 @@ public class Events {
 		windowController.closePlotWindow();
 	}
 	
+	
+	/**
+	 * handles a reopen or refresh of the template plot window
+	 * @param path path of the new template file
+	 */
+	public static void reopenTmpPlot(String path)
+	{
+		windowController.openPlotWindow(path);
+	}
 }

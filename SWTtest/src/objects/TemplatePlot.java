@@ -9,7 +9,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -156,8 +155,11 @@ public class TemplatePlot {
 	 * scan file on given path
 	 * store values into allPoints - array
 	 * @param path file path
+	 * @param replace if false, no plot data will be replaced, can be used to proof if file is convienient
+	 * if true, plot data of the current kobject will be replaced by the data from file 
+	 * @return true if template file was OK
 	 */
-	public void readTemplateFromFile(String path)
+	public boolean readTemplateFromFile(String path, boolean replace)
 	{
 		Scanner sc = null;
 		try {
@@ -166,7 +168,7 @@ public class TemplatePlot {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			data.dialogs.fileFNFException(data.connectionData.storageFilePath);
-			return;
+			return false;
 		}
 
 		String line = sc.nextLine();
@@ -174,33 +176,54 @@ public class TemplatePlot {
 		if (!entriesDescriptionLine.equals(line))									// check for the right data in file
 		{
 			data.dialogs.fileDataError(path);
-			return;							
+			sc.close();
+			return false;							
 		}
 		String str[] = new String[2];
 		double value1;
 		double value2; 
-			
-		allPoints.clear();															// delete old entries
 		
-		System.out.println("start read data");
-		
-		// scan file and add values to the array
-		while(sc.hasNextLine())
+		if (replace)
 		{
-			line = sc.nextLine();
-			line = line.substring(0, line.length()-1);
-			str = line.split(",");
-			if (str.length != 2)	
+			allPoints.clear();															// delete old entries		
+			System.out.println("start read data from "+path);		
+			// scan file and add values to the array
+			while(sc.hasNextLine())
 			{
-				data.dialogs.fileDataError(path);
-				return;
+				line = sc.nextLine();
+				line = line.substring(0, line.length()-1);
+				str = line.split(",");
+				if (str.length != 2)	
+				{
+					data.dialogs.fileDataError(path);
+					sc.close();
+					return false;
+				}
+				value1 = Double.parseDouble(str[0]);
+				value2 = Double.parseDouble(str[1]);
+				allPoints.add(new MeasurementEntry(value1, value2));
 			}
-			value1 = Double.parseDouble(str[0]);
-			value2 = Double.parseDouble(str[1]);
-			allPoints.add(new MeasurementEntry(value1, value2));
+			sc.close();
 		}
-		sc.close();
+		
+		return true;
+	}
+	
+	
+	/**
+	 * returns string containing all values of the template plot
+	 */
+	public String toString()
+	{
+		String str = "";
 
+	    for(int j=0 ; j<this.allPoints.size();j++)
+	    {
+	    	double x=allPoints.get(j).value1;
+	    	double y=allPoints.get(j).value2;
+	    	str += "value["+j+"], x = "+functions.Common.doubleToTime(x)+", y = "+y+"\n";
+	    }	    
+	    return str;
 	}
 	
 }

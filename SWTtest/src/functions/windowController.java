@@ -130,55 +130,31 @@ public class windowController {
 	}
 	
 	public static void openPlotWindow(TemplatePlot t)
-	{
-		
+	{		
 		if (existsPlotWindow == false)
 		{
-			plotWindow = new plotConfirmWindow("template plot",t);
-			/*
-			plotWindow.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
-			plotWindow.pack();
-        	RefineryUtilities.centerFrameOnScreen(plotWindow);
-        	plotWindow.setVisible(true);
-        	*/
+			plotWindow = new plotConfirmWindow(t);
         	existsPlotWindow = true;
 		}
-		/*
-		else 
-		{
-			plotWindow.dispose();			
-			plotWindow = new plotConfirmWindow("template plot");			
-			plotWindow.pack();
-        	RefineryUtilities.centerFrameOnScreen(plotWindow);
-        	plotWindow.setVisible(true);
-        	existsPlotWindow = true;
-		}
-		*/
+	}
+	
+	/**
+	 * creating new template window with a given plot path
+	 * @param path
+	 */
+	public static void openPlotWindow(String path)
+	{
+		plotWindow = new plotConfirmWindow(path);
 	}
 	
 	public static void closePlotWindow()
 	{
 		if (existsPlotWindow)
 		{
-			/*
-			plotWindow.setVisible(false);
-			plotWindow.dispose();
-			*/
 			existsPlotWindow = false;
 		}
 	}
-	
-	/*
-	public static void displaySensorWindow()
-	{
-		if (existsSensorWindow == true)
-		{
-			demo.setVisible(true);
-		}
-		else openSensorWindow();
-	}
-	*/
-	
+		
 	public static boolean isVisibleSensorWindow()
 	{
 		if (existsSensorWindow == true) return true;
