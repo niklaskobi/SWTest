@@ -131,19 +131,19 @@ public class plotConfirmWindow {
 
     private JComboBox createTrace() {
         final JComboBox trace = new JComboBox();
-        final String[] traceCmds = {"Enable Trace", "Disable Trace"};
+        final String[] traceCmds = {"Disable Trace", "Enable Trace"};
         trace.setModel(new DefaultComboBoxModel(traceCmds));
         trace.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (traceCmds[0].equals(trace.getSelectedItem())) {
-                    chartPanel.setHorizontalAxisTrace(true);
-                    chartPanel.setVerticalAxisTrace(true);
-                    chartPanel.repaint();
-                } else {
                     chartPanel.setHorizontalAxisTrace(false);
                     chartPanel.setVerticalAxisTrace(false);
+                    chartPanel.repaint();
+                } else {
+                    chartPanel.setHorizontalAxisTrace(true);
+                    chartPanel.setVerticalAxisTrace(true);
                     chartPanel.repaint();
                 }
             }
