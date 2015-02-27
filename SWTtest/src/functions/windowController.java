@@ -16,12 +16,12 @@ import windows.sensorWindow;
 public class windowController {
 	
 	public static sensorWindow 			sensorWindow;
-	public static plotConfirmWindow		plotWindow;
+	public static plotConfirmWindow[]	plotWindow = new plotConfirmWindow[5];
     public static boolean				existsSensorWindow 		= false;
     public static boolean 				existsSettingWindow		= false;
-    public static boolean				existsPlotWindow 		= false;
+    public static boolean[]				existsPlotWindow = new boolean[5];
 	    
-    
+        
     public static void updateTresholdMin1(String UID, double threshold)
     {
     	windows.sensorWindow.updateTresholdMin1(UID, threshold);
@@ -129,12 +129,12 @@ public class windowController {
 		}
 	}
 	
-	public static void openPlotWindow(TemplatePlot t)
+	public static void openPlotWindow(TemplatePlot t, int index)
 	{		
-		if (existsPlotWindow == false)
+		if (existsPlotWindow[index] == false)
 		{
-			plotWindow = new plotConfirmWindow(t);
-        	existsPlotWindow = true;
+			plotWindow[index] = new plotConfirmWindow(t, index);
+        	existsPlotWindow[index] = true;
 		}
 	}
 	
@@ -142,16 +142,16 @@ public class windowController {
 	 * creating new template window with a given plot path
 	 * @param path
 	 */
-	public static void openPlotWindow(String path)
+	public static void openPlotWindow(String path, int index)
 	{
-		plotWindow = new plotConfirmWindow(path);
+		plotWindow[index] = new plotConfirmWindow(path, index);
 	}
 	
-	public static void closePlotWindow()
+	public static void closePlotWindow(int index)
 	{
-		if (existsPlotWindow)
+		if (existsPlotWindow[index])
 		{
-			existsPlotWindow = false;
+			existsPlotWindow[index] = false;
 		}
 	}
 		

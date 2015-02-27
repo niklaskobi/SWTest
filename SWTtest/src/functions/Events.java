@@ -271,18 +271,18 @@ public class Events {
 		windows.sensorWindow.activateSlider();
 	}
 
-	public static void handleMouseSelection(TemplatePlot t)
+	public static void handleMouseSelection(TemplatePlot t, int index)
 	{
-		windowController.openPlotWindow(t);
+		windowController.openPlotWindow(t, index);
 	}
 	
 	
 	/**
 	 * this event should be called when user closes the template window
 	 */
-	public static void closePlotWindow()
+	public static void closePlotWindow(int index)
 	{
-		windowController.closePlotWindow();
+		windowController.closePlotWindow(index);
 	}
 	
 	
@@ -290,8 +290,8 @@ public class Events {
 	 * handles a reopen or refresh of the template plot window
 	 * @param path path of the new template file
 	 */
-	public static void reopenTmpPlot(String path)
+	public static void reopenTmpPlot(String path, int index)
 	{
-		windowController.openPlotWindow(path);
+		windowController.openPlotWindow(path, index);
 	}
 }

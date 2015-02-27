@@ -39,14 +39,15 @@ public class plotConfirmWindow {
 	private String title = "";
     private ChartPanel chartPanel;
     private TemplatePlot tPlot;
+    private int myIndex;
     JFrame f;
     
     private final String windowTitle = "template chart";
     private final String xLabel = "Time";
     private final String yLabel = "Value";
 
-    public plotConfirmWindow(TemplatePlot p) {
-    	
+    public plotConfirmWindow(TemplatePlot p, int index) {
+    	this.myIndex = index;
     	this.tPlot = p;
     	this.title = tPlot.fileName;
     	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
@@ -76,7 +77,7 @@ public class plotConfirmWindow {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent)
             {
-            	functions.Events.closePlotWindow();
+            	functions.Events.closePlotWindow(myIndex);
             }
         });
     }
@@ -87,8 +88,9 @@ public class plotConfirmWindow {
      * @param t
      * @param p
      */
-    public plotConfirmWindow(String path) 
+    public plotConfirmWindow(String path, int index) 
     {
+    	this.myIndex = index;
     	this.tPlot = new TemplatePlot();
     	tPlot.readTemplateFromFile(path, true);
     	//this.title = windowTitle;
@@ -121,7 +123,7 @@ public class plotConfirmWindow {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent)
             {
-            	functions.Events.closePlotWindow();
+            	functions.Events.closePlotWindow(myIndex);
             }
         });
     }
@@ -192,7 +194,7 @@ public class plotConfirmWindow {
             	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
             	    if (tPlot.readTemplateFromFile(fileToOpen.getAbsolutePath(),false))
             	    {            	
-            	    	functions.Events.reopenTmpPlot(fileToOpen.getAbsolutePath());
+            	    	functions.Events.reopenTmpPlot(fileToOpen.getAbsolutePath(), myIndex);
             	    	closeThisWindow();
             	    }
             	}
@@ -284,7 +286,7 @@ public class plotConfirmWindow {
     private void closeThisWindow()
     {
     	System.out.println("close tmp window");
-    	functions.Events.closePlotWindow();
+    	functions.Events.closePlotWindow(myIndex);
     	f.dispose();
     }
     

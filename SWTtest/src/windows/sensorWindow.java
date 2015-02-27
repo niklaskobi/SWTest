@@ -1006,9 +1006,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     {
                     	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
                     	areaMarked.put(mouse_plot, true);
-                    	//System.out.println("add area");
-                    	collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
-                    	functions.Events.handleMouseSelection(templatePlot);
+                    	//System.out.println("add area");                       
+                    	for (int i = 0; i < mouse_plot.getDatasetCount(); i++)
+                    	{
+                    		//collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
+                    		collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset(i));
+                    		functions.Events.handleMouseSelection(templatePlot, i);
+                    	}
                     }
                 }
             }
@@ -1319,7 +1323,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	slider.setEnabled(true);
     }
 
-        
+
     /**
      * hide or unhide (depending on previous state) a graph
      * @param br
@@ -1341,8 +1345,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     		hideUnhideAvgCtrl(br, 2);
     	}
     }
-    
-                   
+   
+
     /**
      * hide or show average control elements (depending on previous state)
      * @param br brick object
@@ -1446,6 +1450,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		Comparable comparable;
 		int indexOf;
 		ArrayList<MeasurementEntry> entries = new ArrayList<MeasurementEntry>();
+		int k = dataSet.getSeriesCount();
 		
 		for(int i=0;i<dataSet.getSeriesCount();i++)
 		{
