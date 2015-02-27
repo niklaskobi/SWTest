@@ -236,4 +236,34 @@ public class TemplatePlot {
 	    return str;
 	}
 	
+	
+	/**
+	 * verify if file on the given path is a valid template file
+	 * @param path
+	 * @return
+	 */
+	public static boolean isTemplateValid(String path)
+	{
+		Scanner sc = null;
+		try {
+			File f = new File(path);
+			sc = new Scanner(f);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			data.dialogs.fileFNFException(data.connectionData.storageFilePath);
+			return false;
+		}
+
+		String line = sc.nextLine();
+		String date = line;
+		line = sc.nextLine();														// skip 1st line for now
+		if (!entriesDescriptionLine.equals(line))									// check for the right data in file
+		{
+			data.dialogs.fileDataError(path);
+			sc.close();
+			return false;							
+		}
+		return true;
+	}
+
 }

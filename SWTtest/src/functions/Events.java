@@ -168,6 +168,20 @@ public class Events {
 			windowController.hideUnhideAvgControl(Brick.getBrick(connectionData.BrickList, UID), index);
 		}
 	}
+	
+	
+	/**
+	 * handle on/off of template control
+	 * @param UID	id String of the brick
+	 * @param index	index of the sensor (0,1...)
+	 * @param on	true = on
+	 */
+	public static void changeTmpltCntrl(String UID, int index, boolean on, String path)
+	{
+		Brick.checkCtrlTemplate(Brick.getBrick(connectionData.BrickList, UID), index, on);
+		Brick.setCtrlTmplPath(Brick.getBrick(connectionData.BrickList, UID), index, on, path);
+		windowController.changeTmplCntrl(Brick.getBrick(connectionData.BrickList, UID), index, on);
+	}
 
 	
 	/**

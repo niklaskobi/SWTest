@@ -104,8 +104,8 @@ import data.constants;
 public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	final static double warningPercentage 			= 100;	//
-	final static int 	sliderValuesNumber		 	= 20;	// how many x values are visible at the scroll bar
-	final static int	chartRangeSec				= 20;
+	final static int 	sliderValuesNumber		 	= 120;	// how many x values are visible at the scroll bar
+	final static int	chartRangeSec				= 120;
 
 	final static int 	maxValues		  			= 1000;	// max number of values which will be stored in object - measurement 
 	final static int 	maxCycles		  			= 10;	// max number of cycles which will ne taken into account computing  extrema and avergae values
@@ -1401,6 +1401,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	}    	    	
     }
 
+    
+    // TODO:
+    public static void changeTmplCntrl(Brick br, int index, boolean on)
+    {
+    	System.out.println("changeTmplCntrl");
+    }
+    
     
 	@Override
 	public void actionPerformed(ActionEvent e) {

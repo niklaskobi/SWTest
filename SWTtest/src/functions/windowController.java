@@ -74,6 +74,15 @@ public class windowController {
     	}
     }
         
+    
+    public static void changeTmplCntrl(Brick br, int index, boolean on)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		windows.sensorWindow.changeTmplCntrl(br,index, on);
+    	}    	
+    }
+    
     public static void openSettingsWindow()
     {
 		if (existsSettingWindow == false)
@@ -160,6 +169,8 @@ public class windowController {
 		if (existsSensorWindow == true) return true;
 		else return false;
 	}
+	
+	
 	
 	
 }

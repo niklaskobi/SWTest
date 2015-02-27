@@ -53,8 +53,8 @@ public class plotConfirmWindow {
     	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
     	chartPanel = createChart();
         //JFrame f = new JFrame(title);
-    	f = new JFrame(windowTitle);
-        f.setTitle(windowTitle);
+    	f = new JFrame(windowTitle+" ("+(index+1)+")");
+        f.setTitle(windowTitle+" ("+(index+1)+")");
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setLayout(new BorderLayout(0, 5));
         f.add(chartPanel, BorderLayout.CENTER);

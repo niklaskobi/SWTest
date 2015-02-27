@@ -1,7 +1,12 @@
 package windows;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -549,19 +554,17 @@ public class mainWindow {
 		//list settings for each sensor-----------------------------------------
 		for (i = 0; i<connectionData.presentedBrickList.size(); i++)
 		{			
-			Brick tmpBr = connectionData.presentedBrickList.get(i);
+			final Brick tmpBr = connectionData.presentedBrickList.get(i);
 			final Brick updBr = tmpBr;
 
 			if (tmpBr.deviceIdentifier == 227)
 			{
-				//settingRegionHeight = 4*settingRegionLineHeight+3*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight + settingRegionSeparateLineHeight;
-				settingRegionHeight = 7*settingRegionLineHeight+6*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight
+				settingRegionHeight = 9*settingRegionLineHeight+7*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight
 				+ settingRegionSeparateLineHeight+settingRegionSeparateHeight;
 			}
 			else
 			{
-				//settingRegionHeight = 3*settingRegionLineHeight+2*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight + settingRegionSeparateLineHeight;
-				settingRegionHeight = 6*settingRegionLineHeight+5*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight
+				settingRegionHeight = 8*settingRegionLineHeight+6*settingRegionBetweenLineHeight+2*settingRegionBorderLineHeight
 						+ settingRegionSeparateLineHeight+settingRegionSeparateHeight;
 			}
 			
@@ -1008,7 +1011,8 @@ public class mainWindow {
 				btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 				btnCheckButton.setText("control average");
 				btnCheckButton.setSelection(tmpBr.controlAverage);
-				btnCheckButton.addSelectionListener(new SelectionListener(){
+				btnCheckButton.addSelectionListener(new SelectionListener()
+				{
 					@Override
 					public void widgetSelected(SelectionEvent e) {						
 						averageControlChecked(tmpStr);
@@ -1371,6 +1375,127 @@ public class mainWindow {
 				lineNumber ++;
 				
 				
+				// 27.02.2015 -----------------------------------------------------------------------------------
+				//final String tmpStr = tmpBr.uid;
+				
+				final Label tmplPath1txt = new Label(group, SWT.NONE);						
+				tmplPath1txt.setText(Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
+				tmplPath1txt.setBounds(settingOffsetX,
+									settingRegionBorderLineHeight+settingRegionBetweenLineHeight*(lineNumber+2)+settingRegionSeparateHeight
+									+settingRegionLineHeight*lineNumber+heightSum, 									
+									width_one_half,
+								   settingRegionLineHeight+textFieldExtention);
+				tmplPath1txt.setEnabled(tmpBr.controlTemplate[0]);
+				tmplPath1txt.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+				
+				final Button btnCheckButtonTmpl = new Button(group, SWT.CHECK);
+				btnCheckButtonTmpl.setBounds(settingOffsetX, 
+										 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber+settingRegionSeparateHeight
+										 +settingRegionLineHeight*lineNumber+heightSum, 
+										 width_one_half, 
+										 settingRegionLineHeight);
+				btnCheckButtonTmpl.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+				btnCheckButtonTmpl.setText("template control");
+				btnCheckButtonTmpl.setSelection(tmpBr.controlTemplate[0]);
+				btnCheckButtonTmpl.addSelectionListener(new SelectionListener()
+				{
+					@Override
+					public void widgetSelected(SelectionEvent e) 
+					{						
+						if (tmpltCtrlCheck(tmpStr, 0) == true)
+						{
+							if (Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0].length() > 30)
+							{
+								// adjust text length
+								String tmp = Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0];
+								tmp = ".." + tmp.substring(tmp.length()-20, tmp.length());
+								tmplPath1txt.setText(tmp);
+							}
+							else
+							{
+								tmplPath1txt.setText(Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
+							}
+						}	
+						tmplPath1txt.setEnabled(tmpBr.controlTemplate[0]);
+						btnCheckButtonTmpl.setSelection(tmpBr.controlTemplate[0]);
+					}
+					@Override
+					public void widgetDefaultSelected(SelectionEvent e) {}
+				});
+												
+				
+				/*
+				txtL1min.addListener(SWT.FocusOut , new Listener() {
+				      public void handleEvent(Event event) {
+			    		  double perspectiveValue = 0;
+			    		  boolean update = true;
+				    	  try 
+				    	  {				 
+				    		  perspectiveValue = Double.parseDouble(txtL1min.getText());
+				    	  }
+				    	  catch (NumberFormatException e)
+				    	  {
+				    		  txtL1min.setText(Double.toString( Brick.getThresholdMin1(connectionData.BrickList, updBr.uid))); 
+				    		  update = false;
+				    	  }
+				    	  if (update == true)
+				    	  {
+				    		  updateTresholdMin1(updBr, perspectiveValue);
+				    		  System.out.println("new min value : "+perspectiveValue);
+				    	  }
+				        ;}});
+				txtL1min.addListener(SWT.Traverse , new Listener() {
+				      public void handleEvent(Event event) {
+				    	  if (event.detail == SWT.TRAVERSE_RETURN)
+				    	  {
+				    		  double perspectiveValue = 0;
+				    		  boolean update = true;
+					    	  try 
+					    	  {				 
+					    		  perspectiveValue = Double.parseDouble(txtL1min.getText());
+					    	  }
+					    	  catch (NumberFormatException e)
+					    	  {
+					    		  txtL1min.setText(Double.toString( Brick.getThresholdMin1(connectionData.BrickList, updBr.uid))); 
+					    		  update = false;
+					    	  }
+					    	  if (update == true)
+					    	  {
+					    		  updateTresholdMin1(updBr, perspectiveValue);
+					    		  System.out.println("new min value : "+perspectiveValue);
+					    	  }
+				    	  }
+				        ;}});
+				*/				
+
+				
+				if (tmpBr.deviceIdentifier == 227)
+				{											
+					Button btnCheckButtonTmpl2 = new Button(group, SWT.CHECK);
+					btnCheckButtonTmpl2.setBounds(settingOffsetX+settingRegionWidth/2, 
+											  settingRegionBorderLineHeight+settingRegionLineHeight*lineNumber+settingRegionSeparateHeight
+											  +settingRegionBetweenLineHeight*lineNumber+heightSum,  
+											  width_one_half, 
+											  settingRegionLineHeight);
+					btnCheckButtonTmpl2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+					btnCheckButtonTmpl2.setText("template control");
+					btnCheckButtonTmpl2.setSelection(tmpBr.controlAverage2);
+					btnCheckButtonTmpl2.addSelectionListener(new SelectionListener(){
+						@Override
+						public void widgetSelected(SelectionEvent e) 
+						{						
+							tmpltCtrlCheck(tmpStr,1);
+						}
+
+						@Override
+						public void widgetDefaultSelected(SelectionEvent e) {}
+					});		
+				}
+				lineNumber += 2;
+
+				// 27.02.2015 end----------------------------------------------------------------------------------
+
+				
 				// ------------------------------------------------------------------------------------------------				
 				
 				//lineNumber ++;												
@@ -1593,6 +1718,47 @@ public class mainWindow {
 		}
 	}	
 			
+	/**
+	 * handle change in checkbox for template control
+	 * @param UID
+	 * @param index
+	 * @return on
+	 */
+	public static boolean tmpltCtrlCheck(String UID, int index)
+	{		
+		if (Brick.getBrick(connectionData.BrickList,UID).controlTemplate[index] == false)
+		{
+			// open file dialog
+        	JFrame parentFrame = new JFrame();           	 
+        	JFileChooser fileChooser = new JFileChooser();
+        	FileNameExtensionFilter tmpfilter = new FileNameExtensionFilter("template files", objects.TemplatePlot.fileExtention);
+        	fileChooser.setFileFilter(tmpfilter);
+        	fileChooser.setDialogTitle("Specify a template file");           	 
+        	int userSelection = fileChooser.showOpenDialog(parentFrame);	 
+        	if (userSelection == JFileChooser.APPROVE_OPTION) 
+        	{
+        	    File fileToOpen = fileChooser.getSelectedFile();
+        	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
+        	    if (objects.TemplatePlot.isTemplateValid(fileToOpen.getAbsolutePath()))
+        	    {            	
+        			functions.Events.changeTmpltCntrl(UID, index, true, fileToOpen.getAbsolutePath());     			
+        			return true;        	    	
+        	    }
+        	    else 
+        	    {
+        	    	return false;
+        	    }
+        	}
+        	// end file dialog
+		}
+		else
+		{
+			functions.Events.changeTmpltCntrl(UID, index, false, "undefined");
+			return false;
+		}
+		return true;
+	}
+					
 	/**
 	 * update Brick item and the view in sensor window
 	 * @param UID UID of the Brick

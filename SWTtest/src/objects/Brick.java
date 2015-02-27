@@ -31,6 +31,8 @@ public class Brick {
 	public boolean checked3;
 	public boolean controlAverage;
 	public boolean controlAverage2;
+	public boolean[] controlTemplate = new boolean[2];
+	public String[] ctrlTmplPath = new String[2];
 	
 	public Brick()
 	{
@@ -60,6 +62,10 @@ public class Brick {
 		this.lastValue = 0;
 		this.controlAverage = true;
 		this.controlAverage2 = true;
+		this.controlTemplate[0] = false;
+		this.controlTemplate[1] = false;
+		this.ctrlTmplPath[0] = "undefined";
+		this.ctrlTmplPath[1] = "undefined";
 		
 		this.setAvg1high(1);
 		this.setAvg2high(1);
@@ -409,8 +415,7 @@ public class Brick {
 		}		
 	}	
 	
-	
-	
+		
 	/**
 	 * set the threoshold of the Brick, identified through given UID and Brick list
 	 * @param BrickList
@@ -559,9 +564,7 @@ public class Brick {
 		}
 		return false;
 	}
-	
-	
-	
+			
 	
 	/**
 	 * 
@@ -612,9 +615,7 @@ public class Brick {
 		return null;	
 	}
 	
-	
-	
-	
+			
 	/**
 	 * check when the given item was unchecked and vice-versa
 	 * @param b Brick item
@@ -652,6 +653,38 @@ public class Brick {
 			b.checked2 = true;
 		}
 	}
+	
+	/**
+	 * check or uncheck control by a template for a given bricks sensor 
+	 * @param b	brick object
+	 * @param index	index of the sensor
+	 * @param on true if control is allowd, false otherwise
+	 */
+	public static void checkCtrlTemplate(Brick b, int index, boolean on)
+	{
+		if (b != null)
+		{
+			b.controlTemplate[index] = on;
+		}
+	}
+	
+	
+	/**
+	 * set path of the template for current brick
+	 * @param b	brick object
+	 * @param index	sensor index
+	 * @param on	true = allow control
+	 * @param path	path of the file
+	 */
+	public static void setCtrlTmplPath(Brick b, int index, boolean on, String path)
+	{
+		if (b != null)
+		{
+			b.controlTemplate[index] = on;
+			b.ctrlTmplPath[index] = path;
+		}
+	}
+	
 	
 	
 	/**
@@ -704,8 +737,7 @@ public class Brick {
 		}
 	}
 		
-	
-	
+		
 	/**
 	 * check when the given item was unchecked and vice-versa
 	 * @param b Brick item
@@ -774,9 +806,7 @@ public class Brick {
 	public void setAvg2low(double avg2low) {
 		this.avg2low = avg2low;
 	}
-
-	
-		
+			
 }
 
 
