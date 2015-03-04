@@ -1385,7 +1385,7 @@ public class mainWindow {
 									+settingRegionLineHeight*lineNumber+heightSum, 									
 									width_one_half,
 								   settingRegionLineHeight+textFieldExtention);
-				tmplPath1txt.setEnabled(tmpBr.controlTemplate[0]);
+				tmplPath1txt.setEnabled(tmpBr.ctrlTmpl[0]);
 				tmplPath1txt.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 				
 				final Button btnCheckButtonTmpl = new Button(group, SWT.CHECK);
@@ -1396,7 +1396,7 @@ public class mainWindow {
 										 settingRegionLineHeight);
 				btnCheckButtonTmpl.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 				btnCheckButtonTmpl.setText("template control");
-				btnCheckButtonTmpl.setSelection(tmpBr.controlTemplate[0]);
+				btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);
 				btnCheckButtonTmpl.addSelectionListener(new SelectionListener()
 				{
 					@Override
@@ -1416,8 +1416,8 @@ public class mainWindow {
 								tmplPath1txt.setText(Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
 							}
 						}	
-						tmplPath1txt.setEnabled(tmpBr.controlTemplate[0]);
-						btnCheckButtonTmpl.setSelection(tmpBr.controlTemplate[0]);
+						tmplPath1txt.setEnabled(tmpBr.ctrlTmpl[0]);
+						btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);
 					}
 					@Override
 					public void widgetDefaultSelected(SelectionEvent e) {}
@@ -1726,7 +1726,7 @@ public class mainWindow {
 	 */
 	public static boolean tmpltCtrlCheck(String UID, int index)
 	{		
-		if (Brick.getBrick(connectionData.BrickList,UID).controlTemplate[index] == false)
+		if (Brick.getBrick(connectionData.BrickList,UID).ctrlTmpl[index] == false)
 		{
 			// open file dialog
         	JFrame parentFrame = new JFrame();           	 

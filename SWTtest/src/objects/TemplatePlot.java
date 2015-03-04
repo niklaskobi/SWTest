@@ -23,6 +23,8 @@ public class TemplatePlot {
 	public String dateStr = "";
 	public String fileName = "new plot";
 	public ArrayList <MeasurementEntry> allPoints;
+	
+	private int currentIndex = 0;
 		
 	
 	
@@ -42,8 +44,45 @@ public class TemplatePlot {
 	public TemplatePlot(ArrayList<MeasurementEntry> list)
 	{
 		this.allPoints = list;
+		normalizeTimestamps();
 	}
 	
+	
+	/**
+	 * 1st timetamp will become 0:00:00, 
+	 * all following times will become: 0:00:01, 0:00:02.... 
+	 * according to the time difference to the first timestamp in the given list
+	 * @param oldList list of all measurements objects
+	 * @return new list
+	 */
+	public void normalizeTimestamps()
+	{		
+		ArrayList<MeasurementEntry> newList = new ArrayList<MeasurementEntry>();
+		double offset = this.allPoints.get(0).value1;
+		for (int i=0; i<this.allPoints.size(); i++)
+		{
+			newList.add(new MeasurementEntry(this.allPoints.get(i).value1-offset, this.allPoints.get(i).value2));
+		}
+		this.allPoints = newList;
+	}
+	
+	/**
+	 * returns all values of this template plot in sequence.
+	 * returns a value corresponding the current index, and increments the current index.  
+	 * @return double value
+	 */
+	public MeasurementEntry getNextValue()
+	{
+		if (this.currentIndex >= this.allPoints.size())
+		{
+			this.currentIndex = 0;
+			return this.allPoints.get(currentIndex);
+		}
+		else
+		{
+			return this.allPoints.get(currentIndex++);
+		}		
+	}
 	
 	/**
 	 * adds a new point to the array

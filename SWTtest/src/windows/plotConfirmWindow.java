@@ -48,7 +48,8 @@ public class plotConfirmWindow {
 
     public plotConfirmWindow(TemplatePlot p, int index) {
     	this.myIndex = index;
-    	this.tPlot = p;
+    	this.tPlot=p;
+    	this.tPlot.normalizeTimestamps();
     	this.title = tPlot.fileName;
     	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
     	chartPanel = createChart();

@@ -31,8 +31,9 @@ public class Brick {
 	public boolean checked3;
 	public boolean controlAverage;
 	public boolean controlAverage2;
-	public boolean[] controlTemplate = new boolean[2];
+	public boolean[] ctrlTmpl = new boolean[2];
 	public String[] ctrlTmplPath = new String[2];
+	public TemplatePlot[] tmplPlot = new TemplatePlot[2];
 	
 	public Brick()
 	{
@@ -62,10 +63,13 @@ public class Brick {
 		this.lastValue = 0;
 		this.controlAverage = true;
 		this.controlAverage2 = true;
-		this.controlTemplate[0] = false;
-		this.controlTemplate[1] = false;
-		this.ctrlTmplPath[0] = "undefined";
-		this.ctrlTmplPath[1] = "undefined";
+		
+		for (int i=0; i<2;i++)
+		{
+			this.tmplPlot[i] = new TemplatePlot();
+			this.ctrlTmpl[i] = false;
+			this.ctrlTmplPath[i] = "undefined";
+		}
 		
 		this.setAvg1high(1);
 		this.setAvg2high(1);
@@ -664,7 +668,7 @@ public class Brick {
 	{
 		if (b != null)
 		{
-			b.controlTemplate[index] = on;
+			b.ctrlTmpl[index] = on;
 		}
 	}
 	
@@ -680,8 +684,9 @@ public class Brick {
 	{
 		if (b != null)
 		{
-			b.controlTemplate[index] = on;
+			b.ctrlTmpl[index] = on;
 			b.ctrlTmplPath[index] = path;
+			b.tmplPlot[index].readTemplateFromFile(path, true);
 		}
 	}
 	

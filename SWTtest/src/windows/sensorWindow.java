@@ -45,6 +45,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -87,6 +88,7 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
@@ -96,6 +98,8 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
+import org.jfree.util.ShapeUtilities;
+
 import data.connectionData;
 import data.constants;
 
@@ -124,6 +128,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     
     public static Map<String, TimeSeries> seriesMap = new HashMap<String, TimeSeries>();
     public static Map<String, TimeSeries> seriesMap2 = new HashMap<String, TimeSeries>();
+    public static Map<String, TimeSeries> seriesMap3 = new HashMap<String, TimeSeries>();
+    public static Map<String, TimeSeries> seriesMap4 = new HashMap<String, TimeSeries>();
     
     public static Map<String, NumberAxis> axisMap = new HashMap<String, NumberAxis>();
     public static Map<String, NumberAxis> axisMap2 = new HashMap<String, NumberAxis>();
@@ -166,6 +172,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     public static Map<String, ValueMarker> avrg2High = new HashMap<String, ValueMarker> ();
     public static Map<String, ValueMarker> avrg2Low  = new HashMap<String, ValueMarker> ();
     
+    public static Map<String, TimeSeriesCollection> tmplCollection1 = new HashMap<String, TimeSeriesCollection>();
+    public static Map<String, TimeSeriesCollection> tmplCollection2 = new HashMap<String, TimeSeriesCollection>();       
+    
     /**
      * map with int states of the plot
      * 0 = OK
@@ -192,6 +201,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		//create series
 		TimeSeries newSeries =  new TimeSeries("" + 0,Millisecond.class);
 		TimeSeries newSeries2 =  new TimeSeries("" + 0,Millisecond.class);
+		TimeSeries newSeries3 =  new TimeSeries("" + 0,Millisecond.class);
+		TimeSeries newSeries4 =  new TimeSeries("" + 0,Millisecond.class);
+		
 		Measurement m1 = new Measurement(maxValues, maxCycles, newBrick.uid, 0);
 		valuesMap.put(newBrick.uid, m1);
 		if (newBrick.checked3 == true)
@@ -212,11 +224,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		//create series map entry
 		seriesMap.put(newBrick.uid, newSeries);
 		seriesMap2.put(newBrick.uid, newSeries2);
+		seriesMap3.put(newBrick.uid, newSeries);
+		seriesMap4.put(newBrick.uid, newSeries2);
+
 		
 		//create collection map entry
 		seriesCollectionMap.put(newBrick.uid, new TimeSeriesCollection(newSeries));
 		seriesCollectionMap2.put(newBrick.uid, new TimeSeriesCollection(newSeries2));
-				
+		tmplCollection1.put(newBrick.uid, new TimeSeriesCollection(newSeries3));
+		tmplCollection2.put(newBrick.uid, new TimeSeriesCollection(newSeries4));
+		
 		// create plot map entry, special case for current/voltage brick, since 
 		// it has 2 parallel measurements and therefore 2 graphs must be treated
 		XYPlot tmpSubPlot;	
@@ -390,6 +407,31 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			plotMap.put(newBrick.uid, tmpSubPlot);	
 			axisMap2.put(newBrick.uid, secondaryAxis);				
 		}
+		
+		// =============================================================================================
+		// 04.03.2015
+		// create the 1st template graph
+		if (newBrick.ctrlTmpl[0] == true)
+		{			
+			tmpSubPlot.setDataset(2, tmplCollection1.get(newBrick.uid));
+			// create and store renderer
+			XYItemRenderer renderer2 = new XYLineAndShapeRenderer();
+			renderer2 = tmpSubPlot.getRenderer();
+			//renderer2.setSeriesPaint(0, Color.GREEN);
+			renderer2.setSeriesStroke( 0, new BasicStroke( 3 ) );
+			//line = dashes:
+			Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
+			float dash[] = {5.0f};
+			renderer2.setSeriesStroke( 0, new BasicStroke(3,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+			renderer2.setSeriesShape(0, cross);
+			tmpSubPlot.setRenderer(2, renderer2);
+			//rendererMap.put(newBrick.uid, renderer1);
+			plotMap.put(newBrick.uid, tmpSubPlot);
+			tmpSubPlot.mapDatasetToRangeAxis(1, 0);
+		}
+		// =============================================================================================
+		// 04.03.2015
+
 		
 		// 1st graph markers--------------------------------------------------------------------------------------------------
 		//create min1 critical map value
@@ -938,7 +980,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 * @author kv1
 	 *
 	 */
-	private final static class  MouseMarker extends MouseAdapter{
+	private final static class MouseMarker extends MouseAdapter{
         private Marker marker;
         private Double markerStart[] = new Double[2];
         private Double markerEnd[] = new Double[2];
@@ -1211,6 +1253,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     }
     
     
+    public void addTmplValue(String uid, Millisecond ms )
+    {
+    	//add next value to template plot 
+    	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && (tmplCollection1.containsKey(uid)))
+    	{
+    		double value = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value2; 
+    		double dtime = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value1;
+    		Date m = new java.sql.Date((long) dtime);
+    		Millisecond mstmp = new Millisecond(m);
+    		//tmplCollection1.get(uid).getSeries(0).addOrUpdate(ms, value);
+    		tmplCollection1.get(uid).getSeries(0).addOrUpdate(mstmp, value);
+    	}    	
+    }
+        
+    
     /**
      * add a value to the main field of the sensor 
      * @param sensorUID
@@ -1222,8 +1279,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	
 		//if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).add(new Millisecond(), value);
     	Millisecond ms = new Millisecond();
-    	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	
+    	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
     	
+    	//add next value to template plot
+    	addTmplValue(sensorUID, ms);
     	
     	// add timestamp to slider 
     	sliderData.addMS(ms);
@@ -1501,7 +1560,30 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 	
-	
+	/*
+    static void addFill(Plot plot) {
+        
+        XYSeries lowerLimitSeries = ((XYSeriesCollection) (plot.getDataset())).getSeries(1);
+        XYSeriesCollection fillSet = new XYSeriesCollection();
+        double lowerBound = plot.getRangeAxis().getLowerBound();
+        fillSet.addSeries(lowerLimitSeries);
+        fillSet.addSeries(createLowerFillSeries(lowerLimitSeries, lowerBound));
+        plot.setDataset(1, fillSet);
+        Paint fillPaint = Color.GREEN;
+        XYDifferenceRenderer fillRenderer = new XYDifferenceRenderer(fillPaint, fillPaint, false);
+        fillRenderer.setSeriesStroke(0, new BasicStroke(0)); //do not show
+        fillRenderer.setSeriesStroke(1, new BasicStroke(0)); //do not show
+        plot.setRenderer(1, fillRenderer);
+        ...
+     }
+
+     static XYSeries createLowerFillSeries(XYSeries lowerLimitSeries, double lowerLimit) {
+        int size = lowerLimitSeries.getItems().size();
+        XYSeries res = new XYSeries("lowerFillSeries");
+        for (int i = 0; i < size; i++) res.add(new XYDataItem(lowerLimitSeries.getX(i), lowerLimit));
+        return res;
+     }
+	*/
 
 }
 
