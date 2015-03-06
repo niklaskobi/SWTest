@@ -111,7 +111,7 @@ public class connection {
 	{
 		System.out.println("connection state: "+getConnectionState());
 		System.out.println("_________________________connecting");			
-		ipcon.connect(host, port);  // Connect to Brickd
+		ipcon.connect(host, port);
 		ipcon.enumerate();
 		System.out.println("connection state: "+getConnectionState());
 		return getConnectionState();
@@ -130,12 +130,12 @@ public class connection {
 			{
 				stopIlluminancelistener(tmpSubBrick.uid);
 			}
-				// voltage listener
+			// voltage listener
 			if (tmpSubBrick.deviceIdentifier == 227 && tmpSubBrick.checked2)
 			{
 				stopVoltagelistener(tmpSubBrick.uid);
 			}
-				// ampere listener 
+			// ampere listener 
 			if (tmpSubBrick.deviceIdentifier == 227 && tmpSubBrick.checked3)
 			{					
 				stopAmperelistener(tmpSubBrick.uid);
@@ -143,7 +143,6 @@ public class connection {
 		}
 	}
 	
-
 
 	public static void startAllSensors() throws TimeoutException, NotConnectedException
 	{
@@ -221,18 +220,15 @@ public class connection {
 			public void run()
 			{    
 				// add enumerate listener
-				ipcon.addEnumerateListener(enumListener);
-				
+				ipcon.addEnumerateListener(enumListener);				
 				//add disconnect listener
 				ipcon.addDisconnectedListener(disconnectedListener);
-
 				//add connect listener
 				ipcon.addConnectedListener(connectedListener);				
 		 }});	     	    		
 	}
 	
-	
-	
+		
 	/**
 	 * stop listener with the given UID
 	 * @param UID	uid of the sensor
@@ -243,13 +239,11 @@ public class connection {
 		// find out the type of the sensor
 		int sensorType = Brick.getBrick(connectionData.BrickList, UID).deviceIdentifier;
 		Brick br = Brick.getBrick(connectionData.BrickList, UID);
-
 		// if its ambient light sensor
 		if (sensorType == data.constants.brickIds.BRICK_AMLIGHT.getId())
 		{
 			stopIlluminancelistener(UID);
 		}
-		
 		// if it is voltage/ampere sensor
 		if (sensorType == data.constants.brickIds.BRICK_VOLTAGE.getId())
 		{
@@ -258,8 +252,7 @@ public class connection {
 		}		
 	}
 	
-	
-	
+		
 	/**
 	 * stop listener with the given UID
 	 * @param UID	uid of the sensor
@@ -272,13 +265,11 @@ public class connection {
 		// find out the type of the sensor
 		int sensorType = Brick.getBrick(connectionData.BrickList, UID).deviceIdentifier;
 		Brick br = Brick.getBrick(connectionData.BrickList, UID);
-
 		// if its ambient light sensor
 		if (sensorType == data.constants.brickIds.BRICK_AMLIGHT.getId())
 		{
 			startIlluminanceListener(UID);
-		}
-		
+		}		
 		// if it is voltage/ampere sensor
 		if (sensorType == data.constants.brickIds.BRICK_VOLTAGE.getId())
 		{
@@ -296,7 +287,6 @@ public class connection {
 		try {
 			al.setIlluminanceCallbackPeriod(0);
 		} catch (TimeoutException | NotConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -310,8 +300,6 @@ public class connection {
 		try {
 			vc.setVoltageCallbackPeriod(0);
 		} catch (TimeoutException | NotConnectedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
 			System.out.println("nothing to stop");
 		}
 	}	
@@ -325,8 +313,6 @@ public class connection {
 		try {
 			vc.setCurrentCallbackPeriod(0);
 		} catch (TimeoutException | NotConnectedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
 			System.out.println("nothing to stop");
 		}
 	}

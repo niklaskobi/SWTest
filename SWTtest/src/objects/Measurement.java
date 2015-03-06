@@ -40,7 +40,7 @@ public class Measurement {
 	
 	
 	/**
-	 * add a value
+	 * add a new value
 	 * @param value
 	 */
 	@SuppressWarnings("unchecked")
@@ -49,26 +49,9 @@ public class Measurement {
 		allValues.add(value);
 		valuesPerLastCycle++;
 				
-		/*
-		// check if it is a local max or min
-		if ((value < lastValue) && (ascending == true))
-		{
-			addMax(lastValue);
-			ascending = false;
-			cyclesCnt++;
-			valuesCnt.add(valuesPerLastCycle);
-			valuesPerLastCycle = 0;			
-		}
-		if ((value > lastValue) && (ascending == false))
-		{
-			addMin(lastValue);
-			ascending = true;
-		}
-		*/
-		
-		// too complex, lets try it easier
 		// add a new value to the last values array  
 		updateLastValueArray(value);
+		
 		// check for extrema
 		if (detectExtrema()==1)
 		{
@@ -77,10 +60,8 @@ public class Measurement {
 			valuesPerLastCycle = 0;						
 		}
 		else if (detectExtrema() == -1) addMin(lastValues[1]);
-		
-		
-		updateAverage();
-		
+				
+		updateAverage();		
 	}
 
 	
@@ -189,13 +170,12 @@ public class Measurement {
 		double sum = 0;
 		double avg = 0;
 		
-		//get entity of values stored in last n cycles
+		// get entity of values stored in last n cycles
 		for(Iterator<Integer> iterator = valuesCnt.iterator(); iterator.hasNext();)
 		{
 			cnt += (int)iterator.next();
 		}		
 		if (cnt < (allValues.size()-1))		
-		//if (cnt > maxValuesNumber)
 		{
 			// we need less values than we have stored
 			// get sum of last values
@@ -205,11 +185,8 @@ public class Measurement {
 				if (i>(allValues.size()-cnt))
 					{					
 					sum += (double)iterator.next();
-					//System.out.println("i="+i+", size = "+allValues.size()+", cnt="+cnt);
-					}
-				//if (i>(maxValuesNumber-cnt)) sum += (double)iterator.next();				
+					}				
 				else iterator.next();
-				// TODO: delete after test:
 				if (sum > Double.MAX_VALUE - 1000) System.out.println("SUM is too big!!");
 			}
 			// get average
@@ -223,48 +200,14 @@ public class Measurement {
 			{
 				i++;
 				sum += (double)iterator.next();
-				// TODO: delete after test:
 				if (sum > Double.MAX_VALUE - 1000) System.out.println("SUM is too big!!");
 			}
 			// get average
 			avg = sum / i;			
 		}
-		/*
-		// buffer are not complete yet, so build a sum over all available values
-		// get sum of last values
-		for(Iterator<Double> iterator = allValues.iterator(); iterator.hasNext();)
-		{
-			i++;
-			sum += (double)iterator.next();
-			// TODO: delete after test:
-			if (sum > Double.MAX_VALUE - 1000) System.out.println("SUM is too big!!");
-		}
-		*/
-
 	
 		// call update average event
 		functions.Events.updateAverage(uid, avg, this.index);
-
-
-		/*
-		//no.... too complex, we just compute average value over all extrema
-		// get sum of minima values
-		for(Iterator<Double> iterator = minimaBuffer.iterator(); iterator.hasNext();)
-		{
-			sum += iterator.next();
-		}
-		
-		// add sum of minima values
-		for(Iterator<Double> iterator = maximaBuffer.iterator(); iterator.hasNext();)
-		{
-			sum += iterator.next();
-		}
-		// devide by the amount of values 
-		sum = sum / (maximaBuffer.size()+minimaBuffer.size());
-		
-		// call update average event
-		functions.Events.updateAverage(uid, sum, this.index);
-		*/		
 	}
 	
 	/**

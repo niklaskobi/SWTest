@@ -87,9 +87,6 @@ public class windowController {
     {
 		if (existsSettingWindow == false)
 		{
-			//sWin = new DualAxisDemo2("Settings");
-			//sWin.pack();
-			//sWin.setVisible(true);
 			existsSettingWindow = true;
 		}		
     }

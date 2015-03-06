@@ -124,7 +124,6 @@ public class file {
 		 
 			if (!file.exists()) 
 			{
-				//file.createNewFile();
 				data.dialogs.fileFNFException(filePath);
 				functions.Events.forbidFileStorage();
 				return;

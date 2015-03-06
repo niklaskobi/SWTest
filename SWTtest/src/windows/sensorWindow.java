@@ -44,6 +44,8 @@ package windows;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -62,9 +64,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JViewport;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -130,7 +138,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     public static Map<String, TimeSeries> seriesMap2 = new HashMap<String, TimeSeries>();
     public static Map<String, TimeSeries> seriesMap3 = new HashMap<String, TimeSeries>();
     public static Map<String, TimeSeries> seriesMap4 = new HashMap<String, TimeSeries>();
-    
+    public static Map<String, TimeSeries> seriesMap5 = new HashMap<String, TimeSeries>();
+    public static Map<String, TimeSeries> seriesMap6 = new HashMap<String, TimeSeries>();
+
     public static Map<String, NumberAxis> axisMap = new HashMap<String, NumberAxis>();
     public static Map<String, NumberAxis> axisMap2 = new HashMap<String, NumberAxis>();
     
@@ -172,8 +182,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     public static Map<String, ValueMarker> avrg2High = new HashMap<String, ValueMarker> ();
     public static Map<String, ValueMarker> avrg2Low  = new HashMap<String, ValueMarker> ();
     
-    public static Map<String, TimeSeriesCollection> tmplCollection1 = new HashMap<String, TimeSeriesCollection>();
-    public static Map<String, TimeSeriesCollection> tmplCollection2 = new HashMap<String, TimeSeriesCollection>();       
+    public static Map<String, TimeSeriesCollection> tmplCollection1_1 = new HashMap<String, TimeSeriesCollection>();
+    public static Map<String, TimeSeriesCollection> tmplCollection1_2 = new HashMap<String, TimeSeriesCollection>();
+    public static Map<String, TimeSeriesCollection> tmplCollection2_1 = new HashMap<String, TimeSeriesCollection>();       
+    public static Map<String, TimeSeriesCollection> tmplCollection2_2 = new HashMap<String, TimeSeriesCollection>();
     
     /**
      * map with int states of the plot
@@ -203,6 +215,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		TimeSeries newSeries2 =  new TimeSeries("" + 0,Millisecond.class);
 		TimeSeries newSeries3 =  new TimeSeries("" + 0,Millisecond.class);
 		TimeSeries newSeries4 =  new TimeSeries("" + 0,Millisecond.class);
+		TimeSeries newSeries5 =  new TimeSeries("" + 0,Millisecond.class);
+		TimeSeries newSeries6 =  new TimeSeries("" + 0,Millisecond.class);
 		
 		Measurement m1 = new Measurement(maxValues, maxCycles, newBrick.uid, 0);
 		valuesMap.put(newBrick.uid, m1);
@@ -224,15 +238,18 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		//create series map entry
 		seriesMap.put(newBrick.uid, newSeries);
 		seriesMap2.put(newBrick.uid, newSeries2);
-		seriesMap3.put(newBrick.uid, newSeries);
-		seriesMap4.put(newBrick.uid, newSeries2);
-
+		seriesMap3.put(newBrick.uid, newSeries3);
+		seriesMap4.put(newBrick.uid, newSeries4);
+		seriesMap5.put(newBrick.uid, newSeries3);
+		seriesMap6.put(newBrick.uid, newSeries4);
 		
 		//create collection map entry
 		seriesCollectionMap.put(newBrick.uid, new TimeSeriesCollection(newSeries));
 		seriesCollectionMap2.put(newBrick.uid, new TimeSeriesCollection(newSeries2));
-		tmplCollection1.put(newBrick.uid, new TimeSeriesCollection(newSeries3));
-		tmplCollection2.put(newBrick.uid, new TimeSeriesCollection(newSeries4));
+		tmplCollection1_1.put(newBrick.uid, new TimeSeriesCollection(newSeries3));
+		tmplCollection1_2.put(newBrick.uid, new TimeSeriesCollection(newSeries4));
+		tmplCollection2_1.put(newBrick.uid, new TimeSeriesCollection(newSeries5));
+		tmplCollection2_2.put(newBrick.uid, new TimeSeriesCollection(newSeries6));
 		
 		// create plot map entry, special case for current/voltage brick, since 
 		// it has 2 parallel measurements and therefore 2 graphs must be treated
@@ -409,29 +426,39 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 		
 		// =============================================================================================
-		// 04.03.2015
-		// create the 1st template graph
+		// create the 1st template graph (upper)
 		if (newBrick.ctrlTmpl[0] == true)
 		{			
-			tmpSubPlot.setDataset(2, tmplCollection1.get(newBrick.uid));
-			// create and store renderer
-			XYItemRenderer renderer2 = new XYLineAndShapeRenderer();
-			renderer2 = tmpSubPlot.getRenderer();
-			//renderer2.setSeriesPaint(0, Color.GREEN);
-			renderer2.setSeriesStroke( 0, new BasicStroke( 3 ) );
+			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
+			// create and store renderer			
+			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
+			//renderer3 = tmpSubPlot.getRenderer();
+			renderer3.setSeriesPaint(0, Color.GREEN);
+			//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 			//line = dashes:
-			Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
+			//Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
 			float dash[] = {5.0f};
-			renderer2.setSeriesStroke( 0, new BasicStroke(3,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
-			renderer2.setSeriesShape(0, cross);
-			tmpSubPlot.setRenderer(2, renderer2);
+			//renderer3.setSeriesStroke( 0, new BasicStroke(1,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, dash, 0.0f);
+			renderer3.setSeriesStroke(0, stroke);
+			//renderer3.setSeriesStroke( 0, new BasicStroke(1));
+			//renderer3.setSeriesShape(0, cross);
+			tmpSubPlot.setRenderer(2, renderer3);
 			//rendererMap.put(newBrick.uid, renderer1);
-			plotMap.put(newBrick.uid, tmpSubPlot);
-			tmpSubPlot.mapDatasetToRangeAxis(1, 0);
+			//plotMap.put(newBrick.uid, tmpSubPlot);
+			//tmpSubPlot.mapDatasetToRangeAxis(1, 0);
+			
+			//2nd template graph (lower)
+			tmpSubPlot.setDataset(3, tmplCollection1_2.get(newBrick.uid));
+			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
+			renderer4.setSeriesPaint(0, Color.GREEN);
+			renderer4.setSeriesStroke(0, stroke);
+			tmpSubPlot.setRenderer(3, renderer4);
 		}
 		// =============================================================================================
-		// 04.03.2015
 
+	
+		
 		
 		// 1st graph markers--------------------------------------------------------------------------------------------------
 		//create min1 critical map value
@@ -853,7 +880,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		try {
 			font1 = Font.createFont(Font.TRUETYPE_FONT, new File("U:/workspace/SWTtest/fonts/roboto/Roboto-Black.ttf"));
 		} catch (FontFormatException | IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         StandardChartTheme chartTheme = new StandardChartTheme("robotTheme");
@@ -883,9 +909,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	       
         final JFreeChart chart = new JFreeChart("", plot);
-        chart.setBorderPaint(Color.black);
-        chart.setBorderVisible(true);
-        chart.setBackgroundPaint(Color.white);   
+        //chart.setBorderPaint(Color.black);
+        //chart.setBorderVisible(true);
+        //chart.setBackgroundPaint(Color.white);   
         chart.removeLegend();
         
         plot.setBackgroundPaint(Color.lightGray);
@@ -898,27 +924,55 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         axis.setFixedAutoRange(chartRangeSec*1000);  			// chart range seconds
         axis.setLabelFont(customFonts.get("axisLabelFont"));
         axis.setTickLabelFont(customFonts.get("axisValueFont"));
-                       
+
         final JPanel content = new JPanel(new BorderLayout());
+        JScrollPane scrollPane = new JScrollPane();
+        JViewport viewport = scrollPane.getViewport();
+        viewport.setView(content);
 
         final ChartPanel chartPanel = new ChartPanel(chart);
-        content.add(chartPanel);        
+        content.add(chartPanel, BorderLayout.NORTH);        
         //content.add(getScrollBar(xAxe), BorderLayout.SOUTH);                     
-                
+
         // disable zoom
         chartPanel.setRangeZoomable(false);
         chartPanel.setDomainZoomable(false);
-        
+
         // mouse selection
         chartPanel.addMouseListener(new MouseMarker(chartPanel));        
-        
-        
+
+
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 470));
-        chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        setContentPane(content); 
+        //chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        //setContentPane(content); 
         
         
-        //scroll bar
+        // ===================================================
+        // buttons
+        final JPanel buttonPanel = new JPanel(new FlowLayout());
+        
+       	for (int i=0; i<connectionData.presentedBrickList.size();i++)
+       	{
+			Brick tmpBrick = connectionData.presentedBrickList.get(i);
+			for (int i1 = 0; i1<2; i1++)
+			{
+				if (tmpBrick.ctrlTmpl[i1] == true)
+				{
+		            final JButton button = new JButton(tmpBrick.uid + " start");
+		            button.setActionCommand("ADD_DATA_" + i);
+		            button.addActionListener(this);
+		            buttonPanel.add(button);					
+				}
+			}
+        }
+        content.add(buttonPanel, BorderLayout.SOUTH);
+        // ===================================================
+        
+        
+        // ===================================================
+        // scroll bar
+        final JPanel sliderPanel = new JPanel(new FlowLayout());
+        
         slider = new JSlider(1, sliderValuesNumber);
         slider.setValue(sliderValuesNumber);
         slider.setEnabled(false);
@@ -939,30 +993,55 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             	}               
             }
         });
-        //chartPanel.add(slider);
+        sliderPanel.add(slider);        
+        //chartPanel.add(slider);               
         /*
         final Panel chartPanel2 = new Panel();
         chartPanel2.add(slider);
         content.add(chartPanel2, BorderLayout.SOUTH);
         */
-        content.add(slider, BorderLayout.SOUTH);
+        content.add(sliderPanel, BorderLayout.CENTER);        
+        // ===================================================        
         
         
+        // ===================================================
+        // scrolling
+        /*
+        String[] data = {"one", "two", "three", "four",
+                         "five", "six", "seven", "eight",
+                         "nine", "ten"};
+        JList list = new JList(data);
+
+        // give the list some scrollbars.
+        // the horizontal (bottom) scrollbar will only appear
+        // when the screen is too wide.  The vertical
+        // scrollbar is always present, but disabled if the
+        // list is small.
+        JScrollPane jsp = new JScrollPane(list,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        // add the JScrollPane (not the list) to the window.
+        getContentPane().add(jsp, BorderLayout.CENTER);
+        */
+        // ==================================================
+                
+        setContentPane(content);
+        
+        /*
         this.addComponentListener(new java.awt.event.ComponentAdapter()
         {
         	public void componentResized(java.awt.event.ComponentEvent e)
         	{
         		chartPanel.setMaximumDrawWidth((int)e.getComponent().getSize().getWidth());
-        		chartPanel.setMaximumDrawHeight((int)e.getComponent().getSize().getHeight());
-        		/*
-        		chartPanel.setPreferredSize(e.getComponent().getPreferredSize());
-        		chartPanel.setSize(e.getComponent().getSize());
-        		chartPanel.setLocation(0,0);
-        		*/        
+        		chartPanel.setMaximumDrawHeight((int)e.getComponent().getSize().getHeight());        		
+        		//chartPanel.setPreferredSize(e.getComponent().getPreferredSize());
+        		//chartPanel.setSize(e.getComponent().getSize());
+        		//chartPanel.setLocation(0,0);        
         	}
         });
-        
-                    
+        */
+                 
         
     	this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -1099,35 +1178,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             System.out.print("marker = "+functions.Common.doubleToTime(markerStart[0]));
             System.out.println("value = "+markerStart[1]);
             
-            //tmp_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
             this.mouse_plot = plot.findSubplot(panel.getChartRenderingInfo().getPlotInfo(), panel.getMousePosition());
             
-            // begin 19.02.2015
-            XYDataset xydataset= mouse_plot.getDataset();
             double d = mouse_plot.getDomainCrosshairValue(); //get crosshair X value
             double r = mouse_plot.getRangeCrosshairValue();  //get crosshair y value
             System.out.println(""+functions.Common.doubleToTime(d)+",r = "+r);
-            //System.out.println(""+ reportDate+", r = "+r);
-            /*
-            SeriesAndItemIndex index=getItemIndex(d,r,xydataset);
-            if(index != null){
-                System.out.println(index.toString());
-            }
-            */
-            // end 19.02.2015
-            /*
-            Thread thread = new Thread(){
-                public void run(){
-                  System.out.println("Thread Running");
-                  marker = new IntervalMarker(markerStart, markerEnd);
-//                  markerMap.put(mouse_plot, marker);
-                  marker.setPaint(new Color(0xDD, 0xFF, 0xDD, 0x80));
-                  marker.setAlpha(0.5f);
-                  if (mouse_plot != null) mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
-                }
-            };            
-            thread.start();
-            */              
         }
         
         
@@ -1255,16 +1310,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     
     public void addTmplValue(String uid, Millisecond ms )
     {
+    	int offset = 10;
     	//add next value to template plot 
-    	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && (tmplCollection1.containsKey(uid)))
+    	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && (tmplCollection1_1.containsKey(uid)))
     	{
-    		double value = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value2; 
+    		double value1 = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value2 - offset; 
+    		double value2 = value1 + 2*offset;
     		double dtime = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value1;
     		Date m = new java.sql.Date((long) dtime);
     		Millisecond mstmp = new Millisecond(m);
-    		//tmplCollection1.get(uid).getSeries(0).addOrUpdate(ms, value);
-    		tmplCollection1.get(uid).getSeries(0).addOrUpdate(mstmp, value);
-    	}    	
+    		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+    		//tmplCollection1.get(uid).getSeries(0).addOrUpdate(mstmp, value);
+    		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
+    	}    	    	
     }
         
     

@@ -143,7 +143,6 @@ public class Events {
 			try {
 				connection.startListener(UID);
 			} catch (TimeoutException | NotConnectedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 	}
@@ -238,8 +237,6 @@ public class Events {
 			connection.stopAllSensors();
 		} catch (AlreadyConnectedException | NotConnectedException
 				| IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 			System.out.println("catched exception");
 		}
 		connectionData.removeAllBricks();

@@ -34,7 +34,6 @@ public class Slider {
      */
     public Millisecond getIndexMilliseconds(int index)
     {
-    	//int inversed_index = sliderSteps - index;
     	int inversed_index = index;
     	System.out.println("inversed index = "+inversed_index);
     	if (arraySize>=inversed_index)
@@ -66,8 +65,7 @@ public class Slider {
 		return null;
     }
     
-	
-	
+		
     /**
      * add a new Millisecond to the array
      * @param m Millisecond
@@ -76,13 +74,13 @@ public class Slider {
     {
     	sliderBuffer.add(m);
     	arraySize++;
-      	//activate slider
+      	// activate slider
         if ((arraySize>sliderSteps*2) && (sliderActive == false))
         {
         	functions.Events.activateSliderSensorWindow();
         	sliderActive = true;
         }
-}
+    }
     
     
     /**
@@ -106,7 +104,5 @@ public class Slider {
     	{
     		lastMSarray[i] = null;
     	}   	
-    }
-
-	
+    }	
 }

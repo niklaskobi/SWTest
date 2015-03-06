@@ -20,14 +20,7 @@ public class constants {
 	
 	public static Map<Integer, Double> brickTresholdDef = new HashMap<Integer, Double> ();
 	public static Map<Integer, Integer> brickSensorNumber = new HashMap<Integer, Integer> ();
-	
-	/*
-	public static Map<Integer, Quartet<String, String, Double, Double> > brickIdMap2 = 
-				new HashMap<Integer, Quartet<String, String, Double, Double>>();
-	*/
-	
-	//inititalize brickId map	
-	
+		
 	public enum brickIds
 	{
 		// add new brick ID's here---------------------

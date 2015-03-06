@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -16,7 +15,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import objects.MeasurementEntry;
 import objects.TemplatePlot;
 
 import org.jfree.chart.ChartFactory;
@@ -132,12 +130,11 @@ public class plotConfirmWindow {
     
     
 
-    private JComboBox createTrace() {
-        final JComboBox trace = new JComboBox();
+    private JComboBox<String> createTrace() {
+        final JComboBox<String> trace = new JComboBox<String>();
         final String[] traceCmds = {"Disable Trace", "Enable Trace"};
-        trace.setModel(new DefaultComboBoxModel(traceCmds));
+        trace.setModel(new DefaultComboBoxModel<String>(traceCmds));
         trace.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (traceCmds[0].equals(trace.getSelectedItem())) {
@@ -154,10 +151,10 @@ public class plotConfirmWindow {
         return trace;
     }
 
-    private JComboBox createDate() {
-        final JComboBox date = new JComboBox();
+    private JComboBox<String> createDate() {
+        final JComboBox<String> date = new JComboBox<String>();
         final String[] dateCmds = {"Horizontal Dates", "Vertical Dates"};
-        date.setModel(new DefaultComboBoxModel(dateCmds));
+        date.setModel(new DefaultComboBoxModel<String>(dateCmds));
         date.addActionListener(new ActionListener() {
 
             @Override
@@ -276,11 +273,6 @@ public class plotConfirmWindow {
         	series.addOrUpdate(new Second(d), tPlot.allPoints.get(i).value2);
         }
         return series;
-    }
-
-    private void refreshChart() 
-    {
-    	chartPanel.getChart().getXYPlot().setDataset(chartPanel.getChart().getXYPlot().getDataset());
     }
 
     

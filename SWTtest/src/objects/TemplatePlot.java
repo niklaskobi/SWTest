@@ -25,8 +25,7 @@ public class TemplatePlot {
 	public ArrayList <MeasurementEntry> allPoints;
 	
 	private int currentIndex = 0;
-		
-	
+			
 	
 	/**
 	 * constructor
@@ -66,6 +65,7 @@ public class TemplatePlot {
 		this.allPoints = newList;
 	}
 	
+	
 	/**
 	 * returns all values of this template plot in sequence.
 	 * returns a value corresponding the current index, and increments the current index.  
@@ -83,6 +83,7 @@ public class TemplatePlot {
 			return this.allPoints.get(currentIndex++);
 		}		
 	}
+	
 	
 	/**
 	 * adds a new point to the array
@@ -126,8 +127,6 @@ public class TemplatePlot {
 			File file = new File(filePath);
 			if (!file.exists()) 
 			{
-				//data.dialogs.fileIOException(filePath);
-				//return false;
 				Path path = Paths.get(filePath);
 		        Files.createDirectories(path.getParent());
 		        try {
@@ -156,8 +155,7 @@ public class TemplatePlot {
 		}		
 	}
 	
-	
-	
+		
 	/**
 	 * structure of the future file:
 	 * 
@@ -180,9 +178,6 @@ public class TemplatePlot {
 		
 		this.dateStr = dateFormat.format(date);
 		
-		//entry = br.uid+";";															// UID
-		//entry += data.constants.brickIdMap.get(br.deviceIdentifier)+";";				// device type
-		//entry += br.connectedUid+";";													// father UID
 		entry += dateFormat.format(date);												// date+time
 		entry += "\n";
 		entry += entriesDescriptionLine + "\n";
@@ -211,7 +206,6 @@ public class TemplatePlot {
 			File f = new File(path);
 			sc = new Scanner(f);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			data.dialogs.fileFNFException(data.connectionData.storageFilePath);
 			return false;
 		}
@@ -288,13 +282,11 @@ public class TemplatePlot {
 			File f = new File(path);
 			sc = new Scanner(f);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			data.dialogs.fileFNFException(data.connectionData.storageFilePath);
 			return false;
 		}
 
 		String line = sc.nextLine();
-		String date = line;
 		line = sc.nextLine();														// skip 1st line for now
 		if (!entriesDescriptionLine.equals(line))									// check for the right data in file
 		{
@@ -302,6 +294,7 @@ public class TemplatePlot {
 			sc.close();
 			return false;							
 		}
+		sc.close();
 		return true;
 	}
 
