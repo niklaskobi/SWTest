@@ -99,6 +99,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -125,6 +126,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static boolean sliderUpdate 				= false;// true means we have moved the slider at least once, but now it is on its start position
 															// which means we want to auto-update the charts
 	
+	final static String buttonComAddBtn				= "ADD_DATA_";
 
 	Slider sliderData = new Slider(sliderValuesNumber);
 	static JSlider slider;
@@ -186,6 +188,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     public static Map<String, TimeSeriesCollection> tmplCollection1_2 = new HashMap<String, TimeSeriesCollection>();
     public static Map<String, TimeSeriesCollection> tmplCollection2_1 = new HashMap<String, TimeSeriesCollection>();       
     public static Map<String, TimeSeriesCollection> tmplCollection2_2 = new HashMap<String, TimeSeriesCollection>();
+    
+    public static Map<String, Long> tmplStartMs = new HashMap<String, Long>();
+    public static Map<String, Integer> tmplindex = new HashMap<String, Integer>();
+    public static Map<String, Integer> tmplLapCnt = new HashMap<String, Integer>();
     
     /**
      * map with int states of the plot
@@ -959,7 +965,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				if (tmpBrick.ctrlTmpl[i1] == true)
 				{
 		            final JButton button = new JButton(tmpBrick.uid + " start");
-		            button.setActionCommand("ADD_DATA_" + i);
+		            button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i);
 		            button.addActionListener(this);
 		            buttonPanel.add(button);					
 				}
@@ -1312,19 +1318,60 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     {
     	int offset = 10;
     	//add next value to template plot 
-    	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && (tmplCollection1_1.containsKey(uid)))
+    	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && 
+    			(tmplCollection1_1.containsKey(uid)) && 
+    			(tmplStartMs.containsKey(uid)))
     	{
-    		double value1 = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value2 - offset; 
+    		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+    		/*
+    		double value1 = tmpBrick.tmplPlot[0].getNextValue().value2 - offset; 
     		double value2 = value1 + 2*offset;
-    		double dtime = Brick.getBrick(connectionData.BrickList, uid).tmplPlot[0].getNextValue().value1;
+    		double dtime = tmpBrick.tmplPlot[0].getNextValue().value1;
     		Date m = new java.sql.Date((long) dtime);
     		Millisecond mstmp = new Millisecond(m);
+    		*/
+    		/*
     		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
-    		//tmplCollection1.get(uid).getSeries(0).addOrUpdate(mstmp, value);
     		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
+    		*/
+    		/*
+    		long msLong = tmplStartMs.get(uid)+tmpBrick.tmplPlot[0].getCurrentLap()*tmpBrick.tmplPlot[0].getLapLength();
+    		Date d = new java.sql.Date(msLong);
+    		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
+    		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
+    		*/
+    		long time = tmplStartMs.get(uid) + tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value1 
+    				+ tmplLapCnt.get(uid)*tmpBrick.tmplPlot[0].getLapLength();
+    		long timeNow = System.currentTimeMillis();
+    		if (timeNow>time)
+    		{
+    			Date d = new java.sql.Date(time);
+    			double value1 = tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value2;
+    			double value2 = value1 + 2*offset;
+    			// add new points to the plots
+        		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
+        		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
+
+    			// increase indexes
+    			if (tmplindex.get(uid) >= tmpBrick.tmplPlot[0].getEntriesNumber())
+    			{
+    				// increase lap and index
+    				int tmp = tmplLapCnt.get(uid);
+    				tmplLapCnt.put(uid, tmp++);
+    				tmp = tmplindex.get(uid);
+    				tmplindex.put(uid, tmp++);
+    			}
+    			else
+    			{	
+    				// increase index
+    				int tmp = tmplindex.get(uid);
+    				tmplindex.put(uid, tmp++);
+    			}		
+    			
+    		}
     	}    	    	
     }
-        
+
     
     /**
      * add a value to the main field of the sensor 
@@ -1527,9 +1574,20 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     
     
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
+       	for (int i=0; i<connectionData.presentedBrickList.size();i++)
+       	{
+			Brick tmpBrick = connectionData.presentedBrickList.get(i);
+			String command = e.getActionCommand().substring(0, e.getActionCommand().length()-1);
+            if (command.equals(buttonComAddBtn+tmpBrick.uid))
+            {
+            	long timeNow = System.currentTimeMillis(); 
+            	tmplStartMs.put(tmpBrick.uid, timeNow);
+            	tmplLapCnt.put(tmpBrick.uid, 0);
+            }
+        }
 		System.out.println("ACTION PERFORMED!!!!");
-		// TODO Auto-generated method stub		
 	}       
 
 
@@ -1582,11 +1640,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    indexOf=dataSet.indexOf(comparable);
 		    for(int j=0 ; j<dataSet.getItemCount(indexOf);j++)
 		    {
-		    	double x=dataSet.getXValue(indexOf, j);
+		    	long x=(long)dataSet.getXValue(indexOf, j);
 		    	if (x>=x1)
 		    	{
 		    		double y=dataSet.getYValue(indexOf, j);
-		    		System.out.println("valueX["+j+"] = "+functions.Common.doubleToTime(x)+", y = "+y);
+		    		//System.out.println("valueX["+j+"] = "+functions.Common.doubleToTime(x)+", y = "+y);
 		    		entries.add(new MeasurementEntry(x,y));
 		    	}
 		    	if (x>=x2)

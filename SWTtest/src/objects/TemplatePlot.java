@@ -25,6 +25,7 @@ public class TemplatePlot {
 	public ArrayList <MeasurementEntry> allPoints;
 	
 	private int currentIndex = 0;
+	private long currentLap  = 0;
 			
 	
 	/**
@@ -57,12 +58,25 @@ public class TemplatePlot {
 	public void normalizeTimestamps()
 	{		
 		ArrayList<MeasurementEntry> newList = new ArrayList<MeasurementEntry>();
-		double offset = this.allPoints.get(0).value1;
+		//double offset = this.allPoints.get(0).value1;
+		long offset = this.allPoints.get(0).value1;
 		for (int i=0; i<this.allPoints.size(); i++)
 		{
 			newList.add(new MeasurementEntry(this.allPoints.get(i).value1-offset, this.allPoints.get(i).value2));
 		}
 		this.allPoints = newList;
+	}
+	
+	
+	public MeasurementEntry getEntry(int i)
+	{
+		return allPoints.get(i);
+	}
+	
+	
+	public int getEntriesNumber()
+	{
+		return this.allPoints.size();
 	}
 	
 	
@@ -75,6 +89,7 @@ public class TemplatePlot {
 	{
 		if (this.currentIndex >= this.allPoints.size())
 		{
+			this.currentLap++;
 			this.currentIndex = 0;
 			return this.allPoints.get(currentIndex);
 		}
@@ -82,6 +97,25 @@ public class TemplatePlot {
 		{
 			return this.allPoints.get(currentIndex++);
 		}		
+	}
+	
+	
+	/**
+	 * returns the number of times all values have been requested
+	 * @return
+	 */
+	public Long getCurrentLap()
+	{
+		return this.currentLap;
+	}
+	
+	/**
+	 * returns the length of the measured plot in milliseconds 
+	 * @return milliseconds
+	 */
+	public Long getLapLength()
+	{
+		return this.allPoints.get(allPoints.size()-1).value1;
 	}
 	
 	
@@ -184,7 +218,7 @@ public class TemplatePlot {
 		
 		for (int i=0; i<this.allPoints.size(); i++)
 		{
-			entry+= Double.toString(this.allPoints.get(i).value1)+",";					// 1st value
+			entry+= Long.toString(this.allPoints.get(i).value1)+",";					// 1st value
 			entry+= Double.toString(this.allPoints.get(i).value2)+";";					// 2nd value
 			entry+= "\n";
 		}		
@@ -220,7 +254,7 @@ public class TemplatePlot {
 			return false;							
 		}
 		String str[] = new String[2];
-		double value1;
+		long value1;
 		double value2; 
 		
 		if (replace)
@@ -242,7 +276,8 @@ public class TemplatePlot {
 					sc.close();
 					return false;
 				}
-				value1 = Double.parseDouble(str[0]);
+				//value1 = Double.parseDouble(str[0]);
+				value1 = Long.parseLong(str[0]);
 				value2 = Double.parseDouble(str[1]);
 				allPoints.add(new MeasurementEntry(value1, value2));
 			}

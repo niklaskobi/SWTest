@@ -201,6 +201,7 @@ public class plotConfirmWindow {
         return auto;
     }
 
+    
     private JButton createSaveButton() {
         final JButton auto = new JButton(new AbstractAction("Save") {
 
@@ -226,6 +227,7 @@ public class plotConfirmWindow {
         return auto;
     }
     
+    
     private JButton createCloseButton() {
         final JButton auto = new JButton(new AbstractAction("Close") {
 
@@ -238,13 +240,13 @@ public class plotConfirmWindow {
         return auto;
     }
     
+    
     private ChartPanel createChart() 
     {
         XYDataset roiData = createDataset();
         JFreeChart chart = ChartFactory.createTimeSeriesChart(title, xLabel, yLabel, roiData, true, true, false);
         XYPlot plot = chart.getXYPlot();
-        XYLineAndShapeRenderer renderer =
-            (XYLineAndShapeRenderer) plot.getRenderer();
+        XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
         renderer.setBaseShapesVisible(true);
         //NumberFormat currency = NumberFormat.getCurrencyInstance();
         //currency.setMaximumFractionDigits(0);
@@ -254,6 +256,7 @@ public class plotConfirmWindow {
         return new ChartPanel(chart);
     }
 
+    
     private XYDataset createDataset() 
     {
         TimeSeriesCollection tsc = new TimeSeriesCollection();

@@ -23,10 +23,10 @@ public class main{
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
     	// init constants
-    	data.constants.initConstants();       	
+    	data.constants.initConstants();
 
     	// open main window
     	final mainWindow mw1 = new mainWindow();
     	mw1.open();
-    }  
+    }
 }
