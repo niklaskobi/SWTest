@@ -74,6 +74,41 @@ public class TemplatePlot {
 	}
 	
 	
+	/**
+	 * returns a y value corresponding to given x on the plot
+	 * @param currentMs	current time in milliseconds
+	 * @param startMs	start time of the template plot 
+	 * @param lapCnt	number of the laps or periods of the current plot
+	 * @return			y value
+	 */
+	public double getYValue(long currentMs, long startMs, int lapCnt)
+	{
+		long msTmp = currentMs - startMs;
+		//msTmp = msTmp- lapCnt*this.getLapLength();		
+		msTmp = msTmp % this.getLapLength();
+		double y1 = 0;
+		double y2 = 0;
+		long x1 = 0;
+		long x2 = 0;
+		
+		// find 2 surrounding values
+		for (int i=1; i<this.allPoints.size(); i++)
+		{
+			if ( this.allPoints.get(i).value1>msTmp )
+			{
+				y1 = allPoints.get(i-1).value2;
+				y2 = allPoints.get(i).value2;
+				x1 = allPoints.get(i-1).value1;
+				x2 = allPoints.get(i).value1;
+				break;
+			}
+		}		
+		// find the corresponding y value on the line between (x1,y1) and (x2,y2)
+		double res = ((y2-y1)/(x2-x1))*msTmp + ((x2*y1-x1*y2)/(x2-x1));
+		return res;
+	}
+	
+	
 	public int getEntriesNumber()
 	{
 		return this.allPoints.size();
@@ -277,8 +312,17 @@ public class TemplatePlot {
 					return false;
 				}
 				//value1 = Double.parseDouble(str[0]);
-				value1 = Long.parseLong(str[0]);
-				value2 = Double.parseDouble(str[1]);
+				try
+				{
+					value1 = Long.parseLong(str[0]);
+					value2 = Double.parseDouble(str[1]);
+				}
+				catch (Exception e)
+				{
+					data.dialogs.fileDataError(path);
+					sc.close();
+					return false;
+				}
 				allPoints.add(new MeasurementEntry(value1, value2));
 			}
 			sc.close();

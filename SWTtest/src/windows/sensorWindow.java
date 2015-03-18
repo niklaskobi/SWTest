@@ -56,6 +56,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ import objects.Brick;
 import objects.Measurement;
 import objects.TemplatePlot;
 
+import org.eclipse.swt.widgets.Display;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -109,8 +111,12 @@ import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.ShapeUtilities;
 
+import com.tinkerforge.AlreadyConnectedException;
+import com.tinkerforge.NotConnectedException;
+
 import data.connectionData;
 import data.constants;
+import functions.connection;
 
 
 @SuppressWarnings("serial")
@@ -234,6 +240,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		
 		//create entry in state map
 		plotStateMap.put(newBrick.uid, 0);
+		
+		//create index map entry
+		tmplindex.put(newBrick.uid, 0);
 		
 		//create avrgCtrlEnabled maps
 		if (newBrick.controlAverage == true) avrgCtrl1Enabled.put(newBrick.uid, true);
@@ -436,6 +445,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		if (newBrick.ctrlTmpl[0] == true)
 		{			
 			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
+			
+			/*
 			// create and store renderer			
 			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
 			//renderer3 = tmpSubPlot.getRenderer();
@@ -445,7 +456,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			//Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
 			float dash[] = {5.0f};
 			//renderer3.setSeriesStroke( 0, new BasicStroke(1,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
-			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, dash, 0.0f);
+			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f);
 			renderer3.setSeriesStroke(0, stroke);
 			//renderer3.setSeriesStroke( 0, new BasicStroke(1));
 			//renderer3.setSeriesShape(0, cross);
@@ -453,8 +464,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			//rendererMap.put(newBrick.uid, renderer1);
 			//plotMap.put(newBrick.uid, tmpSubPlot);
 			//tmpSubPlot.mapDatasetToRangeAxis(1, 0);
+			*/
 			
-			//2nd template graph (lower)
+			
+			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();			
+			renderer3.setSeriesPaint(0, Color.GREEN);
+			renderer3.setSeriesStroke( 0, new BasicStroke( 5 ) );
+			tmpSubPlot.setRenderer(2, renderer3);			
+			float dash[] = {5.0f};
+			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f);;
+			
+			
+			
+			//2nd template graph (lower)			
 			tmpSubPlot.setDataset(3, tmplCollection1_2.get(newBrick.uid));
 			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
 			renderer4.setSeriesPaint(0, Color.GREEN);
@@ -1055,8 +1077,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                 functions.windowController.closeSensorWindow();
             }
 
-        });                 
-    	    	
+        });                    	  
     }
     
 		
@@ -1346,32 +1367,65 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     		if (timeNow>time)
     		{
     			Date d = new java.sql.Date(time);
-    			double value1 = tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value2;
+    			//double value1 = tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value2;
+    			double value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid), tmplLapCnt.get(uid));
     			double value2 = value1 + 2*offset;
     			// add new points to the plots
-        		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
-        		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
+        		//tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
+        		//tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
+    			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+    			tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
 
     			// increase indexes
-    			if (tmplindex.get(uid) >= tmpBrick.tmplPlot[0].getEntriesNumber())
+    			if (tmplindex.get(uid) >= tmpBrick.tmplPlot[0].getEntriesNumber()-1)
     			{
     				// increase lap and index
     				int tmp = tmplLapCnt.get(uid);
-    				tmplLapCnt.put(uid, tmp++);
-    				tmp = tmplindex.get(uid);
-    				tmplindex.put(uid, tmp++);
+    				tmp++;
+    				tmplLapCnt.put(uid, tmp);
+    				//tmp = tmplindex.get(uid);
+    				//tmplindex.put(uid, tmp);
+    				tmplindex.put(uid, 0);
     			}
     			else
     			{	
     				// increase index
     				int tmp = tmplindex.get(uid);
-    				tmplindex.put(uid, tmp++);
-    			}		
-    			
+    				tmp++;
+    				tmplindex.put(uid, tmp);
+    			}		    			
     		}
     	}    	    	
     }
 
+    
+    public void autoUpdatePlot()
+	{
+		new Thread(new Runnable() {
+		      public void run() 
+		      {
+		    	  int cnt = 0;
+		    	  while (cnt < 1000) 
+		    	  {
+		    		  try 
+		    		  {
+		    			  Thread.sleep(100);
+		    		  } 
+		    		  catch (Exception e) {}
+		    		  cnt++;
+		    		  Millisecond ms = new Millisecond();
+		    		  System.out.println("add ms "+cnt);
+		    		  for (int i=0; i<connectionData.presentedBrickList.size();i++)
+		    	      {
+		    			  Brick tmpBrick = connectionData.presentedBrickList.get(i);
+		    			  addTmplValue (tmpBrick.uid,ms);
+		    	      }		    		  
+		    	  }
+		      }}
+		).start();
+	}
+
+    
     
     /**
      * add a value to the main field of the sensor 
@@ -1588,6 +1642,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             }
         }
 		System.out.println("ACTION PERFORMED!!!!");
+		
+    	// start auto update plot
+    	autoUpdatePlot();
 	}       
 
 
