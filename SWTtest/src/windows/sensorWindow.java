@@ -441,7 +441,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 		
 		// =============================================================================================
-		// create the 1st template graph (upper)
+		// create 1st template graph (upper)
 		if (newBrick.ctrlTmpl[0] == true)
 		{			
 			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
@@ -467,21 +467,24 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			*/
 			
 			
-			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();			
+			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
+			int width = (int) (newBrick.tmpl1Width * 10.4);
+			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
 			renderer3.setSeriesPaint(0, Color.GREEN);
-			renderer3.setSeriesStroke( 0, new BasicStroke( 5 ) );
+			//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
+			renderer3.setSeriesStroke( 0, stroke );
 			tmpSubPlot.setRenderer(2, renderer3);			
+			
+			
+			//2nd template graph (lower)	
+			/*
 			float dash[] = {5.0f};
-			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f);;
-			
-			
-			
-			//2nd template graph (lower)			
 			tmpSubPlot.setDataset(3, tmplCollection1_2.get(newBrick.uid));
 			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
 			renderer4.setSeriesPaint(0, Color.GREEN);
 			renderer4.setSeriesStroke(0, stroke);
 			tmpSubPlot.setRenderer(3, renderer4);
+			*/
 		}
 		// =============================================================================================
 
@@ -737,7 +740,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			double diff = markerMapMin2Warning.get(UID).getValue()-markerMapMin2Critical.get(UID).getValue();
 			vm2.setValue(treshold-diff);
 			markerMapMax2Warning.put(UID, vm2);
-		}		
+		}
 	}
 	
 	
@@ -1335,32 +1338,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     }
     
     
-    public void addTmplValue(String uid, Millisecond ms )
+    public double addTmplValue(String uid, Millisecond ms )
     {
     	int offset = 10;
+    	double value1 = 0;
     	//add next value to template plot 
     	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && 
     			(tmplCollection1_1.containsKey(uid)) && 
     			(tmplStartMs.containsKey(uid)))
     	{
     		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
-    		/*
-    		double value1 = tmpBrick.tmplPlot[0].getNextValue().value2 - offset; 
-    		double value2 = value1 + 2*offset;
-    		double dtime = tmpBrick.tmplPlot[0].getNextValue().value1;
-    		Date m = new java.sql.Date((long) dtime);
-    		Millisecond mstmp = new Millisecond(m);
-    		*/
-    		/*
-    		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
-    		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
-    		*/
-    		/*
-    		long msLong = tmplStartMs.get(uid)+tmpBrick.tmplPlot[0].getCurrentLap()*tmpBrick.tmplPlot[0].getLapLength();
-    		Date d = new java.sql.Date(msLong);
-    		tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
-    		tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
-    		*/
+
     		long time = tmplStartMs.get(uid) + tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value1 
     				+ tmplLapCnt.get(uid)*tmpBrick.tmplPlot[0].getLapLength();
     		long timeNow = System.currentTimeMillis();
@@ -1368,13 +1356,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     		{
     			Date d = new java.sql.Date(time);
     			//double value1 = tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value2;
-    			double value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid), tmplLapCnt.get(uid));
-    			double value2 = value1 + 2*offset;
-    			// add new points to the plots
-        		//tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value1);
-        		//tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(new Millisecond(d), value2);
-    			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
-    			tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
+    			value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid), tmplLapCnt.get(uid));
+    			//double value2 = value1 + 2*offset;
+     			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+    			//tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
 
     			// increase indexes
     			if (tmplindex.get(uid) >= tmpBrick.tmplPlot[0].getEntriesNumber()-1)
@@ -1388,24 +1373,29 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				tmplindex.put(uid, 0);
     			}
     			else
-    			{	
+    			{
     				// increase index
     				int tmp = tmplindex.get(uid);
     				tmp++;
     				tmplindex.put(uid, tmp);
-    			}		    			
+    			}
     		}
-    	}    	    	
+    	}
+    	return value1;
     }
 
     
+    /**
+     * function for auto updating the plot, 
+     */
     public void autoUpdatePlot()
 	{
 		new Thread(new Runnable() {
 		      public void run() 
 		      {
 		    	  int cnt = 0;
-		    	  while (cnt < 1000) 
+		    	  //TODO: stop functionality
+		    	  while (true) 
 		    	  {
 		    		  try 
 		    		  {
@@ -1413,13 +1403,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    		  } 
 		    		  catch (Exception e) {}
 		    		  cnt++;
-		    		  Millisecond ms = new Millisecond();
-		    		  System.out.println("add ms "+cnt);
+		    		  Millisecond ms = new Millisecond();		    		  
 		    		  for (int i=0; i<connectionData.presentedBrickList.size();i++)
 		    	      {
 		    			  Brick tmpBrick = connectionData.presentedBrickList.get(i);
 		    			  addTmplValue (tmpBrick.uid,ms);
-		    	      }		    		  
+		    	      }
 		    	  }
 		      }}
 		).start();
@@ -1438,10 +1427,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	
 		//if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).add(new Millisecond(), value);
     	Millisecond ms = new Millisecond();
-    	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+    	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	    	  
     	
-    	//add next value to template plot
-    	addTmplValue(sensorUID, ms);
     	
     	// add timestamp to slider 
     	sliderData.addMS(ms);
@@ -1453,10 +1440,35 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     		DateRange range = new DateRange(sliderData.getMilliseconds(0).getFirstMillisecond(),
     										sliderData.getMilliseconds(sliderValuesNumber).getFirstMillisecond());
     		plot.getDomainAxis().setRange(range);    				
-   		}    	
+   		}
     	
     	// add measurement value
     	if (valuesMap.containsKey(sensorUID)) valuesMap.get(sensorUID).addValue(value);
+    	
+    	
+    	// if template control is turned on
+    	// and template control variables exist
+    	// proof whether current value is in template's area
+		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, sensorUID);
+    	if ((Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[0] == true) && 
+    			(tmplCollection1_1.containsKey(sensorUID)) && 
+    			(tmplStartMs.containsKey(sensorUID)))
+		{
+			long timeNow = System.currentTimeMillis();
+			double test = tmplStartMs.get(sensorUID);
+			test = tmplLapCnt.get(sensorUID);
+			double tmplValue = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(sensorUID), tmplLapCnt.get(sensorUID));
+			System.out.println("current value: "+value);
+			System.out.println("templ.  value: "+tmplValue);
+			if (((tmplValue+tmpBrick.tmpl1Width)<value) || 
+				((tmplValue-tmpBrick.tmpl1Width)>value))
+			{
+    			// make visible alarm
+				System.out.println("karaul!");
+    			plotStateMap.put(sensorUID,3);
+    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
+			}
+		}
     	
     	// check whether the value is below the threshold
     	if (markerMapMin1Critical.containsKey(sensorUID))

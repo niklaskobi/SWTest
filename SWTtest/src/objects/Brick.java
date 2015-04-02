@@ -31,9 +31,11 @@ public class Brick {
 	public boolean checked3;
 	public boolean controlAverage;
 	public boolean controlAverage2;
-	public boolean[] ctrlTmpl = new boolean[2];
-	public String[] ctrlTmplPath = new String[2];
-	public TemplatePlot[] tmplPlot = new TemplatePlot[2];
+	public boolean[] 		ctrlTmpl = new boolean[2];
+	public String[] 		ctrlTmplPath = new String[2];
+	public TemplatePlot[] 	tmplPlot = new TemplatePlot[2];
+	public double tmpl1Width;
+	public double tmpl2Width;
 	
 	public Brick()
 	{
@@ -75,6 +77,8 @@ public class Brick {
 		this.setAvg2high(1);
 		this.setAvg1low(1);
 		this.setAvg2low(1);
+		this.tmpl1Width = 0;
+		this.tmpl2Width = 0;
 	}
 	
 	public String getUid() {
@@ -810,6 +814,18 @@ public class Brick {
 
 	public void setAvg2low(double avg2low) {
 		this.avg2low = avg2low;
+	}
+	
+	public void setTmplWidth(double value, int index)
+	{
+		if (index == 0)
+		{
+			this.tmpl1Width = value;
+		}
+		if (index == 1)
+		{
+			this.tmpl2Width = value;
+		}		
 	}
 			
 }
