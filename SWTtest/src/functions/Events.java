@@ -183,6 +183,11 @@ public class Events {
 	}
 
 	
+	public static void updateTmplPlotWidth(String UID, int index)
+	{
+		windowController.updateTmplPlotWidth(UID, index);
+	}
+	
 	/**
 	 * called when user disables average control
 	 * @param UID
@@ -228,7 +233,7 @@ public class Events {
 	}
 	
 	/**
-	 * event which should be called after a disconnect has occurred
+	 * event which should be called after a disconnection
 	 */	
 	public static void disconnectDevice()
 	{
@@ -285,6 +290,11 @@ public class Events {
 	public static void handleMouseSelection(TemplatePlot t, int index)
 	{
 		windowController.openPlotWindow(t, index);
+	}
+	
+	public static void openTemplatePlotWindow(String templPath, int index)
+	{
+		windowController.openPlotWindow(templPath, index);
 	}
 	
 	

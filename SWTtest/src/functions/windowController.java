@@ -31,6 +31,11 @@ public class windowController {
     {
     	windows.sensorWindow.updateAvrgCtrl(UID, value, index, high);
     }
+    
+    public static void updateTmplPlotWidth(String UID, int index)
+    {
+    	windows.sensorWindow.updateTmplPlotWidth(UID, index);
+    }
             
     public static void updateTresholdMin2(String UID, double threshold)
     {

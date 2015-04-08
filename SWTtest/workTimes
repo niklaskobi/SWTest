@@ -1,11 +1,7 @@
-20.02.2015;8:45-11:20;mouse selection
-20.02.2015;15:10-16:20;mouse selection
-21.02.2015;10:20-11:40;mouse selection,template window
-21.02.2015;15:00-16:50;template window
-25.02.2015;10:40-12:50;template window
-25.02.2015;13:10-14:10;template window
-25.02.2015;18:20-21:10;template window
-
 last stand:
+  
 
-plot stand anomaly, next step: more elegant plot stand machine  
+
+toDO:
+-	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
+-	stop functionality for auto update template values

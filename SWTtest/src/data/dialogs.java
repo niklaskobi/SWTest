@@ -9,7 +9,7 @@ public class dialogs {
 	{
 		String message = "unable to write to the file: "
 		        + path +"\n"
-		        + "file not found or in use, writing to file will be disabled ";
+		        + "file not found or in use, data storage will be disabled";
 		    JOptionPane.showMessageDialog(new JFrame(), message, "error",
 		        JOptionPane.ERROR_MESSAGE);
 	}

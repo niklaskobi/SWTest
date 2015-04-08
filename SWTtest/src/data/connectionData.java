@@ -17,7 +17,7 @@ public class connectionData {
 	
 	public static String storageFilePath;
 	
-	public static boolean storeData = true;
+	public static boolean storeData = false;
 	
 	public static boolean showData = false;
 

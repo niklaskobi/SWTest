@@ -156,6 +156,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     
     public static Map<String, XYItemRenderer> rendererMap = new HashMap<String, XYItemRenderer>();
     public static Map<String, XYItemRenderer> rendererMap2 = new HashMap<String, XYItemRenderer>();
+    public static Map<String, XYItemRenderer> rendererMap3 = new HashMap<String, XYItemRenderer>();
+    public static Map<String, XYItemRenderer> rendererMap4 = new HashMap<String, XYItemRenderer>();
     
     public static Map<String, ValueMarker> markerMapMin1Critical = new HashMap<String, ValueMarker> ();
     public static Map<String, ValueMarker> markerMapMin1Warning = new HashMap<String, ValueMarker> ();
@@ -206,9 +208,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
      * 2 = warning level trespassed
      * 3 = critical value trespassed
      */
-    public static Map<String, Integer> plotStateMap = new HashMap<String, Integer> ();
-   
-
+    public static Map<String, Integer> plot1StateMap = new HashMap<String, Integer> ();
+    public static Map<String, Integer> plot2StateMap = new HashMap<String, Integer> ();
+    
+    
     XYLineAndShapeRenderer renderer0 = new XYLineAndShapeRenderer(); 
     
     static XYDifferenceRenderer renderer2 = new XYDifferenceRenderer(Color.green,Color.red, true);
@@ -239,7 +242,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 		
 		//create entry in state map
-		plotStateMap.put(newBrick.uid, 0);
+		plot1StateMap.put(newBrick.uid, 0);
+		plot2StateMap.put(newBrick.uid, 0);
 		
 		//create index map entry
 		tmplindex.put(newBrick.uid, 0);
@@ -305,6 +309,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			//set font
 			rangeAxis.setLabelFont(customFonts.get("axisLabelFont"));
 			rangeAxis.setTickLabelFont(customFonts.get("axisValueFont"));
+						
+			// create template graph
+			if (newBrick.ctrlTmpl[0] == true)
+			{			
+				tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
+				
+				XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
+				int width = computeTmplPlotWidth(newBrick.tmpl1Width);
+				BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
+				renderer3.setSeriesPaint(0, Color.GREEN);
+				//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
+				renderer3.setSeriesStroke( 0, stroke );
+				rendererMap3.put(newBrick.uid, renderer3);
+				tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));							
+			}						
 						
 			// put everything to the maps
 			rendererMap.put(newBrick.uid, renderer1);
@@ -440,53 +459,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			axisMap2.put(newBrick.uid, secondaryAxis);				
 		}
 		
-		// =============================================================================================
-		// create 1st template graph (upper)
-		if (newBrick.ctrlTmpl[0] == true)
-		{			
-			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
-			
-			/*
-			// create and store renderer			
-			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
-			//renderer3 = tmpSubPlot.getRenderer();
-			renderer3.setSeriesPaint(0, Color.GREEN);
-			//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
-			//line = dashes:
-			//Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
-			float dash[] = {5.0f};
-			//renderer3.setSeriesStroke( 0, new BasicStroke(1,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
-			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f);
-			renderer3.setSeriesStroke(0, stroke);
-			//renderer3.setSeriesStroke( 0, new BasicStroke(1));
-			//renderer3.setSeriesShape(0, cross);
-			tmpSubPlot.setRenderer(2, renderer3);
-			//rendererMap.put(newBrick.uid, renderer1);
-			//plotMap.put(newBrick.uid, tmpSubPlot);
-			//tmpSubPlot.mapDatasetToRangeAxis(1, 0);
-			*/
-			
-			
-			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
-			int width = (int) (newBrick.tmpl1Width * 10.4);
-			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
-			renderer3.setSeriesPaint(0, Color.GREEN);
-			//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
-			renderer3.setSeriesStroke( 0, stroke );
-			tmpSubPlot.setRenderer(2, renderer3);			
-			
-			
-			//2nd template graph (lower)	
-			/*
-			float dash[] = {5.0f};
-			tmpSubPlot.setDataset(3, tmplCollection1_2.get(newBrick.uid));
-			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
-			renderer4.setSeriesPaint(0, Color.GREEN);
-			renderer4.setSeriesStroke(0, stroke);
-			tmpSubPlot.setRenderer(3, renderer4);
-			*/
-		}
-		// =============================================================================================
 
 	
 		
@@ -632,6 +604,36 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	
 	/**
+	 * updates the width of the template plot
+	 * @param UID
+	 */
+	public static void updateTmplPlotWidth(String UID, int index)
+	{
+		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, UID);
+		if (index == 0)
+		{
+			if (rendererMap3.containsKey(UID))
+			{
+				XYItemRenderer rendererTmp = rendererMap3.get(UID);
+				int width = computeTmplPlotWidth(tmpBrick.tmpl1Width);
+				BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
+				rendererTmp.setSeriesPaint(0, Color.GREEN);
+				//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
+				rendererTmp.setSeriesStroke( 0, stroke );
+				rendererMap3.put(UID, rendererTmp);
+				//tmplPlot1Width.put(UID, computeTmplPlotWidth(tmpBrick.tmpl1Width));
+			}
+		}
+		if (index == 1)
+		{
+			if (rendererMap4.containsKey(UID))
+			{
+				//TODO
+			}
+		}		
+	}
+	
+	/**
 	 * update average control values
 	 * @param UID	uid of the brick
 	 * @param value	new value
@@ -695,8 +697,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			ValueMarker vm3 = markerMapMax2Warning.get(UID);
 			double diff = markerMapMin2Warning.get(UID).getValue()-markerMapMin2Critical.get(UID).getValue();
 			vm3.setValue(markerMapMax2Critical.get(UID).getValue()-diff);
-			markerMapMax2Warning.put(UID, vm3);			
-			
+			markerMapMax2Warning.put(UID, vm3);						
 		}		
 	}
 
@@ -824,14 +825,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	    		{
 	    			if (avrgCtrl1Enabled.get(UID) == true)
 	    			{
-	    				if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
-	    				plotStateMap.put(UID,1);
+	    				if (plot1StateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    				plot1StateMap.put(UID,1);
 	    			}
 	    		}
-	    		else if (plotStateMap.get(UID)==1)
+	    		else if (plot1StateMap.get(UID)==1)
 	    		{
 	    			plotMap.get(UID).setBackgroundPaint(Color.white);
-	    			plotStateMap.put(UID,0);
+	    			plot1StateMap.put(UID,0);
 	    		}
 			}
 		}
@@ -849,14 +850,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	    		{
 	    			if (avrgCtrl2Enabled.get(UID) == true)
 	    			{	    			
-	    				if (plotStateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
-	    				plotStateMap.put(UID,1);
+	    				if (plot1StateMap.get(UID)==0) plotMap.get(UID).setBackgroundPaint(Color.GRAY);
+	    				plot1StateMap.put(UID,1);
 	    			}
 	    		}
-	    		else if (plotStateMap.get(UID)==1)
+	    		else if (plot1StateMap.get(UID)==1)
 	    		{
 	    			plotMap.get(UID).setBackgroundPaint(Color.white);
-	    			plotStateMap.put(UID,0);
+	    			plot1StateMap.put(UID,0);
 	    		}	    		
 			}
 		}
@@ -1279,7 +1280,44 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	// add measurement value
     	if (values2Map.containsKey(sensorUID)) values2Map.get(sensorUID).addValue(value);
 
-		
+    	// check whether the value is below the thresholds
+    	if (markerMapMin2Critical.containsKey(sensorUID))
+    	{
+			//critical
+    		if ( (value < markerMapMin2Critical.get(sensorUID).getValue()) || 
+    				(value > markerMapMax2Critical.get(sensorUID).getValue() ))
+    		{
+    			plot2StateMap.put(sensorUID,3);
+    		}
+
+    		//warning
+    		else if ((value < markerMapMin2Warning.get(sensorUID).getValue()) ||
+    				(value > markerMapMax2Warning.get(sensorUID).getValue() ))
+    		{
+				plot2StateMap.put(sensorUID,2);
+    		}
+
+			//normal level
+    		else
+    		{
+				plot2StateMap.put(sensorUID,1);
+    		}
+    	}
+    	
+    	// color the plot's background according to it's current state, 
+    	// but only if the state of the 2nd plot is below the state of the current plot
+    	// a higher state means higher warning level and therefore a higher priority
+    	if (plot1StateMap.get(sensorUID)<=plot2StateMap.get(sensorUID))
+    	{
+    		switch (plot2StateMap.get(sensorUID))
+    		{
+    			case 1:  plotMap.get(sensorUID).setBackgroundPaint(Color.white); break;
+    			case 2:  plotMap.get(sensorUID).setBackgroundPaint(Color.yellow); break;
+    			case 3:  plotMap.get(sensorUID).setBackgroundPaint(Color.red); break;
+    		}
+    	}
+    	
+		/*
     	// check whether the value is below the threshold
     	if (markerMapMin2Critical.containsKey(sensorUID))
     	{
@@ -1287,13 +1325,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				(value <= (markerMapMin2Warning.get(sensorUID).getValue())) )
     		{
     			//under warning level
-    			plotStateMap.put(sensorUID,2);
+    			plot1StateMap.put(sensorUID,2);
     			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     		}
     		else if (value <= markerMapMin2Critical.get(sensorUID).getValue())
     		{
     			//under threshold level
-    			plotStateMap.put(sensorUID,3);
+    			plot1StateMap.put(sensorUID,3);
     			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     		}
     		else 
@@ -1308,25 +1346,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    				(value >= (markerMapMax2Warning.get(sensorUID).getValue())) )
     	    		{
     	    			//between the warning and critical
-    	    			plotStateMap.put(sensorUID,2);
+    	    			plot1StateMap.put(sensorUID,2);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
     	    		}
     	    		else if (value >= markerMapMax2Critical.get(sensorUID).getValue())
     	    		{
     	    			//above the max threshold level
-    	    			plotStateMap.put(sensorUID,3);
+    	    			plot1StateMap.put(sensorUID,3);
     	    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
     	    		}
     	    		else 
     	    		{
     	    			//normal level
-    	    			/*
-    	    			if (!(plotMap.get(sensorUID).getBackgroundPaint() == Color.pink) &&
-    	    			    !(plotMap.get(sensorUID).getBackgroundPaint() == Color.yellow))
-    	    			    */
-    	    			if (plotStateMap.get(sensorUID) != 1)
+    	    			if (plot1StateMap.get(sensorUID) != 1)
     	    			{
-    	    				plotStateMap.put(sensorUID,0);
+    	    				plot1StateMap.put(sensorUID,0);
     	    				plotMap.get(sensorUID).setBackgroundPaint(Color.white);
     	    			}
     	    		}
@@ -1334,19 +1368,29 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
     		}
     	}    	    
-
+    	*/
     }
     
     
     public double addTmplValue(String uid, Millisecond ms )
     {
-    	int offset = 10;
     	double value1 = 0;
     	//add next value to template plot 
     	if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[0] == true) && 
     			(tmplCollection1_1.containsKey(uid)) && 
     			(tmplStartMs.containsKey(uid)))
     	{
+    		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+    		
+    		long timeNow = System.currentTimeMillis();
+    		
+   			value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid));
+    			
+   			// add value to the plot
+   			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);   			
+     			
+
+    		/*
     		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
 
     		long time = tmplStartMs.get(uid) + tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value1 
@@ -1355,12 +1399,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     		if (timeNow>time)
     		{
     			Date d = new java.sql.Date(time);
-    			//double value1 = tmpBrick.tmplPlot[0].getEntry(tmplindex.get(uid)).value2;
     			value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid), tmplLapCnt.get(uid));
-    			//double value2 = value1 + 2*offset;
+    			
+    			// add value to the plot
      			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
-    			//tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value2);
-
+     			System.out.println("autoAdd value: "+value1);
+     			
     			// increase indexes
     			if (tmplindex.get(uid) >= tmpBrick.tmplPlot[0].getEntriesNumber()-1)
     			{
@@ -1380,6 +1424,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				tmplindex.put(uid, tmp);
     			}
     		}
+    		*/
     	}
     	return value1;
     }
@@ -1397,17 +1442,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    	  //TODO: stop functionality
 		    	  while (true) 
 		    	  {
-		    		  try 
+		    		  try
 		    		  {
 		    			  Thread.sleep(100);
-		    		  } 
+		    		  }
 		    		  catch (Exception e) {}
 		    		  cnt++;
-		    		  Millisecond ms = new Millisecond();		    		  
+		    		  Millisecond ms = new Millisecond();
 		    		  for (int i=0; i<connectionData.presentedBrickList.size();i++)
 		    	      {
 		    			  Brick tmpBrick = connectionData.presentedBrickList.get(i);
-		    			  addTmplValue (tmpBrick.uid,ms);
+		    			  addTmplValue (tmpBrick.uid,ms);		    			  
 		    	      }
 		    	  }
 		      }}
@@ -1427,14 +1472,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	
 		//if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).add(new Millisecond(), value);
     	Millisecond ms = new Millisecond();
-    	if (seriesCollectionMap.containsKey(sensorUID)) seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	    	  
     	
-    	
+    	if (seriesCollectionMap.containsKey(sensorUID))
+    	{
+    		seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);    	    	  
+    	}
+    	    	
     	// add timestamp to slider 
     	sliderData.addMS(ms);
     	
-    	// if we have moved the slider at least once, but now it is on its start position
-		// which means we want to auto-update the charts
+    	// if we have moved the slider at least once, but now it is on it's start position
+		// which means we want to auto-update the charts again
     	if (sliderUpdate == true) 
     	{
     		DateRange range = new DateRange(sliderData.getMilliseconds(0).getFirstMillisecond(),
@@ -1443,11 +1491,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
    		}
     	
     	// add measurement value
-    	if (valuesMap.containsKey(sensorUID)) valuesMap.get(sensorUID).addValue(value);
+    	if (valuesMap.containsKey(sensorUID)) valuesMap.get(sensorUID).addValue(value);    	
     	
-    	
-    	// if template control is turned on
-    	// and template control variables exist
+    	// if template control is turned on and template control variables exist
     	// proof whether current value is in template's area
 		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, sensorUID);
     	if ((Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[0] == true) && 
@@ -1455,21 +1501,60 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			(tmplStartMs.containsKey(sensorUID)))
 		{
 			long timeNow = System.currentTimeMillis();
-			double test = tmplStartMs.get(sensorUID);
-			test = tmplLapCnt.get(sensorUID);
-			double tmplValue = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(sensorUID), tmplLapCnt.get(sensorUID));
-			System.out.println("current value: "+value);
-			System.out.println("templ.  value: "+tmplValue);
-			if (((tmplValue+tmpBrick.tmpl1Width)<value) || 
-				((tmplValue-tmpBrick.tmpl1Width)>value))
+			double tmplValue = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(sensorUID));
+			if (((tmplValue+tmpBrick.tmpl1Width)<value) || ((tmplValue-tmpBrick.tmpl1Width)>value))
 			{
-    			// make visible alarm
-				System.out.println("karaul!");
-    			plotStateMap.put(sensorUID,3);
-    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
+				// set alarm state 
+				plot1StateMap.put(sensorUID,3);
 			}
 		}
-    	
+
+    	// check whether the value is below the threshold
+    	if (markerMapMin1Critical.containsKey(sensorUID))
+    	{
+			//critical
+    		if ( (value < markerMapMin1Critical.get(sensorUID).getValue()) || 
+    				(value > markerMapMax1Critical.get(sensorUID).getValue() ))
+    		{
+    			if (plot1StateMap.get(sensorUID)<3)
+    			{
+    				plot1StateMap.put(sensorUID,3);
+    			}
+    		}
+    		
+    		//warning
+    		else if ((value < markerMapMin1Warning.get(sensorUID).getValue()) || 
+    				(value > markerMapMax1Warning.get(sensorUID).getValue() ))    		
+    		{
+    			if (plot1StateMap.get(sensorUID)<2)
+    			{    			
+    				plot1StateMap.put(sensorUID,2);
+    			}
+    		}
+
+			//normal level
+    		else 
+    		{
+    			if (plot1StateMap.get(sensorUID)<1)
+    			{    			
+    				plot1StateMap.put(sensorUID,1);
+    			}
+    		}
+    	}  
+
+    	// color the plot's background according to it's current state, 
+    	// but only if the state of the 2nd plot is below the state of the current plot
+    	// a higher state means higher warning level and therefore a higher priority
+    	if (plot2StateMap.get(sensorUID)<=plot1StateMap.get(sensorUID))
+    	{
+    		switch (plot1StateMap.get(sensorUID))
+    		{
+    			case 1:  plotMap.get(sensorUID).setBackgroundPaint(Color.white); break;
+    			case 2:  plotMap.get(sensorUID).setBackgroundPaint(Color.yellow); break;
+    			case 3:  plotMap.get(sensorUID).setBackgroundPaint(Color.red); break;
+    		}
+    	}
+    	/*
     	// check whether the value is below the threshold
     	if (markerMapMin1Critical.containsKey(sensorUID))
     	{
@@ -1477,14 +1562,20 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     				(value <= (markerMapMin1Warning.get(sensorUID).getValue())) )
     		{
     			//under warning level
-    			plotStateMap.put(sensorUID,2); 
-    			plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
+				if (plotStateMap.get(sensorUID)<2)
+				{    			
+					plotStateMap.put(sensorUID,2); 
+					plotMap.get(sensorUID).setBackgroundPaint(Color.yellow);
+				}
     		}
     		else if (value <= markerMapMin1Critical.get(sensorUID).getValue())
     		{
     			//under threshold level
-    			plotStateMap.put(sensorUID,3);
-    			plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
+				if (plotStateMap.get(sensorUID)<3)
+				{    			
+					plotStateMap.put(sensorUID,3);
+					plotMap.get(sensorUID).setBackgroundPaint(Color.pink);
+				}
     		}
     		else 
     		{
@@ -1510,10 +1601,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    		else 
     	    		{
     	    			//normal level
-    	    			/*
-    	    			if (!(plotMap.get(sensorUID).getBackgroundPaint() == Color.pink) &&
-        	    			    !(plotMap.get(sensorUID).getBackgroundPaint() == Color.yellow))
-        	    			    */
+    	    			
+    	    			//if (!(plotMap.get(sensorUID).getBackgroundPaint() == Color.pink) &&
+        	    		//	    !(plotMap.get(sensorUID).getBackgroundPaint() == Color.yellow))
+        	    			    
     	    			if (plotStateMap.get(sensorUID) != 1)
     	    			{
     	    				plotStateMap.put(sensorUID,0);
@@ -1526,7 +1617,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     	    		}
     	    	}
     		}
-    	}    	    
+    	}  
+    	*/
     }
     
     
@@ -1580,6 +1672,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     /**
      * hide or show average control elements (depending on previous state)
      * @param br brick object
+     * @param index sensor index
      */
     public static void hideUnhideAvgCtrl(Brick br, int index)
     {
@@ -1590,7 +1683,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			avrgCtrl1Enabled.put(br.uid, true);
     			// add range markers to the plot again
     			plotMap.get(br.uid).addRangeMarker(avrg1High.get(br.uid));
-    			plotMap.get(br.uid).addRangeMarker(avrg1Low.get(br.uid));    			
+    			plotMap.get(br.uid).addRangeMarker(avrg1Low.get(br.uid));
     		}
     		else if (avrgCtrl1Enabled.get(br.uid) == true)
     		{
@@ -1599,13 +1692,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			plotMap.get(br.uid).removeRangeMarker(avrg1High.get(br.uid));
     			plotMap.get(br.uid).removeRangeMarker(avrg1Low.get(br.uid));
     			// set background color
-	    		if (plotStateMap.get(br.uid)==1)
+	    		if (plot1StateMap.get(br.uid)==1)
 	    		{
 	    			plotMap.get(br.uid).setBackgroundPaint(Color.GRAY);
-	    			plotStateMap.put(br.uid,0);
+	    			plot1StateMap.put(br.uid,0);
 	    		}
     		}
     	}
+    	
     	if (index == 2)
     	{
     		if (avrgCtrl2Enabled.get(br.uid) == false)
@@ -1622,10 +1716,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     			plotMap.get(br.uid).removeRangeMarker(1, avrg2High.get(br.uid), Layer.BACKGROUND);
     			plotMap.get(br.uid).removeRangeMarker(1, avrg2Low.get(br.uid), Layer.BACKGROUND);
     			// set background color
-	    		if (plotStateMap.get(br.uid)==1)
+	    		if (plot2StateMap.get(br.uid)==1)
 	    		{
 	    			plotMap.get(br.uid).setBackgroundPaint(Color.GRAY);
-	    			plotStateMap.put(br.uid,0);
+	    			plot2StateMap.put(br.uid,0);
 	    		}    			
     		}
     	}    	    	
@@ -1653,7 +1747,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
             	tmplLapCnt.put(tmpBrick.uid, 0);
             }
         }
-		System.out.println("ACTION PERFORMED!!!!");
 		
     	// start auto update plot
     	autoUpdatePlot();
@@ -1745,6 +1838,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 	
+	/**
+	 * computes width in pixels of the template plot according to given real width 
+	 * @param width
+	 * @return
+	 */
+	private static int computeTmplPlotWidth(double width)
+	{
+		return (int) (width * 9);
+	}
+	
 	/*
     static void addFill(Plot plot) {
         
@@ -1769,7 +1872,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         return res;
      }
 	*/
-
+	
+	
 }
 
            

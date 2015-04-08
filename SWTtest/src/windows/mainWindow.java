@@ -61,6 +61,7 @@ public class mainWindow {
 	static MenuItem mntmCreateFile;
 	static MenuItem mntmSettings;
 	static MenuItem mntmStoreToFile;
+	static MenuItem mntmOpenTemplateWindow;
 	static Button btnNewButton_1;
 	static Button btnNewButton;
 	static Text text;
@@ -69,7 +70,7 @@ public class mainWindow {
 	// flags
 	static boolean buttonConnect = true;	
 	static boolean buttonStart = true;
-	public static boolean allowDataStore = true;		// !!! must be equal with storeData in data.connectionData
+	public static boolean allowDataStore = false;		// !!! must be equal with storeData in data.connectionData
 	
 	// events
 	CheckStateChangedEvent event;
@@ -314,6 +315,63 @@ public class mainWindow {
 		mntmFile.setText("File");		
 		Menu menu_1 = new Menu(mntmFile);
 		mntmFile.setMenu(menu_1);
+		// ---------------------------------------------------------------------------------
+
+		// ALLOW STORAGE RADIO -------------------------------------------------------------
+		mntmOpenTemplateWindow = new MenuItem(menu_1, SWT.NONE);
+		mntmOpenTemplateWindow.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				// open file dialog
+	        	JFrame parentFrame = new JFrame();           	 
+	        	JFileChooser fileChooser = new JFileChooser();
+	        	FileNameExtensionFilter tmpfilter = new FileNameExtensionFilter("template files", objects.TemplatePlot.fileExtention);
+	        	fileChooser.setFileFilter(tmpfilter);
+	        	fileChooser.setDialogTitle("Specify a template file");
+	        	int userSelection = fileChooser.showOpenDialog(parentFrame);
+	        	if (userSelection == JFileChooser.APPROVE_OPTION)
+	        	{
+	        	    File fileToOpen = fileChooser.getSelectedFile();
+	        	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
+	        	    if (objects.TemplatePlot.isTemplateValid(fileToOpen.getAbsolutePath()))        	    
+	        	    {
+	        	    	functions.Events.openTemplatePlotWindow(fileToOpen.getAbsolutePath(),0);       	    	
+	        	    }
+	        	    else 
+	        	    {
+	        	    	data.dialogs.fileDataError(fileToOpen.getAbsolutePath());	        	    	        	    
+	        	    }
+	        	}
+	        	// end file dialog
+	
+			}
+		});	
+		mntmOpenTemplateWindow.setSelection(allowDataStore);
+		mntmOpenTemplateWindow.setText("open a template plot");				
+		
+		
+		// SEPARATOR -----------------------------------------------------------------------		
+		new MenuItem(menu_1, SWT.SEPARATOR);
+		// ---------------------------------------------------------------------------------		
+		
+		// ALLOW STORAGE RADIO -------------------------------------------------------------
+		mntmStoreToFile = new MenuItem(menu_1, SWT.RADIO);
+		mntmStoreToFile.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (allowDataStore == false)
+				{
+					functions.Events.allowFileStorage();
+				}
+				else 
+				{
+					functions.Events.forbidFileStorage();
+				}					
+			}
+		});	
+		mntmStoreToFile.setSelection(allowDataStore);
+		mntmStoreToFile.setText("enable data storage");				
 		
 		// CREATE FILE----------------------------------------------------------------------		
 		//final MenuItem mntmCreateFile = new MenuItem(menu_1, SWT.NONE);
@@ -349,25 +407,6 @@ public class mainWindow {
 		});
 		mntmSettings.setText("choose file");
 		mntmSettings.setEnabled(allowDataStore);
-		// ---------------------------------------------------------------------------------
-		
-		// ALLOW STORAGE RADIO -------------------------------------------------------------
-		mntmStoreToFile = new MenuItem(menu_1, SWT.RADIO);
-		mntmStoreToFile.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (allowDataStore == false)
-				{
-					functions.Events.allowFileStorage();
-				}
-				else 
-				{
-					functions.Events.forbidFileStorage();
-				}					
-			}
-		});	
-		mntmStoreToFile.setSelection(allowDataStore);
-		mntmStoreToFile.setText("write data to file");
 		// ---------------------------------------------------------------------------------		
 
 		// SEPARATOR -----------------------------------------------------------------------		
@@ -1385,6 +1424,7 @@ public class mainWindow {
 				tmplPath1txt.setEnabled(tmpBr.ctrlTmpl[0]);
 				tmplPath1txt.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 				
+				// template control 1 button
 				final Button btnCheckButtonTmpl = new Button(group, SWT.CHECK);
 				btnCheckButtonTmpl.setBounds(settingOffsetX, 
 										 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber+settingRegionSeparateHeight
@@ -1398,23 +1438,34 @@ public class mainWindow {
 				{
 					@Override
 					public void widgetSelected(SelectionEvent e) 
-					{						
-						if (tmpltCtrlCheck(tmpStr, 0) == true)
+					{
+						// if template control is disabled (we want to enable it now)
+						if (tmpBr.ctrlTmpl[0]==false)
 						{
-							if (Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0].length() > 30)
+							System.out.println("enable TEMPLATE");
+							if (tmpltCtrlCheck(tmpStr, 0) == true)
 							{
-								// adjust text length
-								String tmp = Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0];
-								tmp = ".." + tmp.substring(tmp.length()-20, tmp.length());
-								tmplPath1txt.setText(tmp);
+								if (Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0].length() > 30)
+								{
+									// adjust text length
+									String tmp = Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0];
+									tmp = ".." + tmp.substring(tmp.length()-20, tmp.length());
+									tmplPath1txt.setText(tmp);
+								}
+								else
+								{
+									tmplPath1txt.setText(Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
+								}
 							}
-							else
-							{
-								tmplPath1txt.setText(Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
-							}
-						}	
+						}
+						// if template control is enabled (we are going to disable it)
+						else
+						{
+							System.out.println("disable TEMPLATE");
+							functions.Events.changeTmpltCntrl(tmpBr.uid, 0, false, Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
+						}
 						tmplPath1txt.setEnabled(tmpBr.ctrlTmpl[0]);
-						btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);
+						btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);						
 					}
 					@Override
 					public void widgetDefaultSelected(SelectionEvent e) {}
@@ -1457,8 +1508,12 @@ public class mainWindow {
 				    	  }
 				    	  if (update == true)
 				    	  {
-				    		  updBr.setTmplWidth(perspectiveValue,0);
-				    		  System.out.println("new tmpl value : "+perspectiveValue);
+				    	  	  if (perspectiveValue>=0)
+				    	  	  {				    		  
+				    	  		  updBr.setTmplWidth(perspectiveValue,0);
+				    	  		  System.out.println("new tmpl value : "+perspectiveValue);
+				    	  		  functions.Events.updateTmplPlotWidth(updBr.uid, 0);
+				    	  	  }
 				    	  }
 				        ;}});
 				txtL10max.addListener(SWT.Traverse , new Listener() {
@@ -1478,8 +1533,12 @@ public class mainWindow {
 					    	  }
 					    	  if (update == true)
 					    	  {
-					    		  updBr.setTmplWidth(perspectiveValue,0);
-					    		  System.out.println("new tmpl value : "+perspectiveValue);
+					    	  	  if (perspectiveValue>=0)
+					    	  	  {
+					    	          updBr.setTmplWidth(perspectiveValue,0);
+					    		  	  System.out.println("new tmpl value : "+perspectiveValue);
+					    		  	  functions.Events.updateTmplPlotWidth(updBr.uid, 0);
+					    	  	  }
 					    	  }
 				    	  }
 				        ;}});
@@ -1761,26 +1820,27 @@ public class mainWindow {
 	public static boolean tmpltCtrlCheck(String UID, int index)
 	{		
 		if (Brick.getBrick(connectionData.BrickList,UID).ctrlTmpl[index] == false)
-		{
+		{			
 			// open file dialog
         	JFrame parentFrame = new JFrame();           	 
         	JFileChooser fileChooser = new JFileChooser();
         	FileNameExtensionFilter tmpfilter = new FileNameExtensionFilter("template files", objects.TemplatePlot.fileExtention);
         	fileChooser.setFileFilter(tmpfilter);
-        	fileChooser.setDialogTitle("Specify a template file");           	 
-        	int userSelection = fileChooser.showOpenDialog(parentFrame);	 
-        	if (userSelection == JFileChooser.APPROVE_OPTION) 
+        	fileChooser.setDialogTitle("Specify a template file");
+        	int userSelection = fileChooser.showOpenDialog(parentFrame);
+        	if (userSelection == JFileChooser.APPROVE_OPTION)
         	{
         	    File fileToOpen = fileChooser.getSelectedFile();
         	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
-        	    if (objects.TemplatePlot.isTemplateValid(fileToOpen.getAbsolutePath()))
-        	    {            	
-        			functions.Events.changeTmpltCntrl(UID, index, true, fileToOpen.getAbsolutePath());     			
+        	    if (objects.TemplatePlot.isTemplateValid(fileToOpen.getAbsolutePath()))        	    
+        	    {
+        			functions.Events.changeTmpltCntrl(UID, index, true, fileToOpen.getAbsolutePath());
         			return true;        	    	
         	    }
         	    else 
         	    {
-        	    	return false;
+        	    	data.dialogs.fileDataError(fileToOpen.getAbsolutePath());
+        	    	return false;        	    	
         	    }
         	}
         	// end file dialog

@@ -78,10 +78,9 @@ public class TemplatePlot {
 	 * returns a y value corresponding to given x on the plot
 	 * @param currentMs	current time in milliseconds
 	 * @param startMs	start time of the template plot 
-	 * @param lapCnt	number of the laps or periods of the current plot
 	 * @return			y value
 	 */
-	public double getYValue(long currentMs, long startMs, int lapCnt)
+	public double getYValue(long currentMs, long startMs)
 	{
 		long msTmp = currentMs - startMs;
 		//msTmp = msTmp- lapCnt*this.getLapLength();		
@@ -361,7 +360,53 @@ public class TemplatePlot {
 			File f = new File(path);
 			sc = new Scanner(f);
 		} catch (FileNotFoundException e) {
-			data.dialogs.fileFNFException(data.connectionData.storageFilePath);
+			return false;
+		}
+
+		String line = sc.nextLine();
+		String date = line;
+		line = sc.nextLine();														// skip 1st line for now
+		if (!entriesDescriptionLine.equals(line))									// check for the right data in file
+		{
+			sc.close();
+			return false;							
+		}
+		String str[] = new String[2];
+		long value1;
+		double value2; 
+		
+		while(sc.hasNextLine())
+		{
+			line = sc.nextLine();
+			line = line.substring(0, line.length()-1);
+			str = line.split(",");
+			if (str.length != 2)	
+			{
+				sc.close();
+				return false;
+			}
+			//value1 = Double.parseDouble(str[0]);
+			try
+			{
+				value1 = Long.parseLong(str[0]);
+				value2 = Double.parseDouble(str[1]);
+			}
+			catch (Exception e)
+			{
+				sc.close();
+				return false;
+			}
+		}
+		
+		sc.close();
+		return true;
+		/*
+		Scanner sc = null;
+		try {
+			File f = new File(path);
+			sc = new Scanner(f);
+		} catch (FileNotFoundException e) {
+			//data.dialogs.fileFNFException(data.connectionData.storageFilePath);
 			return false;
 		}
 
@@ -375,6 +420,7 @@ public class TemplatePlot {
 		}
 		sc.close();
 		return true;
+		*/
 	}
 
 }
