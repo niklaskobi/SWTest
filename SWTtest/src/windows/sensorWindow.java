@@ -137,6 +137,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	Slider sliderData = new Slider(sliderValuesNumber);
 	static JSlider slider;
 	
+	static JPanel buttonPanel;
+	
 	public static TemplatePlot templatePlot = new TemplatePlot();
 	
     public static Map<String, TimeSeriesCollection> seriesCollectionMap = new HashMap<String, TimeSeriesCollection>();
@@ -200,6 +202,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     public static Map<String, Long> tmplStartMs = new HashMap<String, Long>();
     public static Map<String, Integer> tmplindex = new HashMap<String, Integer>();
     public static Map<String, Integer> tmplLapCnt = new HashMap<String, Integer>();
+    public static Map<String, Integer> tmplLapCnt2 = new HashMap<String, Integer>();
+    
+    public static Map<String, JButton> tmplButtons = new HashMap<String, JButton>();
+    public static Map<String, JButton> tmplButtonsVisible = new HashMap<String, JButton>();
+    
     
     /**
      * map with int states of the plot
@@ -311,8 +318,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			rangeAxis.setTickLabelFont(customFonts.get("axisValueFont"));
 						
 			// create template graph
-			if (newBrick.ctrlTmpl[0] == true)
-			{			
+			//if (newBrick.ctrlTmpl[0] == true)
+			//{
 				tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
 				
 				XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
@@ -321,9 +328,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				renderer3.setSeriesPaint(0, Color.GREEN);
 				//renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 				renderer3.setSeriesStroke( 0, stroke );
+				renderer3.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
 				rendererMap3.put(newBrick.uid, renderer3);
 				tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));							
-			}						
+			//}						
 						
 			// put everything to the maps
 			rendererMap.put(newBrick.uid, renderer1);
@@ -981,21 +989,23 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         
         // ===================================================
         // buttons
-        final JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel = new JPanel(new FlowLayout());
         
        	for (int i=0; i<connectionData.presentedBrickList.size();i++)
        	{
-			Brick tmpBrick = connectionData.presentedBrickList.get(i);
-			for (int i1 = 0; i1<2; i1++)
-			{
-				if (tmpBrick.ctrlTmpl[i1] == true)
-				{
-		            final JButton button = new JButton(tmpBrick.uid + " start");
-		            button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i);
-		            button.addActionListener(this);
-		            buttonPanel.add(button);					
-				}
-			}
+       		for (int i2 = 0; i2<2; i2++)
+       		{
+       			Brick tmpBrick = connectionData.presentedBrickList.get(i);
+       			JButton button = new JButton(tmpBrick.uid + " start");
+       			button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i + "("+i2+")");
+       			button.addActionListener(this);
+       			tmplButtons.put(tmpBrick.uid, button);
+       			//if ((tmpBrick.ctrlTmpl[0]) || (tmpBrick.ctrlTmpl[1]))
+       			//{
+       			//	buttonPanel.add(button);					
+       			//}
+       			changeTmplCntrl(tmpBrick, i2);
+       		}
         }
         content.add(buttonPanel, BorderLayout.SOUTH);
         // ===================================================
@@ -1073,7 +1083,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
         	}
         });
         */
-                 
+        
+        // start auto update plot 
+        autoUpdatePlot(); 
         
     	this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -1162,7 +1174,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                     	for (int i = 0; i < mouse_plot.getDatasetCount(); i++)
                     	{
                     		//collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset());
+                    		if ( mouse_plot == null) continue;
+                    		if ( mouse_plot.getDataset(i) == null) continue;
+                    		
+                    		Comparable comparable =  mouse_plot.getDataset().getSeriesKey(i);
+                    		int indexOf=mouse_plot.getDataset().indexOf(comparable);
+                		    if ( mouse_plot.getDataset().getItemCount(indexOf) < 3) continue;
+                		    
+                    		//if ( mouse_plot.getDataset(i).get < 2) continue;
                     		collectPlotValues(markerStart[0], markerEnd[0], mouse_plot.getDataset(i));
+                    		
                     		functions.Events.handleMouseSelection(templatePlot, i);
                     	}
                     }
@@ -1228,10 +1249,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
                 if (mouse_plot != null)
                 {
                 	mouse_plot.addDomainMarker(marker,Layer.BACKGROUND);
-                	System.out.println("6");
                 }
-                System.out.println("7");
-                
             }
         }
     }
@@ -1387,7 +1405,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
    			value1 = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(uid));
     			
    			// add value to the plot
-   			tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);   			
+   			//if (tmplCollection1_1!=null)
+   			{
+   				//System.out.println("ms:" +ms);
+   				//System.out.println("value:"+value1);   				
+   				tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+   			}
      			
 
     		/*
@@ -1498,7 +1521,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, sensorUID);
     	if ((Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[0] == true) && 
     			(tmplCollection1_1.containsKey(sensorUID)) && 
-    			(tmplStartMs.containsKey(sensorUID)))
+    			(tmplStartMs.containsKey(sensorUID)) &&
+    			((tmpBrick.ctrlTmplruns[0] == true) || (tmpBrick.ctrlTmplruns[0] == true)))
 		{
 			long timeNow = System.currentTimeMillis();
 			double tmplValue = tmpBrick.tmplPlot[0].getYValue(timeNow, tmplStartMs.get(sensorUID));
@@ -1727,9 +1751,60 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
     
     // TODO:
-    public static void changeTmplCntrl(Brick br, int index, boolean on)
+    public static void changeTmplCntrl(Brick br, int index)
     {
-    	System.out.println("changeTmplCntrl");
+    	rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+    	
+    	if (br.ctrlTmpl[index])
+    	{
+    		// make button visible
+    		tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
+    		buttonPanel.add(tmplButtons.get(br.uid));
+    	}
+    	else
+    	{
+    		// hide button    		
+    		tmplButtonsVisible.remove(br.uid, tmplButtons.get(br.uid));
+    		buttonPanel.remove(tmplButtons.get(br.uid));
+    	}
+    	
+    	updateButtonPanel();
+    }
+    
+    
+    public static void startStopTmplCntrl(Brick br, int index)
+    {    	    	    	
+    	if (br.ctrlTmplruns[index] == true) 
+    	{
+    		// stop template control
+    		tmplButtons.get(br.uid).setText(br.uid + " start");
+    		tmplButtonsVisible.get(br.uid).setText(br.uid + " start");
+    		br.ctrlTmplruns[index] = false;
+    		//if (index == 0)	plot1StateMap.put(br.uid, 0);
+    		//if (index == 1)	plot2StateMap.put(br.uid, 0);    		
+    	}
+    	else
+    	{
+    		// start template control
+    		tmplButtons.get(br.uid).setText(br.uid + " stop");
+    		tmplButtonsVisible.get(br.uid).setText(br.uid + " stop");    		
+    		br.ctrlTmplruns[index] = true;    		
+    	}
+    	rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);    	
+    	updateButtonPanel();
+    }
+    
+    
+    public static void updateButtonPanel()
+    {
+    	buttonPanel.removeAll();
+    	
+    	for (Map.Entry<String, JButton> entry : tmplButtonsVisible.entrySet()) 
+    	{
+    	    //String uid = entry.getKey();
+    	    JButton button = entry.getValue();
+    	    buttonPanel.add(button);
+    	}
     }
     
     
@@ -1739,17 +1814,30 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
        	for (int i=0; i<connectionData.presentedBrickList.size();i++)
        	{
 			Brick tmpBrick = connectionData.presentedBrickList.get(i);
-			String command = e.getActionCommand().substring(0, e.getActionCommand().length()-1);
-            if (command.equals(buttonComAddBtn+tmpBrick.uid))
+			//String command = e.getActionCommand().substring(0, e.getActionCommand().length()-1);
+			String command = e.getActionCommand().substring(0, e.getActionCommand().length()-4);
+			String indexStr = e.getActionCommand().substring(e.getActionCommand().length()-4, e.getActionCommand().length()-3);
+			int index = Integer.valueOf(indexStr);
+			
+			// start template control
+            if ((command.equals(buttonComAddBtn+tmpBrick.uid)) && (!tmpBrick.ctrlTmplruns[index]))
             {
             	long timeNow = System.currentTimeMillis(); 
             	tmplStartMs.put(tmpBrick.uid, timeNow);
-            	tmplLapCnt.put(tmpBrick.uid, 0);
+            	tmplLapCnt.put(tmpBrick.uid, 0);            	
+            	// start auto update plot
+            	//autoUpdatePlot();            	
             }
+            
+			// stop template control            
+            if ((command.equals(buttonComAddBtn+tmpBrick.uid)) && (tmpBrick.ctrlTmplruns[index]))
+            {
+            	
+            }
+            
+        	startStopTmplCntrl(tmpBrick, index);
         }
 		
-    	// start auto update plot
-    	autoUpdatePlot();
 	}       
 
 
@@ -1783,6 +1871,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
     }
 
 	
+	
+	
 	/**
 	 * collects values from the selection and copies them into the templatePlot object
 	 * @param x1
@@ -1794,7 +1884,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		Comparable comparable;
 		int indexOf;
 		ArrayList<MeasurementEntry> entries = new ArrayList<MeasurementEntry>();
-		int k = dataSet.getSeriesCount();
+		if (dataSet != null)
+		{
+			int k = dataSet.getSeriesCount();
 		
 		for(int i=0;i<dataSet.getSeriesCount();i++)
 		{
@@ -1815,8 +1907,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		    	}
             }
         }
+		}
 		templatePlot.replacePointList(entries);
 	}
+	
+	
 	
 	
 	private static class SeriesAndItemIndex
@@ -1837,6 +1932,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			return "itemIndex="+itemIndex+",seriesIndex="+seriesIndex;
 		}
 	}
+	
+	
 	
 	/**
 	 * computes width in pixels of the template plot according to given real width 

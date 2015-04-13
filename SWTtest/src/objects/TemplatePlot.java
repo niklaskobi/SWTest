@@ -59,12 +59,18 @@ public class TemplatePlot {
 	{		
 		ArrayList<MeasurementEntry> newList = new ArrayList<MeasurementEntry>();
 		//double offset = this.allPoints.get(0).value1;
-		long offset = this.allPoints.get(0).value1;
-		for (int i=0; i<this.allPoints.size(); i++)
-		{
-			newList.add(new MeasurementEntry(this.allPoints.get(i).value1-offset, this.allPoints.get(i).value2));
-		}
-		this.allPoints = newList;
+		//if (this.allPoints!=null)
+		//{		
+			if (!this.allPoints.isEmpty())
+			{
+				long offset = this.allPoints.get(0).value1;
+				for (int i=0; i<this.allPoints.size(); i++)
+				{
+					newList.add(new MeasurementEntry(this.allPoints.get(i).value1-offset, this.allPoints.get(i).value2));
+				}
+				this.allPoints = newList;
+			}
+		//}
 	}
 	
 	

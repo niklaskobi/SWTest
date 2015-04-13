@@ -1,9 +1,16 @@
 package windows;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.Date;
 
@@ -18,15 +25,22 @@ import javax.swing.JPanel;
 import objects.TemplatePlot;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.entity.ChartEntity;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.ApplicationFrame;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -42,7 +56,8 @@ public class plotConfirmWindow {
     
     private final String windowTitle = "template chart";
     private final String xLabel = "Time";
-    private final String yLabel = "Value";
+    private final String yLabel = "Value";    
+
 
     public plotConfirmWindow(TemplatePlot p, int index) {
     	this.myIndex = index;
@@ -88,7 +103,7 @@ public class plotConfirmWindow {
      * @param p
      */
     public plotConfirmWindow(String path, int index) 
-    {
+    {   	
     	this.myIndex = index;
     	this.tPlot = new TemplatePlot();
     	tPlot.readTemplateFromFile(path, true);
@@ -285,5 +300,8 @@ public class plotConfirmWindow {
     	functions.Events.closePlotWindow(myIndex);
     	f.dispose();
     }
+    
+    
+    
     
 }

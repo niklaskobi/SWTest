@@ -80,11 +80,11 @@ public class windowController {
     }
         
     
-    public static void changeTmplCntrl(Brick br, int index, boolean on)
+    public static void changeTmplCntrl(Brick br, int index)
     {
     	if (existsSensorWindow == true)
     	{
-    		windows.sensorWindow.changeTmplCntrl(br,index, on);
+    		windows.sensorWindow.changeTmplCntrl(br,index);
     	}    	
     }
     

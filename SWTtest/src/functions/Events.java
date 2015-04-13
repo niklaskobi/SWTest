@@ -173,13 +173,16 @@ public class Events {
 	 * handle on/off of template control
 	 * @param UID	id String of the brick
 	 * @param index	index of the sensor (0,1...)
-	 * @param on	true = on
+	 * @param on	true = template control on
 	 */
 	public static void changeTmpltCntrl(String UID, int index, boolean on, String path)
 	{
 		Brick.checkCtrlTemplate(Brick.getBrick(connectionData.BrickList, UID), index, on);
-		Brick.setCtrlTmplPath(Brick.getBrick(connectionData.BrickList, UID), index, on, path);
-		windowController.changeTmplCntrl(Brick.getBrick(connectionData.BrickList, UID), index, on);
+		if (on == true) 
+		{	
+			Brick.setCtrlTmplPath(Brick.getBrick(connectionData.BrickList, UID), index, on, path);
+		}
+		windowController.changeTmplCntrl(Brick.getBrick(connectionData.BrickList, UID), index);
 	}
 
 	

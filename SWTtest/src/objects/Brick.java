@@ -32,6 +32,7 @@ public class Brick {
 	public boolean controlAverage;
 	public boolean controlAverage2;
 	public boolean[] 		ctrlTmpl = new boolean[2];
+	public boolean[] 		ctrlTmplruns = new boolean[2];
 	public String[] 		ctrlTmplPath = new String[2];
 	public TemplatePlot[] 	tmplPlot = new TemplatePlot[2];
 	public double tmpl1Width;
@@ -69,7 +70,8 @@ public class Brick {
 		for (int i=0; i<2;i++)
 		{
 			this.tmplPlot[i] = new TemplatePlot();
-			this.ctrlTmpl[i] = false;
+			this.ctrlTmpl[i] = false;			
+			this.ctrlTmplruns[i] = false;
 			this.ctrlTmplPath[i] = "undefined";
 		}
 		
