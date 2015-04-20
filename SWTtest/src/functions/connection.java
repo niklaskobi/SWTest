@@ -168,8 +168,11 @@ public class connection {
 			}
 			
 			// open sensor window if its not already opened				
-			windowController.openSensorWindow();
+			//windowController.openSensorWindow();
 		}
+		// open sensor window if its not already opened				
+		//windowController.openSensorWindow();
+		
 	}		
 	
 	

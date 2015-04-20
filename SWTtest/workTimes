@@ -5,3 +5,9 @@ last stand:
 toDO:
 -	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
 -	stop functionality for auto update template values
+
++	start template control with new times (currently it is just continuing the old template chart)
+-	enable/disable template control
+-	template for double charts
+-	hide all lines when disabling average control
+-	pop menu for choose of the control method
