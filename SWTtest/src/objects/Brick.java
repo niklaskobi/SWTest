@@ -64,8 +64,8 @@ public class Brick {
 		this.checked2 = false;
 		this.checked3 = false;
 		this.lastValue = 0;
-		this.controlAverage = true;
-		this.controlAverage2 = true;
+		this.controlAverage = false;
+		this.controlAverage2 = false;
 		
 		for (int i=0; i<2;i++)
 		{
