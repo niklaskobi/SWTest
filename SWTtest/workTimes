@@ -19,3 +19,8 @@ toDO:
 -	same colors for markers for each control case
 -	activate/disactivate simple threshold controlling
 -	scrolling to 100% satisfactory
++	BUG! template chart background by multiple charts (29.04.2015) 
+-	main window objects dynamic by changing the size of window
++	activating 2nd template controlling, do not activate a new start button (29.04.2015)
++	disabling template plot and color background to default by unchecking the template control box (29.04.2015)
+-	template shape more beautiful

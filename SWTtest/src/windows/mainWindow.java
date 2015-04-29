@@ -1462,7 +1462,7 @@ public class mainWindow {
 						else
 						{
 							System.out.println("disable TEMPLATE");
-							functions.Events.changeTmpltCntrl(tmpBr.uid, 0, false, Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
+							functions.Events.disableTmpltCntrl(tmpBr.uid, 0, Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[0]);
 						}
 						tmplPath1txt.setEnabled(tmpBr.ctrlTmpl[0]);
 						btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);						
@@ -1834,7 +1834,7 @@ public class mainWindow {
         	    System.out.println("Open file: " + fileToOpen.getAbsolutePath());
         	    if (objects.TemplatePlot.isTemplateValid(fileToOpen.getAbsolutePath()))        	    
         	    {
-        			functions.Events.changeTmpltCntrl(UID, index, true, fileToOpen.getAbsolutePath());
+        			functions.Events.enableTmpltCntrl(UID, index, fileToOpen.getAbsolutePath());
         			return true;        	    	
         	    }
         	    else 
@@ -1847,7 +1847,7 @@ public class mainWindow {
 		}
 		else
 		{
-			functions.Events.changeTmpltCntrl(UID, index, false, "undefined");
+			functions.Events.disableTmpltCntrl(UID, index, "undefined");
 			return false;
 		}
 		return true;

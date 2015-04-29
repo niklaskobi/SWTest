@@ -80,14 +80,40 @@ public class windowController {
     }
         
     
+    /*
     public static void changeTmplCntrl(Brick br, int index)
     {
     	if (existsSensorWindow == true)
     	{
-    		windows.sensorWindow.changeTmplCntrl(br,index);
+    		//windows.sensorWindow.changeTmplCntrl(br,index);
+    		sensorWindow.changeTmplCntrl(br,index);
     	}    	
     }
+    */
+    public static void disableTmplCntrl(Brick br, int index)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		//windows.sensorWindow.changeTmplCntrl(br,index);
+    		sensorWindow.disableTmplCtrl(br,index);
+    	}    	
+    }
+
     
+    
+    
+    
+    public static void enableTmplCntrl(Brick br, int index)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		//windows.sensorWindow.changeTmplCntrl(br,index);
+    		sensorWindow.enableTmplCtrl(br,index);
+    	}    	
+    }
+
+
+
     public static void openSettingsWindow()
     {
 		if (existsSettingWindow == false)
@@ -95,6 +121,8 @@ public class windowController {
 			existsSettingWindow = true;
 		}		
     }
+    
+    
     
 	public static void closeSettingsWindow()
 	{
@@ -104,10 +132,10 @@ public class windowController {
 		*/		
 		existsSettingWindow = false;
 	}
-    
+
+	
 	public static void openSensorWindow()
 	{
-
 		if (existsSensorWindow == false)
 		{
 			sensorWindow = new sensorWindow("sensor data");
