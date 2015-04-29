@@ -6,12 +6,7 @@ toDO:
 -	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
 -	stop functionality for auto update template values
 
-+	start template control with new times (currently it is just continuing the old template chart)
-+	enable/disable template control
 -	template for double charts
-+	hide all lines when disabling average control	(27.04.2015)
-+	color the plot red, if average control is enabled and the graph is out of boundaries	(27.04.2015)
-+	hashMap for states for each control case	(27.04.2015)
 -	pop-up menu for choose of the control method
 -	template control button is hiding the scale after enabling
 -	continuous update if no values are returned from sensors (= same value as last time)
@@ -19,8 +14,19 @@ toDO:
 -	same colors for markers for each control case
 -	activate/disactivate simple threshold controlling
 -	scrolling to 100% satisfactory
-+	BUG! template chart background by multiple charts (29.04.2015) 
 -	main window objects dynamic by changing the size of window
+-	template shape more beautiful
+
+
+
+done:
++	start template control with new times (currently it is just continuing the old template chart)
++	enable/disable template control
+
++	hide all lines when disabling average control	(27.04.2015)
++	color the plot red, if average control is enabled and the graph is out of boundaries	(27.04.2015)
++	hashMap for states for each control case	(27.04.2015)
+
 +	activating 2nd template controlling, do not activate a new start button (29.04.2015)
 +	disabling template plot and color background to default by unchecking the template control box (29.04.2015)
--	template shape more beautiful
++	BUG! template chart background by multiple charts (29.04.2015) 
