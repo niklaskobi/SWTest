@@ -297,8 +297,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		seriesMap2.put(newBrick.uid, newSeries2);
 		seriesMap3.put(newBrick.uid, newSeries3);
 		seriesMap4.put(newBrick.uid, newSeries4);
-		seriesMap5.put(newBrick.uid, newSeries3);
-		seriesMap6.put(newBrick.uid, newSeries4);
+		seriesMap5.put(newBrick.uid, newSeries5);
+		seriesMap6.put(newBrick.uid, newSeries6);
 
 		// create collection map entry
 		seriesCollectionMap.put(newBrick.uid, new TimeSeriesCollection(newSeries));
@@ -364,21 +364,18 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			rangeAxis.setTickLabelFont(customFonts.get("axisValueFont"));
 
 			// create template graph
-			// if (newBrick.ctrlTmpl[0] == true)
-			// {
 			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
 
 			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
 			int width = computeTmplPlotWidth(newBrick.tmpl1Width);
-			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_BUTT,
+			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,
 					BasicStroke.JOIN_ROUND);// , 10.0f, dash, 0.0f);
 			renderer3.setSeriesPaint(0, Color.GREEN);
-			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 			renderer3.setSeriesStroke(0, stroke);
 			renderer3.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
 			rendererMap3.put(newBrick.uid, renderer3);
 			tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));
-			// }
+
 
 			// put everything to the maps
 			rendererMap.put(newBrick.uid, renderer1);
@@ -532,6 +529,21 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				tmpSubPlot.addRangeMarker(1, avrgCtrl2high, Layer.BACKGROUND);
 				tmpSubPlot.addRangeMarker(1, avrgCtrl2low, Layer.BACKGROUND);
 			}
+			// ----------------------------------------------------------------------------------
+			
+			// ----------------------------------------------------------------------------------
+			// create template graph
+			tmpSubPlot.setDataset(3, tmplCollection2_1.get(newBrick.uid));
+			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
+			int width = computeTmplPlotWidth(newBrick.tmpl2Width);
+			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
+			renderer4.setSeriesPaint(1, Color.GREEN);
+			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
+			renderer4.setSeriesStroke(0, stroke);
+			renderer4.setSeriesVisible(0, newBrick.ctrlTmpl[1]);
+			rendererMap4.put(newBrick.uid, renderer4);
+			tmpSubPlot.setRenderer(3, rendererMap4.get(newBrick.uid));
+			tmpSubPlot.mapDatasetToRangeAxis(3, 1);
 			// ----------------------------------------------------------------------------------
 
 			// put everything to the map
@@ -717,26 +729,26 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			if (rendererMap3.containsKey(UID)) {
 				XYItemRenderer rendererTmp = rendererMap3.get(UID);
 				int width = computeTmplPlotWidth(tmpBrick.tmpl1Width);
-				BasicStroke stroke = new BasicStroke(width,
-						BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);// ,
-																		// 10.0f,
-																		// dash,
-																		// 0.0f);
+				BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 				rendererTmp.setSeriesPaint(0, Color.GREEN);
-				// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 				rendererTmp.setSeriesStroke(0, stroke);
 				rendererMap3.put(UID, rendererTmp);
-				// tmplPlot1Width.put(UID,
-				// computeTmplPlotWidth(tmpBrick.tmpl1Width));
 			}
 		}
 		if (index == 1) {
-			if (rendererMap4.containsKey(UID)) {
-				// TODO
+			if (rendererMap4.containsKey(UID)) 
+			{
+				XYItemRenderer rendererTmp = rendererMap4.get(UID);
+				int width = computeTmplPlotWidth(tmpBrick.tmpl2Width);
+				BasicStroke stroke = new BasicStroke(width,	BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+				rendererTmp.setSeriesPaint(0, Color.GREEN);
+				rendererTmp.setSeriesStroke(0, stroke);
+				rendererMap4.put(UID, rendererTmp);
 			}
 		}
 	}
 
+	
 	/**
 	 * update average control values
 	 * 
@@ -780,6 +792,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 
+	
 	/**
 	 * updates the threshold marker on the graph of the given sensor
 	 * 
@@ -806,6 +819,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 
+	
 	/**
 	 * updates the threshold marker on the graph of the given sensor
 	 * 
@@ -814,7 +828,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 * @param treshold
 	 *            new threshold
 	 */
-
 	public static void updateTresholdMax1(String UID, double treshold) {
 		if (markerMapMax1Critical.containsKey(UID)) {
 			ValueMarker vm = markerMapMax1Critical.get(UID);
@@ -1273,27 +1286,35 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 						mouse_plot.addDomainMarker(marker, Layer.BACKGROUND);
 						areaMarked.put(mouse_plot, true);
 						// System.out.println("add area");
-						for (int i = 0; i < mouse_plot.getDatasetCount(); i++) {
+						System.out.println("dataset count :"+mouse_plot.getDatasetCount());
+						for (int i = 0; i < mouse_plot.getDatasetCount()/2; i++) 
+						{
 							// collectPlotValues(markerStart[0], markerEnd[0],
 							// mouse_plot.getDataset());
+							/*
 							if (mouse_plot == null)
 								continue;
 							if (mouse_plot.getDataset(i) == null)
 								continue;
+							*/
+							try
+							{
+								/*
+								Comparable comparable = mouse_plot.getDataset().getSeriesKey(i);
+								int indexOf = mouse_plot.getDataset().indexOf(comparable);
+								if (mouse_plot.getDataset().getItemCount(indexOf) < 3)
+									continue;
+									*/
+							}
+							catch (Exception e)
+							{
+								System.out.println("exception here");
+								e.printStackTrace();
+							};
 
-							Comparable comparable = mouse_plot.getDataset()
-									.getSeriesKey(i);
-							int indexOf = mouse_plot.getDataset().indexOf(
-									comparable);
-							if (mouse_plot.getDataset().getItemCount(indexOf) < 3)
-								continue;
+							collectPlotValues(markerStart[0], markerEnd[0],mouse_plot.getDataset(i));
 
-							// if ( mouse_plot.getDataset(i).get < 2) continue;
-							collectPlotValues(markerStart[0], markerEnd[0],
-									mouse_plot.getDataset(i));
-
-							functions.Events.handleMouseSelection(templatePlot,
-									i);
+							functions.Events.handleMouseSelection(templatePlot,i);
 						}
 					}
 				}
@@ -1377,28 +1398,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 
-	/**
-	 * Handles a click on the button by adding new (random) data.
-	 *
-	 * @param e
-	 *            the action event.
-	 */
-	/*
-	 * public void actionPerformed(final ActionEvent e) {
-	 * 
-	 * for (int i = 0; i < SUBPLOT_COUNT; i++) { if
-	 * (e.getActionCommand().endsWith(String.valueOf(i))) { final Millisecond
-	 * now = new Millisecond(); System.out.println("Now = " + now.toString());
-	 * this.lastValue[i] = this.lastValue[i] * (0.90 + 0.2 * Math.random());
-	 * this.datasets[i].getSeries(0).add(new Millisecond(), this.lastValue[i]);
-	 * } }
-	 * 
-	 * if (e.getActionCommand().equals("ADD_ALL")) { final Millisecond now = new
-	 * Millisecond(); System.out.println("Now = " + now.toString()); for (int i
-	 * = 0; i < SUBPLOT_COUNT; i++) { this.lastValue[i] = this.lastValue[i] *
-	 * (0.90 + 0.2 * Math.random()); this.datasets[i].getSeries(0).add(new
-	 * Millisecond(), this.lastValue[i]); } } }
-	 */
 
 	/**
 	 * add a value to the second field of a sensor (used for sensors with 2
@@ -1420,57 +1419,98 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			values2Map.get(sensorUID).addValue(value);
 		}
 
+		// if template control is turned on and template control variables exist
+		templateCtrlUpdate(sensorUID, value, 1);
+
 		// execute simple threshold validation
-		simpleTresholdCtrlUpdate(sensorUID, value, 2);		
+		simpleTresholdCtrlUpdate(sensorUID, value, 1);		
 
 		// color the plot's background according to it's current state,
 		colorChart(sensorUID);	
 	}
 
 	
-	
 	public double addTmplValue(String uid, Millisecond ms, int index) 
 	{
-		double value1 = 0;
-		// add next value to template plot
-		if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[index] == true)
-				&& (tmplCollection1_1.containsKey(uid))
-				&& (tmplStartMs.containsKey(uid))) 
+		if (index == 0)
 		{
-			Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
-
-			long timeNow = System.currentTimeMillis();
-
-			value1 = tmpBrick.tmplPlot[index].getYValue(timeNow,
-					tmplStartMs.get(uid));
-
-			// add value to the plot
-			if (tmplCollection1_1 != null) 
+			double value1 = 0;
+			// add next value to template plot
+			if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[index] == true)
+					&& (tmplCollection1_1.containsKey(uid))
+					&& (tmplStartMs.containsKey(uid))) 
 			{
-				if (tmplCollection1_1.get(uid) != null) 
+				Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+	
+				long timeNow = System.currentTimeMillis();
+	
+				value1 = tmpBrick.tmplPlot[index].getYValue(timeNow,
+						tmplStartMs.get(uid));
+	
+				// add value to the plot
+				if (tmplCollection1_1 != null) 
 				{
-					if (tmplCollection1_1.get(uid).getSeries(0) != null) 
+					if (tmplCollection1_1.get(uid) != null) 
 					{
-						//System.out.println("ms= "+ms+", val = "+value1);
-						tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+						if (tmplCollection1_1.get(uid).getSeries(0) != null) 
+						{
+							//System.out.println("ms= "+ms+", val = "+value1);
+							tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+						}
 					}
 				}
 			}
+			return value1;
 		}
-		return value1;
+		
+		if (index == 1)
+		{
+			double value1 = 0;
+			// add next value to template plot
+			if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[index] == true)
+					&& (tmplCollection2_1.containsKey(uid))
+					&& (tmplStartMs.containsKey(uid))) 
+			{
+				Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+	
+				long timeNow = System.currentTimeMillis();
+	
+				value1 = tmpBrick.tmplPlot[index].getYValue(timeNow,
+						tmplStartMs.get(uid));
+	
+				// add value to the plot
+				if (tmplCollection2_1 != null) 
+				{
+					if (tmplCollection2_1.get(uid) != null) 
+					{
+						if (tmplCollection2_1.get(uid).getSeries(0) != null) 
+						{
+							//System.out.println("ms= "+ms+", val = "+value1);
+							tmplCollection2_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+						}
+					}
+				}
+			}
+			return value1;
+		}
+		return 0;
 	}
 	
 	
 	/**
 	 * function for auto updating the plot,
 	 */
-	public void autoUpdatePlot() {
-		new Thread(new Runnable() {			
-			public void run() {
+	public void autoUpdatePlot() 
+	{
+		new Thread(new Runnable() 
+		{			
+			public void run() 
+			{
 				System.out.println("THREAD STARTED");
 				int cnt = 0;
 				// TODO: stop functionality
-				while (true) {
+				while (true) 
+				{
 					try 
 					{
 						Thread.sleep(100);
@@ -1494,6 +1534,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}).start();
 	}
 
+	
 	/**
 	 * add a value to the main field of the sensor
 	 * 
@@ -1683,36 +1724,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	}
 	
 	
-	/*
-	public void changeTmplCntrl(Brick br, int index) 
-	{
-		rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);		
-		
-		if (br.ctrlTmpl[index]) {
-			// make button visible
-			addButtonToContent(br, index); 
-			tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
-			//buttonPanel.add(tmplButtons.get(br.uid));
-		} else {
-			// hide button
-			tmplButtonsVisible.remove(br.uid, tmplButtons.get(br.uid));
-			//buttonPanel.remove(tmplButtons.get(br.uid));
-			stopTmplControl(br, index);
-		}
-
-		updateButtonPanel();
-	}
-	*/
-	
-	
 	public void disableTmplCtrl(Brick br, int index)
 	{
-		//rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
-		//br.ctrlTmplruns[index] = false;
-		
 		// hide button
 		tmplButtonsVisible.remove(br.uid, tmplButtons.get(br.uid));
-		//buttonPanel.remove(tmplButtons.get(br.uid));
 		stopTmplControl(br, index);
 		updateButtonPanel();
 	}
@@ -1720,9 +1735,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		
 	public void enableTmplCtrl(Brick br, int index)
 	{
-		// set template plot visible
-		//rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);		
-		
 		// make button visible
 		addButtonToContent(br, index); 
 		tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
@@ -1730,68 +1742,34 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		updateButtonPanel();		
 	}
 	
-	
-	/*
-	public static void startStopTmplCntrl(Brick br, int index) {
-		
-		if (br.ctrlTmplruns[index] == true) 
-		{
-			// stop template control
-			tmplButtons.get(br.uid).setText(br.uid + " template start");
-			tmplButtonsVisible.get(br.uid).setText(br.uid + " template start");
-			br.ctrlTmplruns[index] = false;
 			
-			// remove dataset from plot
-			//plotMap.get(br.uid).getDataset(2).
-			//tmplCollection1_1.get(br.uid).removeSeries(0);
-			if (index == 0)
-			{
-				Integer[] tmpArray = plot1ControlMap.get(br.uid);
-				tmpArray[2] = 0;
-				plot1ControlMap.put(br.uid, tmpArray);
-			}
-			if (index == 1)
-			{
-				Integer[] tmpArray = plot2ControlMap.get(br.uid);
-				tmpArray[2] = 0;
-				plot2ControlMap.put(br.uid, tmpArray);
-			}
-		} 
-		else 
-		{
-			// start template control
-			tmplButtons.get(br.uid).setText(br.uid + " template stop");
-			tmplButtonsVisible.get(br.uid).setText(br.uid + " template stop");
-			br.ctrlTmplruns[index] = true;
-			
-			// add data set to plot
-			TimeSeries newSeries3 = new TimeSeries("" + 0, Millisecond.class);	
-			seriesMap3.put(br.uid, newSeries3);
-			tmplCollection1_1.put(br.uid, new TimeSeriesCollection(newSeries3));
-			plotMap.get(br.uid).setDataset(2, tmplCollection1_1.get(br.uid));
-		}
-		
-		rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
-		updateButtonPanel();
-	}
-	*/
-	
-		
 	public static void startTmplControl(Brick br, int index)
 	{
-		// start template control
+		// start template control, update button	
 		tmplButtons.get(br.uid).setText(br.uid + " template stop");
 		tmplButtonsVisible.get(br.uid).setText(br.uid + " template stop");
 		br.ctrlTmplruns[index] = true;
 		
 		// add data set to plot
-		TimeSeries newSeries3 = new TimeSeries("" + 0, Millisecond.class);	
-		seriesMap3.put(br.uid, newSeries3);
-		tmplCollection1_1.put(br.uid, new TimeSeriesCollection(newSeries3));
-		plotMap.get(br.uid).setDataset(2, tmplCollection1_1.get(br.uid));
-		
-		rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
-		updateButtonPanel();
+		if (index == 0)
+		{
+			TimeSeries newSeries3 = new TimeSeries("" + 0, Millisecond.class);	
+			seriesMap3.put(br.uid, newSeries3);
+			tmplCollection1_1.put(br.uid, new TimeSeriesCollection(newSeries3));
+			plotMap.get(br.uid).setDataset(2, tmplCollection1_1.get(br.uid));
+			
+			rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+			updateButtonPanel();
+		}
+		else if (index == 1)
+		{
+			TimeSeries newSeries4 = new TimeSeries("" + 0, Millisecond.class);	
+			seriesMap4.put(br.uid, newSeries4);
+			tmplCollection2_1.put(br.uid, new TimeSeriesCollection(newSeries4));
+			plotMap.get(br.uid).setDataset(3, tmplCollection2_1.get(br.uid));
+			rendererMap4.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+			updateButtonPanel();
+		}
 	}
 	
 	
@@ -1802,23 +1780,22 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		if (tmplButtonsVisible.containsKey(br.uid)) tmplButtonsVisible.get(br.uid).setText(br.uid + " template start");
 		br.ctrlTmplruns[index] = false;
 		
-		// remove dataset from plot
-		//plotMap.get(br.uid).getDataset(2).
-		//tmplCollection1_1.get(br.uid).removeSeries(0);
+		// set states to 0's
 		if (index == 0)
 		{
 			Integer[] tmpArray = plot1ControlMap.get(br.uid);
 			tmpArray[2] = 0;
 			plot1ControlMap.put(br.uid, tmpArray);
+			rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 		}
 		if (index == 1)
 		{
 			Integer[] tmpArray = plot2ControlMap.get(br.uid);
 			tmpArray[2] = 0;
 			plot2ControlMap.put(br.uid, tmpArray);
+			rendererMap4.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 		}
 		
-		rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 		updateButtonPanel();
 
 	}
@@ -1984,34 +1961,56 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	private void templateCtrlUpdate(String sensorUID, double value, int index)
 	{		
 		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, sensorUID);
-		/*
-		if ((Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[0] == true)
-				&& (tmplCollection1_1.containsKey(sensorUID))
-				&& (tmplStartMs.containsKey(sensorUID))
-				&& ((tmpBrick.ctrlTmplruns[0] == true) || (tmpBrick.ctrlTmplruns[0] == true)))
-		*/
-		if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[index] == true)
-			if (tmplCollection1_1.containsKey(sensorUID))
-				if (tmplStartMs.containsKey(sensorUID))
-					if ((tmpBrick.ctrlTmplruns[index] == true))
-				//if ((tmpBrick.ctrlTmplruns[0] == true) || (tmpBrick.ctrlTmplruns[0] == true))		
+
+		if (index == 0)
 		{
-			long timeNow 		= System.currentTimeMillis();
-			double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(sensorUID));
-		
-			if (((tmplValue + tmpBrick.tmpl1Width) < value)|| ((tmplValue - tmpBrick.tmpl1Width) > value)) 
+			if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[index] == true)
+				if (tmplCollection1_1.containsKey(sensorUID))
+					if (tmplStartMs.containsKey(sensorUID))
+						if ((tmpBrick.ctrlTmplruns[index] == true))
 			{
-				// set alarm state
-				//plot1StateMap.put(sensorUID, 3);
-				Integer[] tmpArray = plot1ControlMap.get(sensorUID);
-				tmpArray[2] = 2;
-				plot1ControlMap.put(sensorUID, tmpArray);
+				long timeNow 		= System.currentTimeMillis();
+				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(sensorUID));
+			
+				if (((tmplValue + tmpBrick.tmpl1Width) < value)|| ((tmplValue - tmpBrick.tmpl1Width) > value)) 
+				{
+					// set alarm state
+					Integer[] tmpArray = plot1ControlMap.get(sensorUID);
+					tmpArray[2] = 2;
+					plot1ControlMap.put(sensorUID, tmpArray);
+				}
+				else
+				{
+					Integer[] tmpArray 	= plot1ControlMap.get(sensorUID);
+					tmpArray[2] 		= 0;
+					plot1ControlMap.put(sensorUID, tmpArray);
+				}
 			}
-			else
+		}
+		
+		if (index == 1)
+		{
+			if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[index] == true)
+				if (tmplCollection2_1.containsKey(sensorUID))
+					if (tmplStartMs.containsKey(sensorUID))
+						if ((tmpBrick.ctrlTmplruns[index] == true))
 			{
-				Integer[] tmpArray 	= plot1ControlMap.get(sensorUID);
-				tmpArray[2] 		= 0;
-				plot1ControlMap.put(sensorUID, tmpArray);
+				long timeNow 		= System.currentTimeMillis();
+				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(sensorUID));
+			
+				if (((tmplValue + tmpBrick.tmpl2Width) < value)|| ((tmplValue - tmpBrick.tmpl2Width) > value)) 
+				{
+					// set alarm state
+					Integer[] tmpArray = plot2ControlMap.get(sensorUID);
+					tmpArray[2] = 2;
+					plot2ControlMap.put(sensorUID, tmpArray);
+				}
+				else
+				{
+					Integer[] tmpArray 	= plot2ControlMap.get(sensorUID);
+					tmpArray[2] 		= 0;
+					plot2ControlMap.put(sensorUID, tmpArray);
+				}
 			}
 		}
 	}
@@ -2152,26 +2151,4 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 	}
 	
-	
-	/*
-	 * static void addFill(Plot plot) {
-	 * 
-	 * XYSeries lowerLimitSeries = ((XYSeriesCollection)
-	 * (plot.getDataset())).getSeries(1); XYSeriesCollection fillSet = new
-	 * XYSeriesCollection(); double lowerBound =
-	 * plot.getRangeAxis().getLowerBound(); fillSet.addSeries(lowerLimitSeries);
-	 * fillSet.addSeries(createLowerFillSeries(lowerLimitSeries, lowerBound));
-	 * plot.setDataset(1, fillSet); Paint fillPaint = Color.GREEN;
-	 * XYDifferenceRenderer fillRenderer = new XYDifferenceRenderer(fillPaint,
-	 * fillPaint, false); fillRenderer.setSeriesStroke(0, new BasicStroke(0));
-	 * //do not show fillRenderer.setSeriesStroke(1, new BasicStroke(0)); //do
-	 * not show plot.setRenderer(1, fillRenderer); ... }
-	 * 
-	 * static XYSeries createLowerFillSeries(XYSeries lowerLimitSeries, double
-	 * lowerLimit) { int size = lowerLimitSeries.getItems().size(); XYSeries res
-	 * = new XYSeries("lowerFillSeries"); for (int i = 0; i < size; i++)
-	 * res.add(new XYDataItem(lowerLimitSeries.getX(i), lowerLimit)); return
-	 * res; }
-	 */
-
 }

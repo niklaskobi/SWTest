@@ -6,17 +6,16 @@ toDO:
 -	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
 -	stop functionality for auto update template values
 
--	template for double charts
 -	pop-up menu for choose of the control method
 -	template control button is hiding the scale after enabling
 -	continuous update if no values are returned from sensors (= same value as last time)
 -	set better colors for template control graph (green must be lighter)
 -	same colors for markers for each control case
--	activate/disactivate simple threshold controlling
+-	activate/deactivate simple threshold controlling
 -	scrolling to 100% satisfactory
 -	main window objects dynamic by changing the size of window
--	template shape more beautiful
-
+-	BUG! template window for second chart (temporary solution 05.05.2015), now dividing by 2, line 1290, sonsorWindow
+-	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
 
 
 done:
@@ -30,3 +29,6 @@ done:
 +	activating 2nd template controlling, do not activate a new start button (29.04.2015)
 +	disabling template plot and color background to default by unchecking the template control box (29.04.2015)
 +	BUG! template chart background by multiple charts (29.04.2015) 
+
++	template for double charts (05.05.2015)
++	BUG! template window for second chart (temporary solution 05.05.2015), , now dividing by 2, line 1290, sonsorWindow
