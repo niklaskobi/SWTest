@@ -18,7 +18,7 @@ import com.tinkerforge.NotConnectedException;
 public class main{
 
     public static void main(final String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, NotConnectedException, IOException
-    {
+    {    	
     	// set style
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 

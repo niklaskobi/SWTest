@@ -6,9 +6,9 @@ toDO:
 -	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
 -	stop functionality for auto update template values
 
--	pop-up menu for choose of the control method
+!-	pop-up menu for choose of the control method
 -	template control button is hiding the scale after enabling
--	continuous update if no values are returned from sensors (= same value as last time)
+-	continuous update if no values are returned from sensors (= same value as last time. use same periods!!!!!!)
 -	set better colors for template control graph (green must be lighter)
 -	same colors for markers for each control case
 -	activate/deactivate simple threshold controlling
