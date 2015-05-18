@@ -28,9 +28,10 @@ public class Brick {
 	public boolean checked1;
 	public double lastValue;
 	public boolean checked2;
-	public boolean checked3;
+	public boolean checked3;	
 	public boolean controlAverage;
 	public boolean controlAverage2;
+	public boolean[] 		ctrlSimple = new boolean[2];
 	public boolean[] 		ctrlTmpl = new boolean[2];
 	public boolean[] 		ctrlTmplruns = new boolean[2];
 	public String[] 		ctrlTmplPath = new String[2];
@@ -70,7 +71,8 @@ public class Brick {
 		for (int i=0; i<2;i++)
 		{
 			this.tmplPlot[i] = new TemplatePlot();
-			this.ctrlTmpl[i] = false;			
+			this.ctrlTmpl[i] = false;	
+			this.ctrlSimple[i] = false;
 			this.ctrlTmplruns[i] = false;
 			this.ctrlTmplPath[i] = "undefined";
 		}
@@ -675,6 +677,21 @@ public class Brick {
 		if (b != null)
 		{
 			b.ctrlTmpl[index] = on;
+		}
+	}
+	
+	
+	/**
+	 * set simple control use case 
+	 * @param b	brick object
+	 * @param index	index of the sensor
+	 * @param on true if control is allowd, false otherwise
+	 */
+	public static void setCtrlSimple(Brick b, int index, boolean on)
+	{
+		if (b != null)
+		{
+			b.ctrlSimple[index] = on;
 		}
 	}
 	

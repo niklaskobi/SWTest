@@ -78,7 +78,25 @@ public class windowController {
     		windows.sensorWindow.hideUnhideAvgCtrl(br,index);
     	}
     }
-        
+    
+    
+    public static void enableSimpleControl(Brick br, int index)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		windows.sensorWindow.enableSimpleCtrl(br,index);
+    	}    	
+    }
+    
+    
+    public static void disableSimpleControl(Brick br, int index)
+    {
+    	if (existsSensorWindow == true)
+    	{
+    		windows.sensorWindow.disableSimpleCtrl(br,index);
+    	}    	
+    }
+    
     
     /*
     public static void changeTmplCntrl(Brick br, int index)

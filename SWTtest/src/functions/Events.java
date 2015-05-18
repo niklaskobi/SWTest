@@ -169,6 +169,21 @@ public class Events {
 	}
 	
 	
+	public static void enableSimpleControl(String UID, int index)
+	{
+		// check the item
+		Brick.setCtrlSimple(Brick.getBrick(connectionData.BrickList,UID), index, true);
+		windowController.enableSimpleControl(Brick.getBrick(connectionData.BrickList, UID), index);
+	}
+	
+	
+	public static void disableSimpleControl(String UID, int index)
+	{
+		// check the item
+		Brick.setCtrlSimple(Brick.getBrick(connectionData.BrickList,UID), index, false);
+		windowController.disableSimpleControl(Brick.getBrick(connectionData.BrickList, UID), index);
+	}
+	
 	
 	public static void disableTmpltCntrl(String UID, int index, String path)
 	{

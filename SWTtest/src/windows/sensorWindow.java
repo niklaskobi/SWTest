@@ -1623,7 +1623,22 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			//hideUnhideAvgCtrl(br, 2);
 		}
 	}
-
+	
+	
+	
+	public static void enableSimpleCtrl(Brick br, int index)
+	{
+		//TODO
+	}
+	
+	
+	
+	public static void disableSimpleCtrl(Brick br, int index)
+	{
+		//TODO		
+	}
+	
+	
 	/**
 	 * hide or show average control elements (depending on previous state)
 	 * 
