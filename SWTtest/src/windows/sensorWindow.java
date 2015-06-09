@@ -142,6 +142,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	final static String buttonComAddBtn = "ADD_DATA_";
 
 	Slider sliderData = new Slider(sliderValuesNumber);
+	
 	static JSlider slider;
 
 	static boolean chartAutoUpdate = false;
@@ -171,18 +172,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, XYItemRenderer> rendererMap3 = new HashMap<String, XYItemRenderer>();
 	public static Map<String, XYItemRenderer> rendererMap4 = new HashMap<String, XYItemRenderer>();
 
+	
+	// case simple:
 	public static Map<String, ValueMarker> markerMapMin1Critical = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerMapMin1Warning = new HashMap<String, ValueMarker>();
-
 	public static Map<String, ValueMarker> markerMapMax1Critical = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerMapMax1Warning = new HashMap<String, ValueMarker>();
 
 	public static Map<String, ValueMarker> markerMapMin2Critical = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerMapMin2Warning = new HashMap<String, ValueMarker>();
-
 	public static Map<String, ValueMarker> markerMapMax2Critical = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerMapMax2Warning = new HashMap<String, ValueMarker>();
 
+	// case average:
 	public static Map<String, ValueMarker> markerMaxima = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerMinima = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> markerAverage = new HashMap<String, ValueMarker>();
@@ -190,12 +192,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, ValueMarker> marker2Maxima = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> marker2Minima = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> marker2Average = new HashMap<String, ValueMarker>();
-
-	public static Map<String, XYPlot> plotMap = new HashMap<String, XYPlot>();
-
-	public static Map<String, Measurement> valuesMap = new HashMap<String, Measurement>();
-	public static Map<String, Measurement> values2Map = new HashMap<String, Measurement>();
-
+	
 	// flag for enabling/disabling average control elements, 1st sensor
 	public static Map<String, Boolean> avrgCtrl1Enabled = new HashMap<String, Boolean>();
 	// flag for enabling/disabling average control elements, 2nd sensor	
@@ -206,6 +203,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, ValueMarker> avrg2High = new HashMap<String, ValueMarker>();
 	public static Map<String, ValueMarker> avrg2Low = new HashMap<String, ValueMarker>();
 
+	
+	public static Map<String, XYPlot> plotMap = new HashMap<String, XYPlot>();
+
+	public static Map<String, Measurement> valuesMap = new HashMap<String, Measurement>();
+	public static Map<String, Measurement> values2Map = new HashMap<String, Measurement>();
+
+	// case template
 	public static Map<String, TimeSeriesCollection> tmplCollection1_1 = new HashMap<String, TimeSeriesCollection>();
 	public static Map<String, TimeSeriesCollection> tmplCollection1_2 = new HashMap<String, TimeSeriesCollection>();
 	public static Map<String, TimeSeriesCollection> tmplCollection2_1 = new HashMap<String, TimeSeriesCollection>();
@@ -243,6 +247,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, Integer[]> plot1ControlMap = new HashMap<String, Integer[]>();
 	public static Map<String, Integer[]> plot2ControlMap = new HashMap<String, Integer[]>();
 
+	public static Map<String, MeasurementEntry[]> lastValuesMap = new HashMap<String, MeasurementEntry[]>();
 
 	XYLineAndShapeRenderer renderer0 = new XYLineAndShapeRenderer();
 
@@ -318,6 +323,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		}
 		plot1ControlMap.put(newBrick.uid, tmpArray1);
 		plot2ControlMap.put(newBrick.uid, tmpArray2);
+		
+		
+		// create lastValueMap entry
+		if (!lastValuesMap.containsKey(newBrick.uid))
+		{
+			MeasurementEntry[] meArray = new MeasurementEntry[2];
+			meArray[0] = new MeasurementEntry(0,0);
+			meArray[1] = new MeasurementEntry(0,0);
+			lastValuesMap.put(newBrick.uid, meArray);
+		}
 		
 		// create plot map entry, special case for current/voltage brick, since
 		// it has 2 parallel measurements and therefore 2 graphs must be treated
@@ -425,7 +440,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					RectangleAnchor.TOP_RIGHT);
 			markerMapMin2Critical.get(newBrick.uid).setLabelTextAnchor(
 					TextAnchor.TOP_RIGHT);
-			tmpSubPlot.addRangeMarker(1,
+			if (newBrick.ctrlSimple[1]) tmpSubPlot.addRangeMarker(1,
 					markerMapMin2Critical.get(newBrick.uid), Layer.BACKGROUND);
 
 			// create min1 warning map value
@@ -442,7 +457,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			markerMapMin2Warning.get(newBrick.uid).setLabelTextAnchor(
 					TextAnchor.TOP_RIGHT);
 			// tmpSubPlot.addRangeMarker(markerMapMin2Warning.get(newBrick.uid));
-			tmpSubPlot.addRangeMarker(1,
+			if (newBrick.ctrlSimple[1]) tmpSubPlot.addRangeMarker(1,
 					markerMapMin2Warning.get(newBrick.uid), Layer.BACKGROUND);
 
 			// create max1 critical map value
@@ -457,7 +472,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					RectangleAnchor.TOP_RIGHT);
 			markerMapMax2Critical.get(newBrick.uid).setLabelTextAnchor(
 					TextAnchor.TOP_RIGHT);
-			tmpSubPlot.addRangeMarker(1,
+			if (newBrick.ctrlSimple[1]) tmpSubPlot.addRangeMarker(1,
 					markerMapMax2Critical.get(newBrick.uid), Layer.BACKGROUND);
 
 			// create max1 warning map value
@@ -473,7 +488,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					RectangleAnchor.TOP_RIGHT);
 			markerMapMax2Warning.get(newBrick.uid).setLabelTextAnchor(
 					TextAnchor.TOP_RIGHT);
-			tmpSubPlot.addRangeMarker(1,
+			if (newBrick.ctrlSimple[1]) tmpSubPlot.addRangeMarker(1,
 					markerMapMax2Warning.get(newBrick.uid), Layer.BACKGROUND);
 
 			// create and add min, max and average markers
@@ -568,8 +583,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				RectangleAnchor.TOP_LEFT);
 		markerMapMin1Critical.get(newBrick.uid).setLabelTextAnchor(
 				TextAnchor.TOP_LEFT);
-		plotMap.get(newBrick.uid).addRangeMarker(
-				markerMapMin1Critical.get(newBrick.uid));
+		
+		// if simple control is enabled
+		if (newBrick.ctrlSimple[0])
+		{
+			plotMap.get(newBrick.uid).addRangeMarker(markerMapMin1Critical.get(newBrick.uid));
+		}
 
 		// create min1 warning map value
 		ValueMarker vm2 = new ValueMarker(newBrick.tresholdMin1
@@ -586,7 +605,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				RectangleAnchor.TOP_LEFT);
 		markerMapMin1Warning.get(newBrick.uid).setLabelTextAnchor(
 				TextAnchor.TOP_LEFT);
-		plotMap.get(newBrick.uid).addRangeMarker(
+		if (newBrick.ctrlSimple[0]) plotMap.get(newBrick.uid).addRangeMarker(
 				markerMapMin1Warning.get(newBrick.uid));
 
 		// create max1 critical map value
@@ -603,7 +622,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				RectangleAnchor.TOP_LEFT);
 		markerMapMax1Critical.get(newBrick.uid).setLabelTextAnchor(
 				TextAnchor.TOP_LEFT);
-		plotMap.get(newBrick.uid).addRangeMarker(
+		if (newBrick.ctrlSimple[0]) plotMap.get(newBrick.uid).addRangeMarker(
 				markerMapMax1Critical.get(newBrick.uid));
 
 		// create max1 warning map value
@@ -619,7 +638,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				RectangleAnchor.TOP_LEFT);
 		markerMapMax1Warning.get(newBrick.uid).setLabelTextAnchor(
 				TextAnchor.TOP_LEFT);
-		plotMap.get(newBrick.uid).addRangeMarker(
+		if (newBrick.ctrlSimple[0]) plotMap.get(newBrick.uid).addRangeMarker(
 				markerMapMax1Warning.get(newBrick.uid));
 
 		// create and add min, max and average markers
@@ -1032,6 +1051,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 		super(title);
 		
+		// enable slider
+		sliderData.setEnable(true);
+		
 		System.out.println("create sensorWindow");
 
 		// font customizing
@@ -1106,46 +1128,34 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 		// ===================================================
 		// scroll bar
-		final JPanel sliderPanel = new JPanel(new FlowLayout());
-
-		slider = new JSlider(1, sliderValuesNumber);
-		slider.setValue(sliderValuesNumber);
-		slider.setEnabled(false);
-		slider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if (sliderData.sliderActive == true) {
-					int sliderValue = slider.getValue();
-					if (sliderValue == sliderValuesNumber)
-						sliderUpdate = true;
-					else
-						sliderUpdate = false;
-					/*
-					System.out.println("slider : " + sliderValue);
-					System.out.println("Millis first: "
-							+ sliderData.getMilliseconds(
-									sliderValue - sliderValuesNumber)
-									.toString());
-					System.out.println("Millis last : "
-							+ sliderData.getMilliseconds(sliderValue)
-									.toString());
-					*/
-					DateRange range = new DateRange(sliderData.getMilliseconds(
-							sliderValue - sliderValuesNumber)
-							.getFirstMillisecond(), sliderData.getMilliseconds(
-							sliderValue).getFirstMillisecond());
-					plot.getDomainAxis().setRange(range);
+		if (sliderData.sliderEnabled == true)
+		{
+			final JPanel sliderPanel = new JPanel(new FlowLayout());
+	
+			slider = new JSlider(1, sliderValuesNumber);
+			slider.setValue(sliderValuesNumber);
+			slider.setEnabled(false);
+			slider.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					if (sliderData.sliderActive == true) {
+						int sliderValue = slider.getValue();
+						if (sliderValue == sliderValuesNumber)
+							sliderUpdate = true;
+						else
+							sliderUpdate = false;
+	
+						DateRange range = new DateRange(sliderData.getMilliseconds(
+								sliderValue - sliderValuesNumber)
+								.getFirstMillisecond(), sliderData.getMilliseconds(
+								sliderValue).getFirstMillisecond());
+						plot.getDomainAxis().setRange(range);
+					}
 				}
-			}
-		});
-		sliderPanel.add(slider);
-		// chartPanel.add(slider);
-		/*
-		 * final Panel chartPanel2 = new Panel(); chartPanel2.add(slider);
-		 * content.add(chartPanel2, BorderLayout.SOUTH);
-		 */
-		//content.add(sliderPanel, BorderLayout.CENTER);
-		content.add(sliderPanel, BorderLayout.CENTER);
+			});
+			sliderPanel.add(slider);
+			content.add(sliderPanel, BorderLayout.CENTER);
+		}
 		// ===================================================
 		
 		
@@ -1412,6 +1422,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		{
 			seriesCollectionMap2.get(sensorUID).getSeries(0).addOrUpdate(new Millisecond(), value);
 		}
+		
+		// add last value to the lastValuesMap
+		MeasurementEntry[] tempMeArray = lastValuesMap.get(sensorUID);
+		tempMeArray[1].value1 = new Millisecond().getMillisecond();
+		tempMeArray[1].value2 = value;
+		lastValuesMap.put(sensorUID, tempMeArray);
 
 		// add measurement value
 		if (values2Map.containsKey(sensorUID))
@@ -1514,7 +1530,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					try 
 					{
 						Thread.sleep(100);
-					} catch (Exception e) {}
+					} catch (Exception e) {}					
 					cnt++;
 					Millisecond ms = new Millisecond();
 					for (int i = 0; i < connectionData.presentedBrickList.size(); i++) 
@@ -1526,6 +1542,32 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							if (tmpBrick.ctrlTmpl[i2] == true)
 							{
 								addTmplValue(tmpBrick.uid, ms, i2);
+							}
+							else 
+							{
+								// if the last update was longer than 1 updatePeriod ago it means that 
+								// the sensor did not send any new values what means that the last and actual value are equal
+								MeasurementEntry[] tempMeArray = lastValuesMap.get(tmpBrick.uid);
+								for (int i3 = 0; i3<2; i3++)
+								{
+									// check whether the sensor is active and we have recieved any values from it 
+									if (tempMeArray[i3].value2 != 0)
+									{
+										if ((ms.getLastMillisecond() - tempMeArray[i3].value1) > (data.constants.updateFrequency))
+										{
+											if (i3 == 0)
+											{
+												// add a simulated value to 1st sensor 
+												 addValue(tmpBrick.uid, tempMeArray[i3].value2, 0); 
+											}
+											else if (i3 == 1)
+											{
+												// add a simulated vlaued to 2nd sensor
+												add2ndValue(tmpBrick.uid, tempMeArray[i3].value2);
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1552,6 +1594,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
 			}
 		}
+		
+		// add last value to the lastValuesMap
+		MeasurementEntry[] tempMeArray = lastValuesMap.get(sensorUID);
+		tempMeArray[0].value1 = ms.getMillisecond();
+		tempMeArray[0].value2 = value;
+		lastValuesMap.put(sensorUID, tempMeArray);
 
 		// add timestamp to slider
 		sliderData.addMS(ms);
@@ -1600,8 +1648,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	/**
 	 * activate slider
 	 */
-	public static void activateSlider() {
-		slider.setEnabled(true);
+	public static void activateSlider() 
+	{
+		if (slider != null)
+		{
+			slider.setEnabled(true);
+		}
 	}
 
 	/**
@@ -1625,18 +1677,57 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	}
 	
 	
-	
+	/**
+	 * presents control elements (critical and warning lines for both max and min)
+	 * for simple case 
+	 * @param br
+	 * @param index
+	 */
 	public static void enableSimpleCtrl(Brick br, int index)
 	{
-		//TODO
+		System.out.println("ENABLE SIMPLE CNTRL");
+		if (index == 0)
+		{
+			plotMap.get(br.uid).addRangeMarker(markerMapMin1Critical.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMin1Warning.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMax1Critical.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMax1Warning.get(br.uid));
+		}
+		else if (index == 1)
+		{
+			plotMap.get(br.uid).addRangeMarker(markerMapMin2Critical.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMin2Warning.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMax2Critical.get(br.uid));
+			plotMap.get(br.uid).addRangeMarker(markerMapMax2Warning.get(br.uid));			
+		}
 	}
 	
 	
-	
+	/**
+	 * hides control elements (critical and warning lines for both max and min)
+	 * for simple case 
+	 * @param br
+	 * @param index
+	 */
 	public static void disableSimpleCtrl(Brick br, int index)
 	{
-		//TODO		
+		System.out.println("DISABLE SIMPLE CNTRL");		
+		if (index == 0)
+		{
+			plotMap.get(br.uid).removeRangeMarker(markerMapMin1Critical.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMin1Warning.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMax1Critical.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMax1Warning.get(br.uid));
+		}
+		else if (index == 1)
+		{
+			plotMap.get(br.uid).removeRangeMarker(markerMapMin2Critical.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMin2Warning.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMax2Critical.get(br.uid));
+			plotMap.get(br.uid).removeRangeMarker(markerMapMax2Warning.get(br.uid));			
+		}	
 	}
+		
 	
 	
 	/**

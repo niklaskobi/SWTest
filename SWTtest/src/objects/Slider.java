@@ -11,6 +11,7 @@ public class Slider {
 	Millisecond[] lastMSarray;
 	int arraySize = 0;
 	public boolean sliderActive;
+	public boolean sliderEnabled;
 	public int sliderSteps = 0;
 	private Buffer sliderBuffer;
 		
@@ -21,9 +22,22 @@ public class Slider {
 	{
 		sliderSteps = s;
 		sliderActive = false;
+		sliderEnabled = false;
 		lastMSarray = new Millisecond[sliderSteps];
 		sliderBuffer = new CircularFifoBuffer(sliderSteps*2);
 		initMSarray();
+	}
+	
+	
+	public void setActive(boolean ac)
+	{
+		this.sliderActive = ac;
+	}
+	
+	
+	public void setEnable(boolean en)
+	{
+		this.sliderEnabled = en;
 	}
 
 	

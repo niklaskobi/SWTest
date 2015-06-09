@@ -20,6 +20,8 @@ public class constants {
 	
 	public static Map<Integer, Double> brickTresholdDef = new HashMap<Integer, Double> ();
 	public static Map<Integer, Integer> brickSensorNumber = new HashMap<Integer, Integer> ();
+	
+	public static int updateFrequency = 100;
 		
 	public enum brickIds
 	{

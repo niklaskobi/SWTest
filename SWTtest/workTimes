@@ -1,20 +1,21 @@
 toDO:
--	warning max depends on warning min what causes an anomaly behavior by having warning min on 0   
--	stop functionality for auto update template values
-!-	pop-up menu for choose of the control method (bug in settings tab: bricks with 2: anomaly by enabling 2nd sensor)    
+-	warning max depends on warning min what causes an anomaly behavior by having warning min on 0     
 -	template control button is hiding the scale after enabling
--	continuous update if no values are returned from sensors (= same value as last time. use same periods!!!!!!)
 -	set better colors for template control graph (green must be lighter)
 -	same colors for markers for each control case
 -	activate/deactivate simple threshold controlling
--	scrolling to 100% satisfactory
+-	scrolling to 100% satisfying
 -	main window objects dynamic by changing the size of window
 -	BUG! template window for second chart (temporary solution 05.05.2015), now dividing by 2, line 1290, sonsorWindow
 -	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
 -	template plot window: title smaller
 -	collapsing main brick causes program close
+-	test: what happens when all control parts do not fit in to the setting window
+ 
 
 done:
++	stop functionality for auto update template values
+
 +	start template control with new times (currently it is just continuing the old template chart)
 +	enable/disable template control
 
@@ -28,3 +29,9 @@ done:
 
 +	template for double charts (05.05.2015)
 +	BUG! template window for second chart (temporary solution 05.05.2015), , now dividing by 2, line 1290, sonsorWindow
+
++	pop-up menu for choose of the control method (bug in settings tab: bricks with 2: anomaly by enabling 2nd sensor) (18.05.2015)
+
++	adjust heightSum in mainWIndow settings tab (9.06.2015)
++	pop-up menu for choose of the control method (bug in settings tab: bricks with 2: anomaly by enabling 2nd sensor) (09.06.2015)
++	continuous update if no values are returned from sensors (= same value as last time. use same periods!!!!!!)

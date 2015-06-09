@@ -336,7 +336,9 @@ public class connection {
 		// 	Set Period for illuminance callback to 1s (1000ms)
 		// 	Note: The illuminance callback is only called every second if the 
 		//  illuminance has changed since the last call!
-		al.setIlluminanceCallbackPeriod(1000);
+		
+		//al.setIlluminanceCallbackPeriod(1000);
+		al.setIlluminanceCallbackPeriod(data.constants.updateFrequency);
 		
 		// Add and implement illuminance listener (called if illuminance changes)
 		al.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() 
@@ -382,7 +384,9 @@ public class connection {
         // current has changed since the last call!
 		
 		//--- voltage listener ---------------------------------------		
-        vc.setVoltageCallbackPeriod(1000);
+        //vc.setVoltageCallbackPeriod(1000);
+		vc.setVoltageCallbackPeriod(data.constants.updateFrequency);
+		
         // Add and implement voltage listener (called if voltage changes)
         vc.addVoltageListener(new BrickletVoltageCurrent.VoltageListener() {
             public void voltage(int voltage) {
@@ -400,7 +404,9 @@ public class connection {
             }
         });        		
 		//--- ampere listener ---------------------------------------
-        vc.setCurrentCallbackPeriod(1000);
+        //vc.setCurrentCallbackPeriod(1000);
+        vc.setCurrentCallbackPeriod(data.constants.updateFrequency);
+        
         // Add and implement voltage listener (called if voltage changes)
         vc.addCurrentListener(new BrickletVoltageCurrent.CurrentListener() {
             public void current(int current) {
