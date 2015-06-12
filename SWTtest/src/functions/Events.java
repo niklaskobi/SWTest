@@ -35,8 +35,7 @@ public class Events {
 		connection.connectionAvalaible = true;
 		windows.mainWindow.deviceConnected();
 	}
-	
-	
+		
 	
 	/**
 	 * event which is called after we detect that some device was disconnected

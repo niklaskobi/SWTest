@@ -1184,7 +1184,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				}
 			}
 		}
-		content.add(buttonPanel, BorderLayout.SOUTH);
+		content.add(buttonPanel, BorderLayout.PAGE_END);
 		// ===================================================		
 		
 
@@ -1232,6 +1232,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			}
 
 		});
+	}
+	
+	public static void addTmplButtons()
+	{
+		
 	}
 
 	/**
