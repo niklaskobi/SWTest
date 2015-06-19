@@ -123,9 +123,10 @@ import functions.connection;
 public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 	final static double warningPercentage = 100; 	//
-	final static int sliderValuesNumber = 120; 		// how many x values are visible
+	//final static int sliderValuesNumber = 4800; 	// how many x values are visible
+	public final static int sliderValuesNumber = 100; 	// how many x values are visible
 													// at the scroll bar
-	final static int chartRangeSec = 120;
+	public final static int chartRangeSec = 120;
 
 	final static int maxValues = 1000; 				// max number of values which will be
 													// stored in object - measurement
@@ -1144,11 +1145,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							sliderUpdate = true;
 						else
 							sliderUpdate = false;
-	
+						/*
 						DateRange range = new DateRange(sliderData.getMilliseconds(
 								sliderValue - sliderValuesNumber)
 								.getFirstMillisecond(), sliderData.getMilliseconds(
 								sliderValue).getFirstMillisecond());
+						*/
+						DateRange range = sliderData.getDateRange(sliderValue);
 						plot.getDomainAxis().setRange(range);
 					}
 				}
@@ -1220,7 +1223,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				 //chartPanel.setLocation(0,0); 
 			 } 
 		 });
-		 
+		 		 
 
 		// start auto update plot
 		autoUpdatePlot();
@@ -1291,7 +1294,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					// System.out.println("delete area");
 				}
 			}
-			if (!(markerStart[0].isNaN() && markerEnd[0].isNaN())) {
+			//if (!(markerStart[0].isNaN() && markerEnd[0].isNaN())) {
+			if (!(markerStart[0].isNaN()) && 
+				!(markerEnd[0].isNaN()) &&
+				markerEnd[1]!=0.0) 
+			{
+			//if (!(markerStart[0].isNaN()) && (!markerEnd[0].isNaN())) {
 				if (markerEnd[0] > markerStart[0]) {
 					marker = new IntervalMarker(markerStart[0], markerEnd[0]);
 					markerMap.put(mouse_plot, marker);
@@ -1538,6 +1546,25 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					} catch (Exception e) {}					
 					cnt++;
 					Millisecond ms = new Millisecond();
+					
+					// ==================================================================================
+					// 19.06.2015
+					// add timestamp to slider
+					sliderData.addMS(ms);
+
+					// if we have moved slider at least once, but now it is on it's
+					// start position which means we want let the charts auto update again
+					if (sliderUpdate == true)
+					{
+						/*
+						DateRange range = new DateRange(sliderData.getMilliseconds(0).getFirstMillisecond(), 
+														sliderData.getMilliseconds(sliderValuesNumber).getFirstMillisecond());
+						plot.getDomainAxis().setRange(range);
+						*/
+						plot.getDomainAxis().setAutoRange(true);
+					}
+					// ==================================================================================
+					
 					for (int i = 0; i < connectionData.presentedBrickList.size(); i++) 
 					{						
 						Brick tmpBrick = connectionData.presentedBrickList.get(i);
@@ -1596,7 +1623,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		{
 			if (seriesCollectionMap.get(sensorUID).getSeries(0) != null)
 			{
-				seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+				try 
+				{
+					seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+				}
+				catch (Exception e)
+				{
+					System.out.println("xz exception");
+					return;
+				}
 			}
 		}
 		
@@ -1607,16 +1642,20 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		lastValuesMap.put(sensorUID, tempMeArray);
 
 		// add timestamp to slider
-		sliderData.addMS(ms);
+		//sliderData.addMS(ms);
 
 		// if we have moved slider at least once, but now it is on it's
 		// start position which means we want let the charts auto update again
 		if (sliderUpdate == true)
 		{
+			/*
 			DateRange range = new DateRange(sliderData.getMilliseconds(0).getFirstMillisecond(), 
 											sliderData.getMilliseconds(sliderValuesNumber).getFirstMillisecond());
 			plot.getDomainAxis().setRange(range);
+			*/
+			//plot.getDomainAxis().setAutoRange(true);
 		}
+		
 
 		// add measurement value
 		if (valuesMap.containsKey(sensorUID))

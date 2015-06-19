@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
 
 public class Slider {
@@ -20,11 +21,11 @@ public class Slider {
 	 */
 	public Slider(int s)
 	{
-		sliderSteps = s;
+		sliderSteps = s*12;
 		sliderActive = false;
 		sliderEnabled = false;
 		lastMSarray = new Millisecond[sliderSteps];
-		sliderBuffer = new CircularFifoBuffer(sliderSteps*2);
+		sliderBuffer = new CircularFifoBuffer(600*5);
 		initMSarray();
 	}
 	
@@ -34,6 +35,27 @@ public class Slider {
 		this.sliderActive = ac;
 	}
 	
+	
+	public DateRange getDateRange(int sliderValue)
+	{
+		int amountExistingValues = sliderBuffer.size();
+		
+		if (amountExistingValues>=sliderValue)
+		{			
+			double s1 = (amountExistingValues-windows.sensorWindow.chartRangeSec*10);
+			double s2 = (double)(windows.sensorWindow.sliderValuesNumber-sliderValue)/100.0;
+			double shift = s1*s2;
+			
+			int start = (int) (amountExistingValues-(windows.sensorWindow.chartRangeSec*10)-shift);
+			long tmp1 = this.getMilliseconds(start).getFirstMillisecond();
+			int asda  = start+(windows.sensorWindow.chartRangeSec*10)-1;
+			long tmp2 = this.getMilliseconds(asda).getFirstMillisecond();
+			
+			return new DateRange(tmp1, tmp2);
+		}
+		else return null;
+	}
+		
 	
 	public void setEnable(boolean en)
 	{
@@ -62,13 +84,14 @@ public class Slider {
     
     
     /**
-     * returns a proper index for the slider, given the real slider value
-     * @param index	slider value
-     * @return	corresponding index in the milliseconds array
+     * 
+     * @param
+     * @return
      */
     public Millisecond getMilliseconds(int index)
     {
-    	int proper_index = sliderSteps + index - 1;
+    	//int proper_index = sliderSteps + index - 1;
+    	int proper_index = index;
     	int cnt = 0;
 		for(Iterator<Millisecond> iterator = sliderBuffer.iterator(); iterator.hasNext();)
 		{
@@ -89,7 +112,8 @@ public class Slider {
     	sliderBuffer.add(m);
     	arraySize++;
       	// activate slider
-        if ((arraySize>sliderSteps*2) && (sliderActive == false))
+        //if ((arraySize>sliderSteps*2) && (sliderActive == false))
+    	if ((arraySize>=sliderSteps) && (sliderActive == false))
         {
         	functions.Events.activateSliderSensorWindow();
         	sliderActive = true;
