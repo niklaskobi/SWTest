@@ -1221,7 +1221,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				 //chartPanel.setPreferredSize(e.getComponent().getPreferredSize());
 				 //chartPanel.setSize(e.getComponent().getSize());
 				 //chartPanel.setLocation(0,0); 
-			 } 
+			 }
 		 });
 		 		 
 

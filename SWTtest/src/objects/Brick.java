@@ -81,8 +81,8 @@ public class Brick {
 		this.setAvg2high(1);
 		this.setAvg1low(1);
 		this.setAvg2low(1);
-		this.tmpl1Width = 0;
-		this.tmpl2Width = 0;
+		this.tmpl1Width = 1;
+		this.tmpl2Width = 1;
 	}
 	
 	public String getUid() {

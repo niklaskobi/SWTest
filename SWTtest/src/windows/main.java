@@ -15,8 +15,8 @@ import com.tinkerforge.NotConnectedException;
      * @throws NotConnectedException 
      * @throws TimeoutException 
      */
-public class main{
-
+public class main
+{
     public static void main(final String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, NotConnectedException, IOException
     {    	
     	// set style
