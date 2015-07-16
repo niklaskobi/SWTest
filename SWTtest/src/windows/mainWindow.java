@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -75,9 +77,10 @@ public class mainWindow {
 	static boolean updateSettingTabPls = false;
 	
 	// tree items
-	CheckboxTreeViewer treeViewer;
+	static CheckboxTreeViewer treeViewer;
 	static Tree tree;
 	static Group group;
+	static GridData gridDataSettings;
 	static TreeItem treeItem;
 	
 	// dynamic menu items
@@ -183,11 +186,13 @@ public class mainWindow {
 			}
 		}		
 	}
+	
+	
 
 	/**
 	 * Create contents of the window.
 	 */
-	public void createContents() {		
+	public static void createContents() {		
 		
 		shell = new Shell();
 		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
@@ -196,7 +201,7 @@ public class mainWindow {
 		shellHeight = shell.getSize().y;
 		shell.setText("DemoTable Application");		
 		
-		// grid layout
+		// grid layout-------------------------------------------------
 		shell.setLayout(new GridLayout(1, false));		
 	    Group group1 = new Group(shell, SWT.NONE);
 	    group1.setText("connection");
@@ -205,8 +210,10 @@ public class mainWindow {
 	    //firstData.minimumHeight = shell.getBounds().height;
 	    //firstData.minimumWidth = shell.getBounds().width;
 	    firstData.widthHint = shell.getBounds().width;
-	    group1.setLayoutData(firstData);    
+	    group1.setLayoutData(firstData);   
+	    //--------------------------------------------------------------
 	   
+	    //LABEL PORT ---------------------------------------------------
 		//Label lblPort = new Label(shell, SWT.NONE);
 	    Label lblPort = new Label(group1, SWT.PUSH);
 		lblPort.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
@@ -214,14 +221,13 @@ public class mainWindow {
 		//lblPort.setBounds(25, 13, 39, 24);
 		lblPort.setText("port");		
 		lblPort.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-		
 		settingRegionStartX = lblPort.getBounds().x;
-
 		//text = new Text(shell, SWT.BORDER);
 		text = new Text(group1, SWT.BORDER);
 		text.setText("4223");
 		//text.setBounds(79, 10, 76, 27);
 		text.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		//--------------------------------------------------------------
 		
 		
 		//START BUTTON-------------------------------------------------
@@ -312,17 +318,14 @@ public class mainWindow {
 		btnNewButton.setLayoutData(gridData2);
 		// -------------------------------------------------------------
 		
-		//Label lblHost = new Label(shell, SWT.NONE);
+		// LABEL HOST-------------------------------------------------------------
 		Label lblHost = new Label(group1, SWT.PUSH);
 		lblHost.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		//lblHost.setBounds(25, 43, 39, 27);
 		lblHost.setText("host");
 		lblHost.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
-		
-		//txtLocalhost = new Text(shell, SWT.BORDER);
 		txtLocalhost = new Text(group1, SWT.BORDER);
 		txtLocalhost.setText("localhost");
-		//txtLocalhost.setBounds(79, 43, 76, 27);
 		txtLocalhost.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
 		
 		/*
@@ -693,6 +696,7 @@ public class mainWindow {
 		//formToolkit.adapt(lblBricketuid, true, true);
 		lblBricketuid.setText(String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier()))
 								+ " (" + connectionData.presentedBrickList.get(i).uid +")");
+		lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));	
 	}
 	
 	
@@ -1802,14 +1806,56 @@ public class mainWindow {
 	}
 	
 	
+	
+	public static void removeSettingGroup()
+	{
+	    ScrolledComposite firstScroll = new ScrolledComposite(group, SWT.V_SCROLL);
+	    firstScroll.setLayout(new GridLayout(1, false));
+	    firstScroll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+	    Composite firstContent = new Composite(firstScroll, SWT.NONE);
+	    firstContent.setLayout(new GridLayout(1, false));
+	    firstContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+	    for (int i = 0; i < 20; i++)
+	    {
+	        Text text = new Text(firstContent, SWT.BORDER);
+	        text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+	    }
+
+	    firstScroll.setContent(firstContent);
+	    firstScroll.setExpandHorizontal(true);
+	    firstScroll.setExpandVertical(true);
+	    firstScroll.setMinSize(firstContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+	}
+	
 	public static void updateSettingTabs()
-	{			
-		if (false)
-		{
-		group.dispose();		
-		group = new Group(shell, SWT.NONE);		
+	{	
+		
+		removeSettingGroup();
+		//group.dispose();
+		/*
+		group = new Group(shell, SWT.NONE);
+		group.setText("bricklets");
 		group.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//group.update();
+		group.setLayout(new GridLayout(1, false));
+		
+	    gridDataSettings = new GridData();
+	    gridDataSettings.verticalAlignment = GridData.FILL;
+		//gridData.verticalSpan = 2;
+	    gridDataSettings.grabExcessVerticalSpace = true;
+	    gridDataSettings.horizontalAlignment = GridData.FILL;
+	    gridDataSettings.grabExcessHorizontalSpace = true;
+	    group.setLayoutData(gridDataSettings);
+	    */
+	    
+		Label lblBricketuid = new Label(group, SWT.NONE);
+		lblBricketuid.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblBricketuid.setText("XUETA");
+		lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));	
+		
+		//group = groupTmp;
 		
 		heightSum = 0;
 						
@@ -1832,8 +1878,8 @@ public class mainWindow {
 				// -----------------------------------------
 				// sensor name + uid
 				// -----------------------------------------
-				settingsMenu_addName(i);
-				lineNumber ++;		
+				//settingsMenu_addName(i);
+				//lineNumber ++;		
 				// -----------------------------------------
 
 				
@@ -1954,21 +2000,14 @@ public class mainWindow {
 				group.pack();
 			}
 		}
-		}
 		
-		group.setVisible(true);
-		GridData gridData = new GridData();
-		gridData.verticalAlignment = GridData.FILL;
-		//gridData.verticalSpan = 2;
-		gridData.grabExcessVerticalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		group.setLayoutData(gridData);
+
 		
 
         // update window size		
-		shell.setSize(shellStartWidth, shellHeight +heightSum);
-		group.setBounds(settingRegionStartX, shellStartHeight + settingRegionSeparateHeight, settingRegionWidth, heightSum);		
+		shell.layout(true);
+		//shell.setSize(shellStartWidth, shellHeight +heightSum);
+		//group.setBounds(settingRegionStartX, shellStartHeight + settingRegionSeparateHeight, settingRegionWidth, heightSum);		
 		//------------------------------------------------------------------------		
 	}
 				
@@ -2040,7 +2079,7 @@ public class mainWindow {
 		if (Brick.getBrick(connectionData.BrickList,UID).checked1 == false)
 		{
 			functions.Events.sensorBoxChecked(UID);
-			updateSettingTabs();					
+			updateSettingTabs();
 		}
 		else
 		{
