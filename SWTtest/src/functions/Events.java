@@ -12,6 +12,12 @@ import data.connectionData;
 import objects.Brick;
 import objects.TemplatePlot;
 
+/**
+ * this class contains event handlers only. Event handler are called to perform inter-class actions, say wherever 
+ * an action from one class requeres some actions in other classes.     
+ * @author Kv1
+ *
+ */
 public class Events {
 	
 	/**
@@ -167,7 +173,11 @@ public class Events {
 		}
 	}
 	
-	
+	/**
+	 * if user has enabled simple control from the main window
+	 * @param UID	
+	 * @param index
+	 */
 	public static void enableSimpleControl(String UID, int index)
 	{
 		// check the item
@@ -175,7 +185,11 @@ public class Events {
 		windowController.enableSimpleControl(Brick.getBrick(connectionData.BrickList, UID), index);
 	}
 	
-	
+	/**
+	 * if user disables simple control
+	 * @param UID
+	 * @param index
+	 */
 	public static void disableSimpleControl(String UID, int index)
 	{
 		// check the item
@@ -184,6 +198,12 @@ public class Events {
 	}
 	
 	
+	/**
+	 * if user has disabled template control from the main window
+	 * @param UID
+	 * @param index
+	 * @param path
+	 */
 	public static void disableTmpltCntrl(String UID, int index, String path)
 	{
 		Brick.checkCtrlTemplate(Brick.getBrick(connectionData.BrickList, UID), index, false);
@@ -191,8 +211,12 @@ public class Events {
 		windowController.disableTmplCntrl(Brick.getBrick(connectionData.BrickList, UID), index);
 	}
 	
-	
-	
+	/**
+	 * if user has enabled template control from the main window	
+	 * @param UID
+	 * @param index
+	 * @param path
+	 */
 	public static void enableTmpltCntrl(String UID, int index, String path)
 	{
 		Brick.checkCtrlTemplate(Brick.getBrick(connectionData.BrickList, UID), index, true);
@@ -200,12 +224,16 @@ public class Events {
 		windowController.enableTmplCntrl(Brick.getBrick(connectionData.BrickList, UID), index);
 	}
 	
-
-	
+	/**
+	 * after user has changed the width of the template plot
+	 * @param UID
+	 * @param index
+	 */
 	public static void updateTmplPlotWidth(String UID, int index)
 	{
 		windowController.updateTmplPlotWidth(UID, index);
 	}
+	
 	
 	/**
 	 * called when user disables average control
@@ -250,6 +278,7 @@ public class Events {
 			windowController.updateAvgCtrl(UID, value, index, high);			
 		}
 	}
+	
 	
 	/**
 	 * event which should be called after a disconnection
@@ -306,11 +335,21 @@ public class Events {
 		windows.sensorWindow.activateSlider();
 	}
 
+	/**
+	 * if user has selected a part of a sensor plot for template definition
+	 * @param t
+	 * @param index
+	 */
 	public static void handleMouseSelection(TemplatePlot t, int index)
 	{
 		windowController.openPlotWindow(t, index);
 	}
 	
+	/**
+	 * opens template window
+	 * @param templPath
+	 * @param index
+	 */
 	public static void openTemplatePlotWindow(String templPath, int index)
 	{
 		windowController.openPlotWindow(templPath, index);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Can be deleted??????????????
  * class which implements methods and actions for disabling a file storage functionality
  * @author KV1
  *

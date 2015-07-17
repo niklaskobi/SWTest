@@ -16,8 +16,19 @@ import java.util.Date;
 
 import objects.Brick;
 
+/**
+ * this class describes methods for writing the measured data into a predefined csv file. 
+ * @author Kv1
+ *
+ */
 public class file {
 	
+	/**
+	 * writes a given string to the file
+	 * @param str
+	 * @param filePath
+	 * @return
+	 */
 	private static boolean writeStrToFile(String str, String filePath)
 	{
 		if (filePath == null)
@@ -44,7 +55,6 @@ public class file {
 			bw.write(str);
 			bw.close();
 			return true;
-
 		} 
 		catch (FileNotFoundException e)
 		{
@@ -63,9 +73,8 @@ public class file {
 	}
 	
 	
-	
 	/**
-	 * 
+	 * creates a new measurement entry
 	 * @param uid
 	 * @param value
 	 * @param index	index of the value (1st value, 2nd value...)
@@ -148,15 +157,22 @@ public class file {
 	}
 	
 	
-	
-	
+	/**
+	 * adds entry to an exitsting csv file
+	 * @param uid
+	 * @param value
+	 * @param index
+	 */
 	public static void addEntryToFile(String uid, double value, int index)
 	{
 		String entry = createNewEntry(uid, value, index);
 		writeStrToFile(entry, data.connectionData.storageFilePath);
 	}
 	
-	
+	/**
+	 * creates a new csv file
+	 * @param str	file path
+	 */
 	public static void createNewFile(String str)
 	{
 		Path path;

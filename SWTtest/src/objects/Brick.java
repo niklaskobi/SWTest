@@ -4,76 +4,90 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * this class describes the object brick and the requered methods. 
+ * Brick contains all of the information about one Bricklet, regardless if it is a 
+ * master-brick or a common sensor-brick. 
+ * 
+ * @author Kv1
+ *
+ */
 public class Brick {
-	public String uid; 
-	public String connectedUid;
-	public char position;
-	public short[] hardwareVersion;
-	public short[] firmwareVersion;
-	public int deviceIdentifier;
-	public short enumerationType;
-	public List<Brick> subBricks;
-	public Brick fatherBrick;
-	public double tresholdMin1;
-	public double tresholdMin2;
-	public double tresholdMax1;
-	public double tresholdMax2;
+	public String 			uid; 							// Brick Universal ID
+	public String 			connectedUid;					// UID of a brick this brick is connected to  
+	public char 			position;						// position of the brick
+	public short[] 			hardwareVersion;				// hardware version
+	public short[] 			firmwareVersion;				// firmware version
+	public int 				deviceIdentifier;				// TinkerForge's device identifier number
+	public short 			enumerationType;				// status og the brick
+	public List<Brick> 		subBricks;						// list of the connected Bricks
+	public Brick 			fatherBrick;					// brick object this brick is connected to
 	
-	private double avg1high;
-	private double avg2high;
-	private double avg1low;
-	private double avg2low;
+	public double 			tresholdMin1;					// simple control case min for 1st sensor					
+	public double 			tresholdMin2;					// simple control case min for 2nd sensor
+	public double 			tresholdMax1;					// simple control case max for 1st sensor
+	public double 			tresholdMax2;					// simple control case max for 2nd sensor
 	
-	public int updateRate;
-	public boolean checked1;
-	public double lastValue;
-	public boolean checked2;
-	public boolean checked3;	
-	public boolean controlAverage;
-	public boolean controlAverage2;
-	public boolean[] 		ctrlSimple = new boolean[2];
-	public boolean[] 		ctrlTmpl = new boolean[2];
-	public boolean[] 		ctrlTmplruns = new boolean[2];
-	public String[] 		ctrlTmplPath = new String[2];
-	public TemplatePlot[] 	tmplPlot = new TemplatePlot[2];
-	public double tmpl1Width;
-	public double tmpl2Width;
+	private double 			avg1high;						// average control max for 1st sensor 
+	private double 			avg2high;						// average control max for 2nd sensor
+	private double 			avg1low;						// average control min for 1st sensor
+	private double 			avg2low;						// average control min for 2nd sensor
 	
+	public double 			tmpl1Width;						// template control, width of the template plot for 1st sensor
+	public double 			tmpl2Width;						// template control, width of the template plot for 2nd sensor
+		
+	//public int 				updateRate;						// update rate of current brick
+	public boolean 			checked1;						// brick is enabled/disabled
+	public boolean 			checked2;						// 1st sensor is enabled/disabled
+	public boolean 			checked3;						// 2nd sensor is enabled/disabled
+	public double 			lastValue;						// last measured value of the brick
+	public boolean 			controlAverage;					// control average is enabled/disabled for the 1st sensor
+	public boolean 			controlAverage2;				// control average is enabled/disabled for the 2nd sensor
+	public boolean[] 		ctrlSimple = new boolean[2];	// control simple is enabled/disabled for the 1st/2nd sensor
+	public boolean[] 		ctrlTmpl = new boolean[2];		// control template is enabled/disabled for the 1st/2nd sensor
+	public boolean[] 		ctrlTmplruns = new boolean[2];	// control template is running for the 1st/2nd sensor
+	public String[] 		ctrlTmplPath = new String[2];	// paths for control template for the 1st/2nd sensor
+	public TemplatePlot[] 	tmplPlot = new TemplatePlot[2];	// objects containing the template plots for the 1st/2nd sensor
+	
+	
+	/**
+	 * constructor, sets all the values to defaults
+	 */
 	public Brick()
 	{
-		this.uid = "";
-		this.connectedUid = "";
-		this.position = 0;
+		this.uid = 				"";
+		this.connectedUid = 	"";
+		this.position = 		0;
 		this.deviceIdentifier = 0;
-		this.uid = "";
-		this.enumerationType = 2; //2 = disconnected
-		firmwareVersion = new short[3];
-		hardwareVersion = new short[3];
+		this.uid = 				"";
+		this.enumerationType = 	2; 							//2 = disconnected
+		firmwareVersion = 		new short[3];
+		hardwareVersion = 		new short[3];
 		for (int i=0;i<3;i++)
 		{
 			this.hardwareVersion[i] = 0;
 			this.firmwareVersion[i] = 0;
 		}
-		subBricks = new ArrayList<Brick>();
-		fatherBrick = null;
-		this.tresholdMin1 = 0;
-		this.tresholdMin2 = 0;
-		this.tresholdMax1 = 0;
-		this.tresholdMax2 = 0;
-		this.updateRate = 0;
-		this.checked1 = false;
-		this.checked2 = false;
-		this.checked3 = false;
-		this.lastValue = 0;
-		this.controlAverage = false;
-		this.controlAverage2 = false;
+		subBricks = 			new ArrayList<Brick>();
+		fatherBrick = 			null;
+		this.tresholdMin1 = 	0;
+		this.tresholdMin2 = 	0;
+		this.tresholdMax1 = 	0;
+		this.tresholdMax2 = 	0;
+		//this.updateRate = 	0;
+		this.checked1 = 		false;
+		this.checked2 = 		false;
+		this.checked3 = 		false;
+		this.lastValue = 		0;
+		this.controlAverage = 	false;
+		this.controlAverage2 = 	false;
 		
 		for (int i=0; i<2;i++)
 		{
-			this.tmplPlot[i] = new TemplatePlot();
-			this.ctrlTmpl[i] = false;	
-			this.ctrlSimple[i] = false;
-			this.ctrlTmplruns[i] = false;
+			this.tmplPlot[i] = 		new TemplatePlot();
+			this.ctrlTmpl[i] = 		false;	
+			this.ctrlSimple[i] = 	false;
+			this.ctrlTmplruns[i] = 	false;
 			this.ctrlTmplPath[i] = "undefined";
 		}
 		

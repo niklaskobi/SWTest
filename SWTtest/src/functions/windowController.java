@@ -13,6 +13,11 @@ import windows.mainWindow;
 import windows.plotConfirmWindow;
 import windows.sensorWindow;
 
+/**
+ * this class provides functions for controlling the windows and to communicate between them.
+ * @author Kv1
+ *
+ */
 public class windowController {
 	
 	public static sensorWindow 			sensorWindow;

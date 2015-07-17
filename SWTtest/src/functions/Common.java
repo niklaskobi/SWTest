@@ -4,6 +4,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Common function are supposed to be placed within this class
+ * @author Kv1
+ *
+ */
 public class Common {
 
 	/**

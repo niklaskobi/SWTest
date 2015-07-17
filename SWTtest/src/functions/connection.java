@@ -21,10 +21,21 @@ import com.tinkerforge.TimeoutException;
 import data.connectionData;
 import windows.mainWindow;
 
+/**
+ * this class describes methods and listeners for connection with the tinkerForge bricklet and its configuration.
+ * @author Kv1
+ *
+ */
 public class connection {
 	
+	/**
+	 * is set to true as a tinkerForge device is connected
+	 */
 	public static boolean connectionAvalaible = false;
 	
+	/**
+	 * create a new ip connection (IPConnection class is a part of the TinkerForge library)
+	 */
 	public static IPConnection ipcon = new IPConnection(); 		// Create IP connection	
 	
 	
@@ -337,7 +348,6 @@ public class connection {
 		// 	Note: The illuminance callback is only called every second if the 
 		//  illuminance has changed since the last call!
 		
-		//al.setIlluminanceCallbackPeriod(1000);
 		al.setIlluminanceCallbackPeriod(data.constants.updateFrequency);
 		
 		// Add and implement illuminance listener (called if illuminance changes)
@@ -384,7 +394,6 @@ public class connection {
         // current has changed since the last call!
 		
 		//--- voltage listener ---------------------------------------		
-        //vc.setVoltageCallbackPeriod(1000);
 		vc.setVoltageCallbackPeriod(data.constants.updateFrequency);
 		
         // Add and implement voltage listener (called if voltage changes)
@@ -404,7 +413,6 @@ public class connection {
             }
         });        		
 		//--- ampere listener ---------------------------------------
-        //vc.setCurrentCallbackPeriod(1000);
         vc.setCurrentCallbackPeriod(data.constants.updateFrequency);
         
         // Add and implement voltage listener (called if voltage changes)
@@ -426,7 +434,9 @@ public class connection {
 	}
 	
 	
-	
+	/**
+	 * initialize connection
+	 */
 	public static void initConnections()
 	{
 		registerEnumListener();

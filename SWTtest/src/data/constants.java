@@ -3,8 +3,20 @@ package data;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * in this class all of the constants (like default values, min/max values and brick device ID's)
+ * are stored. If You want to add a new kind of a brick You have to define its defaults and 
+ * describing information (like unit name and number of sensors). Defaults for every single case (simple and average) 
+ * must be fulfilled with information for the new brick.
+ * 
+ * @author Kv1
+ *
+ */
 public class constants {
 	
+	/**
+	 * these are maps with some 
+	 */
 	public static Map<Integer, String> brickIdMap = new HashMap<Integer, String> ();
 	public static Map<Integer, String> brickUnitMap = new HashMap<Integer, String> ();
 	public static Map<Integer, String> brick2ndUnitMap = new HashMap<Integer, String> ();
@@ -21,6 +33,12 @@ public class constants {
 	public static Map<Integer, Double> brickTresholdDef = new HashMap<Integer, Double> ();
 	public static Map<Integer, Integer> brickSensorNumber = new HashMap<Integer, Integer> ();
 	
+	/**
+	 * update frequency of all sensors
+	 * value is amount of ms = period between measurements,
+	 * 100 = every 100th ms = 10 times per second
+	 * 
+	 */
 	public static int updateFrequency = 100;
 		
 	public enum brickIds
@@ -53,6 +71,10 @@ public class constants {
 		//-----------------------------------------------						
 	}
 	
+	
+	/**
+	 * all the init methods are wrapped in this method
+	 */
 	public static void initConstants()
 	{
 		fillBrickIdMap();
@@ -71,6 +93,11 @@ public class constants {
 		fillAvgHigh1st();
 	}
 	
+	
+	/**
+	 * Fill the map <deviceID:brick name>
+	 * if You are about to add a new kind of a brick you must add it here.
+	 */
 	private static void fillBrickIdMap()
 	{
 		brickIdMap.put(13, "Brick Master");
@@ -78,13 +105,19 @@ public class constants {
 		brickIdMap.put(227, "Bricklet Voltage/Current");
 	}
 	
+	/**
+	 * Fill the map for connection state names
+	 */
 	private static void fillEnumMap()
 	{
 		enumTypeMap.put(0, "available");
 		enumTypeMap.put(1, "reconfig");
 		enumTypeMap.put(2, "disconnected");
 	}	
-
+	
+	/**
+	 * Fill the map with units. Almost each brick will have its own measurement unit.  
+	 */
 	private static void fillUnitMap()
 	{
 		brickUnitMap.put(13, "");
@@ -92,6 +125,10 @@ public class constants {
 		brickUnitMap.put(227, "Volt");
 	}	
 
+	
+	/**
+	 * If there 2 sensors with separate measurements you can also define its second measurement unit name
+	 */
 	private static void fill2ndUnitMap()
 	{
 		brick2ndUnitMap.put(13, "");
@@ -99,13 +136,19 @@ public class constants {
 		brick2ndUnitMap.put(227, "Ampere");
 	}		
 	
+	/**
+	 * this values are default min values for the simple case. 
+	 */
 	private static void fillMinMap()
 	{
 		brickMinValue.put(13, 0.0);
 		brickMinValue.put(21, 0.0);
 		brickMinValue.put(227, 0.0);
 	}	
-	
+
+	/**
+	 * this values are default max values for the simple case. 
+	 */
 	private static void fillMaxMap()
 	{
 		brickMaxValue.put(13, 0.0);
@@ -113,47 +156,66 @@ public class constants {
 		brickMaxValue.put(227, 10.0);
 	}	
 	
+	/**
+	 * this values are default min values for the simple case for the 2nd sensor. 
+	 */
 	private static void fillMinMap2nd()
 	{
 		brickMinValue2nd.put(13, 0.0);
 		brickMinValue2nd.put(21, 0.0);
 		brickMinValue2nd.put(227, 0.0);
 	}
-		
+
+	/**
+	 * this values are default max values for the simple case for the 2nd sensor. 
+	 */
+	private static void fillMaxMap2nd()
+	{
+		brickMaxValue2nd.put(13, 0.0);
+		brickMaxValue2nd.put(21, 100.0);
+		brickMaxValue2nd.put(227, 10.0);
+	}	
+	
+	/**
+	 * this values are default min values for the average case. 
+	 */
+	private static void fillAvgLow1st()
+	{
+		brickAvgLow1.put(13, 0.0);
+		brickAvgLow1.put(21, 1.0);
+		brickAvgLow1.put(227, 1.0);
+	}
+	
+	/**
+	 * this values are default min values for the average case for 2nd sensor. 
+	 */
 	private static void fillAvgLow2nd()
 	{
 		brickAvgLow2.put(13, 0.0);
 		brickAvgLow2.put(21, 1.0);
 		brickAvgLow2.put(227, 1.0);
 	}
-	
-	private static void fillAvgLow1st()
-	{
-		brickAvgLow1.put(13, 0.0);
-		brickAvgLow1.put(21, 1.0);
-		brickAvgLow1.put(227, 1.0);
-	}	
-	
+
+	/**
+	 * this values are default max values for the average case for 2nd sensor. 
+	 */	
 	private static void fillAvgHigh2nd()
 	{
 		brickAvgHigh2.put(13, 0.0);
 		brickAvgHigh2.put(21, 1.0);
 		brickAvgHigh2.put(227, 1.0);
 	}
-	
+
+	/**
+	 * this values are default max values for the average case for 1st sensor. 
+	 */		
 	private static void fillAvgHigh1st()
 	{
 		brickAvgHigh1.put(13, 0.0);
 		brickAvgHigh1.put(21, 1.0);
 		brickAvgHigh1.put(227, 1.0);
 	}
-	
-	private static void fillMaxMap2nd()
-	{
-		brickMaxValue2nd.put(13, 0.0);
-		brickMaxValue2nd.put(21, 100.0);
-		brickMaxValue2nd.put(227, 10.0);
-	}		
+		
 	
 	private static void fillTresholdMap()
 	{
@@ -162,6 +224,10 @@ public class constants {
 		brickTresholdDef.put(227, 0.5);
 	}	
 	
+	/**
+	 * in this maps the number of the sensors for each bricklet is stored. Master brick (the 1st one) has no sensors,
+	 * Light sensor (2nd one, with device id 21) has only 1 sensor, and the current/voltage sensor has 2 sensors.
+	 */
 	private static void fillSensorNumberMap()
 	{
 		brickSensorNumber.put(13, 0);
