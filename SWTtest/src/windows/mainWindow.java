@@ -603,6 +603,8 @@ public class mainWindow {
 		 }}).start();
 	}
 			
+	/* test */
+	
 	public static void forbidFileStorage() 
 	{
 		new Thread(new Runnable() {
