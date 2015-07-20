@@ -101,8 +101,8 @@ public class constants {
 	private static void fillBrickIdMap()
 	{
 		brickIdMap.put(13, "Brick Master");
-		brickIdMap.put(21, "Bricklet Ambient Light");
-		brickIdMap.put(227, "Bricklet Voltage/Current");
+		brickIdMap.put(21, "Ambient Light");
+		brickIdMap.put(227, "Voltage/Current");
 	}
 	
 	/**

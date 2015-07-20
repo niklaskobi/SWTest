@@ -15,6 +15,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -92,6 +93,9 @@ public class mainWindow {
 	static Button btnNewButton;
 	static Text text;
 	static Text txtLocalhost;
+	
+	static ScrolledComposite firstScroll;
+	static Composite firstContent;
 
 	// combobox for usecase choice
     static String[] ids = { "north", "west", "south", "east" };
@@ -126,6 +130,8 @@ public class mainWindow {
 	static final int settingRegionSeparateLineHeight 	= 1;
 	static final int textFieldExtention 				= 3;
 	static final int templateControlOffset				= -12;
+	
+	final static int textFieldSize 						= 30; 
 	
 	/**
 	 * Launch the application.
@@ -188,7 +194,6 @@ public class mainWindow {
 	}
 	
 	
-
 	/**
 	 * Create contents of the window.
 	 */
@@ -196,7 +201,8 @@ public class mainWindow {
 		
 		shell = new Shell();
 		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		shell.setSize(481, 442);
+		//shell.setSize(481, 442);
+		shell.setSize(500, 700);
 		shellStartWidth = shell.getSize().x;
 		shellHeight = shell.getSize().y;
 		shell.setText("DemoTable Application");		
@@ -318,7 +324,7 @@ public class mainWindow {
 		btnNewButton.setLayoutData(gridData2);
 		// -------------------------------------------------------------
 		
-		// LABEL HOST-------------------------------------------------------------
+		// LABEL HOST---------------------------------------------------
 		Label lblHost = new Label(group1, SWT.PUSH);
 		lblHost.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		//lblHost.setBounds(25, 43, 39, 27);
@@ -333,8 +339,9 @@ public class mainWindow {
 		group.setBounds(10, 230, 414, 15);
 		*/		
 
-		// TREE ----------------------------------------------------------------------------		
-		treeViewer = new CheckboxTreeViewer(shell, SWT.BORDER);
+		// TREE --------------------------------------------------------		
+		//treeViewer = new CheckboxTreeViewer(shell, SWT.BORDER);
+		treeViewer = new CheckboxTreeViewer(shell, SWT.NONE);
 		//treeViewer = new CheckboxTreeViewer(shell, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		//treeViewer.setContentProvider(new FeaturePropertyDialogContentProvider());
 		treeViewer.setAutoExpandLevel(3);
@@ -379,18 +386,25 @@ public class mainWindow {
 	          treeItem.setExpanded(false);
 	        }
 	      });
-	    
+	    /*
 		gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		//gridData.verticalSpan = 2;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
-		tree.setLayoutData(gridData);	
+		tree.setLayoutData(gridData);
+		*/	
+	    GridData tmpData = new GridData(SWT.FILL, SWT.FILL, true, true);
+	    tmpData.minimumHeight = 100;
+	    //tmpData.heightHint = 100;
+	    //firstData.minimumWidth = shell.getBounds().width;
+	    tmpData.widthHint = shell.getBounds().width;
+	    tree.setLayoutData(tmpData);  
 		// -----------------------------------------------------------------		
 				
 		// GROUP------------------------------------------------------------
-		/*
+	    /*
 		group = new Group(shell, SWT.NONE);		
 		group.setVisible(true);
 		gridData = new GridData();
@@ -401,9 +415,9 @@ public class mainWindow {
 		gridData.grabExcessHorizontalSpace = true;
 		group.setLayoutData(gridData);
 		*/
-		
+
 		group = new Group(shell, SWT.NONE);
-		group.setText("bricklets");
+		group.setText("Bricklets");
 		group.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 	    group.setLayout(new GridLayout(1, false));
 	    
@@ -414,13 +428,6 @@ public class mainWindow {
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		group.setLayoutData(gridData);
-		
-		Label lblBricketuid = new Label(group, SWT.NONE);
-		lblBricketuid.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblBricketuid.setText("XUETA");
-		lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));	
-
-		//updateSettingTabs();
 		// -----------------------------------------------------------------
 		
 		// MENU ------------------------------------------------------------		
@@ -688,53 +695,114 @@ public class mainWindow {
 	 * @param i
 	 * @param lineNumber
 	 */
-	public static void settingsMenu_addName(int i)
+	public static void settingsMenu_addName(Group firstContent, Group secondContent, int i)
 	{
-		Label lblBricketuid = new Label(group, SWT.NONE);
+		/*
+		Label lblBricketuid = new Label(firstContent, SWT.NONE);		
 
 		lblBricketuid.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//formToolkit.adapt(lblBricketuid, true, true);
 		lblBricketuid.setText(String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier()))
 								+ " (" + connectionData.presentedBrickList.get(i).uid +")");
-		lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));	
+		//lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
+		GridData tmpGridData = new GridData();
+		tmpGridData.verticalAlignment = GridData.FILL;
+		tmpGridData.horizontalSpan = 6;
+		//tmpGridData.grabExcessVerticalSpace = true;
+		tmpGridData.horizontalAlignment = GridData.FILL;
+		tmpGridData.grabExcessHorizontalSpace = true;
+		lblBricketuid.setLayoutData(tmpGridData);
+		*/
+		firstContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
+					String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+		secondContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
+					String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+		
+		
 	}
 	
 	
-	public static void settingMenu_addSimpleCheckbox(Brick tmpBr, int lineNumber, int quant, int index)
+	public static void settingMenu_addSimpleCheckbox(Group firstContent, Group secondContent, Brick tmpBr, int lineNumber, int quant, int index)
 	{
 		final String tmpStr = tmpBr.uid;
-		Button btnCheckButton = new Button(group, SWT.CHECK);
-		btnCheckButton.setBounds(settingOffsetX, 
-								 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber
-								 +settingRegionLineHeight*lineNumber+heightSum, 
-								 width_one_fourth, 
-								 settingRegionLineHeight);
-		btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//btnCheckButton.setText(USECASE_SIMPLE+String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
-		btnCheckButton.setText(USECASE_SIMPLE);
-		btnCheckButton.setSelection(tmpBr.ctrlSimple[0]);
-		btnCheckButton.addSelectionListener(new SelectionListener(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {						
-				simpleControlChecked(tmpStr, 0);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {				
-				
-			}			
-		});
+		if (quant == 1)
+		{
+			//btn1 ---------------------------------------------------------------------------
+			Button btnCheckButton = new Button(firstContent, SWT.CHECK);
+			//Button btnCheckButton = new Button(group, SWT.CHECK);
+			btnCheckButton.setBounds(settingOffsetX, 
+									 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber
+									 +settingRegionLineHeight*lineNumber+heightSum, 
+									 width_one_fourth, 
+									 settingRegionLineHeight);
+			btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			//btnCheckButton.setText(USECASE_SIMPLE+String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+			btnCheckButton.setText(USECASE_SIMPLE);
+			btnCheckButton.setSelection(tmpBr.ctrlSimple[0]);
+			btnCheckButton.addSelectionListener(new SelectionListener(){
+				@Override
+				public void widgetSelected(SelectionEvent e) {						
+					simpleControlChecked(tmpStr, 0);
+				}
+	
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {				
+					
+				}			
+			});
+			
+			GridData tmpGridData = new GridData();
+			tmpGridData.verticalAlignment = GridData.FILL;
+			tmpGridData.horizontalSpan = 3;
+			//tmpGridData.grabExcessVerticalSpace = true;
+			tmpGridData.horizontalAlignment = GridData.FILL;
+			tmpGridData.grabExcessHorizontalSpace = true;
+			btnCheckButton.setLayoutData(tmpGridData);
+			//btn1 ---------------------------------------------------------------------------
+		}
 		
 		if (quant == 2)
 		{
-			Button btnCheckButton2 = new Button(group, SWT.CHECK);
+			//btn1 ---------------------------------------------------------------------------
+			Button btnCheckButton = new Button(secondContent, SWT.CHECK);
+			//Button btnCheckButton = new Button(group, SWT.CHECK);
+			btnCheckButton.setBounds(settingOffsetX, 
+									 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber
+									 +settingRegionLineHeight*lineNumber+heightSum, 
+									 width_one_fourth, 
+									 settingRegionLineHeight);
+			btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			btnCheckButton.setText(USECASE_SIMPLE);
+			btnCheckButton.setSelection(tmpBr.ctrlSimple[0]);
+			btnCheckButton.addSelectionListener(new SelectionListener(){
+				@Override
+				public void widgetSelected(SelectionEvent e) {						
+					simpleControlChecked(tmpStr, 0);
+				}
+	
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {				
+					
+				}			
+			});
+			
+			GridData tmpGridData = new GridData();
+			tmpGridData.verticalAlignment = GridData.FILL;
+			tmpGridData.horizontalSpan = 3;
+			//tmpGridData.grabExcessVerticalSpace = true;
+			tmpGridData.horizontalAlignment = GridData.FILL;
+			tmpGridData.grabExcessHorizontalSpace = true;
+			btnCheckButton.setLayoutData(tmpGridData);
+			//btn1 ---------------------------------------------------------------------------
+			
+			//btn2 ---------------------------------------------------------------------------
+			//Button btnCheckButton2 = new Button(group, SWT.CHECK);
+			Button btnCheckButton2 = new Button(secondContent, SWT.CHECK);
 			btnCheckButton2.setBounds(settingOffsetX+settingRegionWidth/2, 
 								  settingRegionBorderLineHeight+settingRegionLineHeight*lineNumber
 								  +settingRegionBetweenLineHeight*lineNumber+heightSum,  
 								  width_one_fourth, 
 								  settingRegionLineHeight);
 			btnCheckButton2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			//btnCheckButton2.setText(USECASE_SIMPLE+String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
 			btnCheckButton2.setText(USECASE_SIMPLE);
 			btnCheckButton2.setSelection(tmpBr.ctrlSimple[1]);
 			btnCheckButton2.addSelectionListener(new SelectionListener(){
@@ -748,7 +816,15 @@ public class mainWindow {
 					
 				}
 			});
-		}		
+			GridData tmpGridData2 = new GridData();
+			tmpGridData2.verticalAlignment = GridData.FILL;
+			tmpGridData2.horizontalSpan = 3;
+			//tmpGridData.grabExcessVerticalSpace = true;
+			tmpGridData2.horizontalAlignment = GridData.FILL;
+			tmpGridData2.grabExcessHorizontalSpace = true;
+			btnCheckButton2.setLayoutData(tmpGridData2);
+			//btn2 ---------------------------------------------------------------------------
+		}	
 	}
 			
 	/**
@@ -757,57 +833,43 @@ public class mainWindow {
 	 * @param lineNumber	
 	 * @param quant 		number of sensors
 	 */
-	public static void settingMenu_addSimpleControls(Brick tmpBr, int lineNumber, int quant, int index)
+	public static void settingMenu_addSimpleControls(Group firstContent, Group secondContent, Brick tmpBr, int lineNumber, int quant, int index)
 	{
 		final Brick updBr = tmpBr;
 		
 
 		if (tmpBr.ctrlSimple[0] == true)
 		{
-		// --------------------------------------------------------------------------
-		// min label 1
-		Label lblMin1 = new Label(group, SWT.NONE);
-		lblMin1.setBounds(settingOffsetX, 
-							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
-							  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
-							  width_one_fourth/3, 
-							  settingRegionLineHeight);
-		lblMin1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblMin1.setText("min ");
-		
-		// text field
-		final Text txtL1min = new Text(group, SWT.BORDER);
-		int min = (int)((double)constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
-		txtL1min.setText(""+min);
-		txtL1min.setBounds(lblMin1.getBounds().x+lblMin1.getBounds().width+settingRegionSeparateWidth,
-							settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
-							+ settingRegionBetweenLineHeight*(lineNumber+1)+heightSum-textFieldExtention, 
-						   width_one_fourth/2,
-						   settingRegionLineHeight+textFieldExtention);
-		
-		txtL1min.addListener(SWT.FocusOut , new Listener() {
-		      public void handleEvent(Event event) {
-	    		  double perspectiveValue = 0;
-	    		  boolean update = true;
-		    	  try 
-		    	  {				 
-		    		  perspectiveValue = Double.parseDouble(txtL1min.getText());
-		    	  }
-		    	  catch (NumberFormatException e)
-		    	  {
-		    		  txtL1min.setText(Double.toString( Brick.getThresholdMin1(connectionData.BrickList, updBr.uid))); 
-		    		  update = false;
-		    	  }
-		    	  if (update == true)
-		    	  {
-		    		  updateTresholdMin1(updBr, perspectiveValue);
-		    		  System.out.println("new min value : "+perspectiveValue);
-		    	  }
-		        ;}});
-		txtL1min.addListener(SWT.Traverse , new Listener() {
-		      public void handleEvent(Event event) {
-		    	  if (event.detail == SWT.TRAVERSE_RETURN)
-		    	  {
+			// --------------------------------------------------------------------------
+			// min label 1
+			//Label lblMin1 = new Label(group, SWT.NONE);
+			Label lblMin1 = new Label(firstContent, SWT.NONE);
+			lblMin1.setBounds(settingOffsetX, 
+								  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
+								  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
+								  width_one_fourth/3, 
+								  settingRegionLineHeight);
+			lblMin1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			lblMin1.setText("min ");
+			GridData gridData = new GridData();
+	 		gridData.horizontalAlignment = GridData.BEGINNING;
+	 		gridData.grabExcessHorizontalSpace = false;
+	 		lblMin1.setLayoutData(gridData);
+			
+			// text field
+			//final Text txtL1min = new Text(group, SWT.BORDER);
+			final Text txtL1min = new Text(firstContent, SWT.BORDER);
+			int min = (int)((double)constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
+			txtL1min.setText(""+min);
+			/*
+			txtL1min.setBounds(lblMin1.getBounds().x+lblMin1.getBounds().width+settingRegionSeparateWidth,
+								settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
+								+ settingRegionBetweenLineHeight*(lineNumber+1)+heightSum-textFieldExtention, 
+							   width_one_fourth/2,
+							   settingRegionLineHeight+textFieldExtention);
+			*/
+			txtL1min.addListener(SWT.FocusOut , new Listener() {
+			      public void handleEvent(Event event) {
 		    		  double perspectiveValue = 0;
 		    		  boolean update = true;
 			    	  try 
@@ -824,69 +886,88 @@ public class mainWindow {
 			    		  updateTresholdMin1(updBr, perspectiveValue);
 			    		  System.out.println("new min value : "+perspectiveValue);
 			    	  }
-		    	  }
-		        ;}});
-		
-		
-		//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));	
-		
-		// label for unit
-		Label lblUnit1 = new Label(group, SWT.NONE);
-		lblUnit1.setBounds(txtL1min.getBounds().x+txtL1min.getBounds().width+settingRegionSeparateWidth, 
-							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
-							  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
-							  width_one_fourth/2, 
-							  settingRegionLineHeight);
-		lblUnit1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//formToolkit.adapt(lblTreshold, true, true);
-		lblUnit1.setText(String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));				
-		//----------------------------------------------------------------------------------------
-		
-		// label 1 max -----------------------------------------------------------------------------------
-		Label lblMax1 = new Label(group, SWT.NONE);
-		lblMax1.setBounds(settingOffsetX, 
-							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
-							  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
-							  width_one_fourth/3, 
-							  settingRegionLineHeight);
-		//lblTreshold.setBounds(settingRegionStartX, settingRegionStartY+44+i*settingRegionHeight, 55, 15);
-		lblMax1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//formToolkit.adapt(lblTreshold, true, true);
-		lblMax1.setText("max ");
-		
-		// text field
-		final Text txtL1max = new Text(group, SWT.BORDER);
-		int max = (int)((double)constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;				
-		txtL1max.setText(""+max);
-		txtL1max.setBounds(lblMax1.getBounds().x+lblMax1.getBounds().width+settingRegionSeparateWidth,
-							settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
-							+ settingRegionBetweenLineHeight*(lineNumber+2)+heightSum-textFieldExtention, 
-						   width_one_fourth/2,
-						   settingRegionLineHeight+textFieldExtention);
-		//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		txtL1max.addListener(SWT.FocusOut , new Listener() {
-		      public void handleEvent(Event event) {
-	    		  double perspectiveValue = 0;
-	    		  boolean update = true;
-		    	  try 
-		    	  {				 
-		    		  perspectiveValue = Double.parseDouble(txtL1max.getText());
-		    	  }
-		    	  catch (NumberFormatException e)
-		    	  {
-		    		  txtL1max.setText(Double.toString( Brick.getThresholdMax1(connectionData.BrickList, updBr.uid))); 
-		    		  update = false;
-		    	  }
-		    	  if (update == true)
-		    	  {
-		    		  updateTresholdMax1(updBr, perspectiveValue);
-		    		  System.out.println("new min value : "+perspectiveValue);
-		    	  }
-		        ;}});
-		txtL1max.addListener(SWT.Traverse , new Listener() {
-		      public void handleEvent(Event event) {
-		    	  if (event.detail == SWT.TRAVERSE_RETURN)
-		    	  {
+			        ;}});
+			txtL1min.addListener(SWT.Traverse , new Listener() {
+			      public void handleEvent(Event event) {
+			    	  if (event.detail == SWT.TRAVERSE_RETURN)
+			    	  {
+			    		  double perspectiveValue = 0;
+			    		  boolean update = true;
+				    	  try 
+				    	  {				 
+				    		  perspectiveValue = Double.parseDouble(txtL1min.getText());
+				    	  }
+				    	  catch (NumberFormatException e)
+				    	  {
+				    		  txtL1min.setText(Double.toString( Brick.getThresholdMin1(connectionData.BrickList, updBr.uid))); 
+				    		  update = false;
+				    	  }
+				    	  if (update == true)
+				    	  {
+				    		  updateTresholdMin1(updBr, perspectiveValue);
+				    		  System.out.println("new min value : "+perspectiveValue);
+				    	  }
+			    	  }
+			        ;}});
+	 		
+			GridData gridData2 = new GridData();
+	 		gridData2.horizontalAlignment = GridData.BEGINNING;
+	 		gridData2.grabExcessHorizontalSpace = false;
+	 		gridData2.widthHint = textFieldSize;
+	 		txtL1min.setLayoutData(gridData2);
+			
+			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));	
+			
+			// label for unit
+			//Label lblUnit1 = new Label(group, SWT.NONE);
+			Label lblUnit1 = new Label(firstContent, SWT.NONE);
+			lblUnit1.setBounds(txtL1min.getBounds().x+txtL1min.getBounds().width+settingRegionSeparateWidth, 
+								  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
+								  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
+								  width_one_fourth/2, 
+								  settingRegionLineHeight);
+			lblUnit1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			//formToolkit.adapt(lblTreshold, true, true);
+			lblUnit1.setText(String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
+			GridData gridData3 = new GridData();
+	 		gridData3.horizontalAlignment = GridData.BEGINNING;
+	 		gridData3.grabExcessHorizontalSpace = false;
+	 		lblUnit1.setLayoutData(gridData3);
+
+			//----------------------------------------------------------------------------------------
+			
+			// label 1 max -----------------------------------------------------------------------------------
+			//Label lblMax1 = new Label(group, SWT.NONE);
+			Label lblMax1 = new Label(firstContent, SWT.NONE);
+			lblMax1.setBounds(settingOffsetX, 
+								  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
+								  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
+								  width_one_fourth/3, 
+								  settingRegionLineHeight);
+			//lblTreshold.setBounds(settingRegionStartX, settingRegionStartY+44+i*settingRegionHeight, 55, 15);
+			lblMax1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			//formToolkit.adapt(lblTreshold, true, true);
+			lblMax1.setText("max ");
+			GridData gridData4 = new GridData();
+	 		gridData4.horizontalAlignment = GridData.BEGINNING;
+	 		gridData4.grabExcessHorizontalSpace = false;
+	 		lblMax1.setLayoutData(gridData4);
+			
+			// text field
+			//final Text txtL1max = new Text(group, SWT.BORDER);
+			final Text txtL1max = new Text(firstContent, SWT.BORDER);
+			int max = (int)((double)constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;				
+			txtL1max.setText(""+max);
+			/*
+			txtL1max.setBounds(lblMax1.getBounds().x+lblMax1.getBounds().width+settingRegionSeparateWidth,
+								settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
+								+ settingRegionBetweenLineHeight*(lineNumber+2)+heightSum-textFieldExtention, 
+							   width_one_fourth/2,
+							   settingRegionLineHeight+textFieldExtention);
+			*/
+			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			txtL1max.addListener(SWT.FocusOut , new Listener() {
+			      public void handleEvent(Event event) {
 		    		  double perspectiveValue = 0;
 		    		  boolean update = true;
 			    	  try 
@@ -903,30 +984,62 @@ public class mainWindow {
 			    		  updateTresholdMax1(updBr, perspectiveValue);
 			    		  System.out.println("new min value : "+perspectiveValue);
 			    	  }
-		    	  }
-		        ;}});
-						
-		// label for unit
-		Label lblUnit2 = new Label(group, SWT.NONE);
-		lblUnit2.setBounds(txtL1max.getBounds().x+txtL1max.getBounds().width+settingRegionSeparateWidth, 
-							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
-							  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
-							  width_one_fourth/2, 
-							  settingRegionLineHeight);
-		lblUnit2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//formToolkit.adapt(lblTreshold, true, true);
-		lblUnit2.setText(String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));								
-		// -------------------------------------------------------------------------------------------------
+			        ;}});
+			txtL1max.addListener(SWT.Traverse , new Listener() {
+			      public void handleEvent(Event event) {
+			    	  if (event.detail == SWT.TRAVERSE_RETURN)
+			    	  {
+			    		  double perspectiveValue = 0;
+			    		  boolean update = true;
+				    	  try 
+				    	  {				 
+				    		  perspectiveValue = Double.parseDouble(txtL1max.getText());
+				    	  }
+				    	  catch (NumberFormatException e)
+				    	  {
+				    		  txtL1max.setText(Double.toString( Brick.getThresholdMax1(connectionData.BrickList, updBr.uid))); 
+				    		  update = false;
+				    	  }
+				    	  if (update == true)
+				    	  {
+				    		  updateTresholdMax1(updBr, perspectiveValue);
+				    		  System.out.println("new min value : "+perspectiveValue);
+				    	  }
+			    	  }
+			        ;}});
+			GridData gridData5 = new GridData();
+	 		gridData5.horizontalAlignment = GridData.BEGINNING;
+	 		gridData5.grabExcessHorizontalSpace = false;
+	 		gridData5.widthHint = textFieldSize;
+	 		txtL1max.setLayoutData(gridData5);
+							
+			// label for unit
+			//Label lblUnit2 = new Label(group, SWT.NONE);
+			Label lblUnit2 = new Label(firstContent, SWT.NONE);
+			lblUnit2.setBounds(txtL1max.getBounds().x+txtL1max.getBounds().width+settingRegionSeparateWidth, 
+								  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
+								  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
+								  width_one_fourth/2, 
+								  settingRegionLineHeight);
+			lblUnit2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			//formToolkit.adapt(lblTreshold, true, true);
+			lblUnit2.setText(String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
+			GridData gridData6 = new GridData();
+	 		gridData6.horizontalAlignment = GridData.BEGINNING;
+	 		gridData6.grabExcessHorizontalSpace = false;
+	 		lblUnit2.setLayoutData(gridData6);
+			// -------------------------------------------------------------------------------------------------
 		}
 		
 			
 		//if (quant == 2)
 		//{
-			if (tmpBr.ctrlSimple[1] == true)
-			{				
+		if (tmpBr.ctrlSimple[1] == true)
+		{		
 			// -------------------------------------------------------------------------------------
 			// min label 2
-			Label lblMin2 = new Label(group, SWT.NONE);
+			//Label lblMin2 = new Label(group, SWT.NONE);
+			Label lblMin2 = new Label(firstContent, SWT.NONE);
 			lblMin2.setBounds(settingOffsetX+settingRegionWidth/2, 
 							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
 							  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
@@ -938,7 +1051,8 @@ public class mainWindow {
 			lblMin2.setText("min ");	
 			
 			// text field
-			final Text txtL2min = new Text(group, SWT.BORDER);
+			//final Text txtL2min = new Text(group, SWT.BORDER);
+			final Text txtL2min = new Text(firstContent, SWT.BORDER);
 			int min = (int)((double)constants.brickMinValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
 			txtL2min.setText(""+min);
 			txtL2min.setBounds(lblMin2.getBounds().x+lblMin2.getBounds().width+settingRegionSeparateWidth,
@@ -990,7 +1104,8 @@ public class mainWindow {
 			        ;}});
 
 			// label for unit
-			Label lblUnit3 = new Label(group, SWT.NONE);
+			//Label lblUnit3 = new Label(group, SWT.NONE);
+			Label lblUnit3 = new Label(firstContent, SWT.NONE);
 			lblUnit3.setBounds(txtL2min.getBounds().x+txtL2min.getBounds().width+settingRegionSeparateWidth, 
 								  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+1)
 								  + settingRegionBetweenLineHeight*(lineNumber+1)+heightSum, 
@@ -1005,7 +1120,8 @@ public class mainWindow {
 			
 			// --------------------------------------------------------------------------------------------------
 			// max label 2
-			Label lblMax2 = new Label(group, SWT.NONE);
+			//Label lblMax2 = new Label(group, SWT.NONE);
+			Label lblMax2 = new Label(firstContent, SWT.NONE);
 			lblMax2.setBounds(settingOffsetX+settingRegionWidth/2, 
 							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
 							  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
@@ -1017,7 +1133,8 @@ public class mainWindow {
 			lblMax2.setText("max ");					
 		
 			// text field
-			final Text txtL2max = new Text(group, SWT.BORDER);
+			//final Text txtL2max = new Text(group, SWT.BORDER);
+			final Text txtL2max = new Text(firstContent, SWT.BORDER);
 			int max = (int)((double)constants.brickMaxValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
 			txtL2max.setText(""+max);
 			txtL2max.setBounds(lblMax2.getBounds().x+lblMax2.getBounds().width+settingRegionSeparateWidth,
@@ -1069,7 +1186,8 @@ public class mainWindow {
 			        ;}});
 		
 			// label for unit
-			Label lblUnit4 = new Label(group, SWT.NONE);
+			//Label lblUnit4 = new Label(group, SWT.NONE);
+			Label lblUnit4 = new Label(firstContent, SWT.NONE);
 			lblUnit4.setBounds(txtL2max.getBounds().x+txtL2max.getBounds().width+settingRegionSeparateWidth, 
 							  settingRegionBorderLineHeight+settingRegionLineHeight*(lineNumber+2)
 							  + settingRegionBetweenLineHeight*(lineNumber+2)+heightSum, 
@@ -1078,10 +1196,8 @@ public class mainWindow {
 			lblUnit4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			//formToolkit.adapt(lblTreshold, true, true);
 			lblUnit4.setText(String.valueOf(constants.brick2ndUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
-
 			// -----------------------------------------------------------------------------------------
-			}
-		//}
+		}
 	}
 	
 	
@@ -1807,56 +1923,40 @@ public class mainWindow {
 	
 	
 	
-	public static void removeSettingGroup()
-	{
-	    ScrolledComposite firstScroll = new ScrolledComposite(group, SWT.V_SCROLL);
+	public static void redrawSettingGroup()
+	{	
+		if ((firstScroll != null) && (!firstScroll.isDisposed()))
+		{
+			firstScroll.dispose();
+		}
+	    //ScrolledComposite firstScroll = new ScrolledComposite(group, SWT.V_SCROLL);
+		firstScroll = new ScrolledComposite(group, SWT.V_SCROLL);
 	    firstScroll.setLayout(new GridLayout(1, false));
 	    firstScroll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-	    Composite firstContent = new Composite(firstScroll, SWT.NONE);
-	    firstContent.setLayout(new GridLayout(1, false));
-	    firstContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+		if ((firstContent != null) && (!firstContent.isDisposed()))
+		{
+			firstContent.dispose();
+		}
+	    //Composite firstContent = new Composite(firstScroll, SWT.NONE);
+	    firstContent = new Composite(firstScroll, SWT.NONE);
+	    firstContent.setLayout(new GridLayout(2, false));
+	    firstContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	    
+	    
+	    /*
 	    for (int i = 0; i < 20; i++)
 	    {
 	        Text text = new Text(firstContent, SWT.BORDER);
 	        text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 	    }
-
-	    firstScroll.setContent(firstContent);
-	    firstScroll.setExpandHorizontal(true);
-	    firstScroll.setExpandVertical(true);
-	    firstScroll.setMinSize(firstContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+	    */	    
 
 	}
 	
 	public static void updateSettingTabs()
 	{	
-		
-		removeSettingGroup();
-		//group.dispose();
-		/*
-		group = new Group(shell, SWT.NONE);
-		group.setText("bricklets");
-		group.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		group.setLayout(new GridLayout(1, false));
-		
-	    gridDataSettings = new GridData();
-	    gridDataSettings.verticalAlignment = GridData.FILL;
-		//gridData.verticalSpan = 2;
-	    gridDataSettings.grabExcessVerticalSpace = true;
-	    gridDataSettings.horizontalAlignment = GridData.FILL;
-	    gridDataSettings.grabExcessHorizontalSpace = true;
-	    group.setLayoutData(gridDataSettings);
-	    */
-	    
-		Label lblBricketuid = new Label(group, SWT.NONE);
-		lblBricketuid.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		lblBricketuid.setText("XUETA");
-		lblBricketuid.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));	
-		
-		//group = groupTmp;
-		
+		redrawSettingGroup();
+	    		
 		heightSum = 0;
 						
 		// width of the label (1/2 of max width)
@@ -1867,9 +1967,40 @@ public class mainWindow {
 	
 		//list settings for each sensor-----------------------------------------
 		for (int i = 0; i<connectionData.presentedBrickList.size(); i++)
-		{			
+		{									
 			final Brick tmpBr = connectionData.presentedBrickList.get(i);
-
+			
+			Group tmpGroup1 = new Group(firstContent, SWT.NONE);
+			Group tmpGroup2 = new Group(firstContent, SWT.NONE);
+			GridData tmpGridData1 = new GridData();
+			GridData tmpGridData2 = new GridData();
+			
+			tmpGroup1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			
+			tmpGroup1.setLayout(new GridLayout(3, false));
+			if (tmpBr.deviceIdentifier == 227)
+			{
+				tmpGroup2 = new Group(firstContent, SWT.NONE);
+				tmpGroup2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));				
+				tmpGridData2.verticalAlignment = GridData.FILL;
+				tmpGridData2.grabExcessVerticalSpace = true;
+				tmpGridData2.horizontalAlignment = GridData.FILL;
+				tmpGridData2.grabExcessHorizontalSpace = true;
+				tmpGridData2.minimumHeight = 100;
+				tmpGroup1.setLayoutData(tmpGridData2);				
+			}
+			else
+			{
+				tmpGridData1.horizontalSpan = 2;
+			}
+		    
+			tmpGridData1.verticalAlignment = GridData.FILL;
+			tmpGridData1.grabExcessVerticalSpace = true;
+			tmpGridData1.horizontalAlignment = GridData.FILL;
+			tmpGridData1.grabExcessHorizontalSpace = true;
+			tmpGridData1.minimumHeight = 100;
+			tmpGroup1.setLayoutData(tmpGridData1);
+			
 			if (tmpBr.checked1 == true)			
 			{
 				int lineNumber = 0;	
@@ -1878,21 +2009,20 @@ public class mainWindow {
 				// -----------------------------------------
 				// sensor name + uid
 				// -----------------------------------------
-				//settingsMenu_addName(i);
-				//lineNumber ++;		
+				settingsMenu_addName(tmpGroup1, tmpGroup2, i);
+				lineNumber ++;		
 				// -----------------------------------------
 
 				
 				// -----------------------------------------		
 				// use case: SIMPLE for bricks with 2 sensor
 				// -----------------------------------------
-				/*
 				if (tmpBr.deviceIdentifier == 227)
 				{	
-					settingMenu_addSimpleCheckbox(tmpBr, lineNumber, 2, i);
+					settingMenu_addSimpleCheckbox(tmpGroup1, tmpGroup2, tmpBr, lineNumber, 2, i);
 					if ((tmpBr.ctrlSimple[0] == true) || (tmpBr.ctrlSimple[1] == true))
 					{
-						settingMenu_addSimpleControls(tmpBr, lineNumber, 2, i);
+						settingMenu_addSimpleControls(tmpGroup1, tmpGroup2, tmpBr, lineNumber, 2, i);
 						lineNumber += 2;
 						//lineNumber += 1;
 						caseNumber ++;
@@ -1901,17 +2031,16 @@ public class mainWindow {
 				// use case simple for bricks with 1 sensor
 				else
 				{
-					settingMenu_addSimpleCheckbox(tmpBr, lineNumber, 1, i);
+					settingMenu_addSimpleCheckbox(tmpGroup1, tmpGroup2, tmpBr, lineNumber, 1, i);
 					if (tmpBr.ctrlSimple[0] == true)
 					{
-						settingMenu_addSimpleControls(tmpBr, lineNumber, 1, i);
+						settingMenu_addSimpleControls(tmpGroup1, tmpGroup2, tmpBr, lineNumber, 1, i);
 						lineNumber += 2;
 						//lineNumber += 1;
 						caseNumber ++;
 					}
 				}
 				lineNumber += 1;
-				*/
 				// -----------------------------------------
 
 
@@ -2001,7 +2130,10 @@ public class mainWindow {
 			}
 		}
 		
-
+	    firstScroll.setContent(firstContent);
+	    firstScroll.setExpandHorizontal(true);
+	    firstScroll.setExpandVertical(true);
+	    firstScroll.setMinSize(firstContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 
         // update window size		
