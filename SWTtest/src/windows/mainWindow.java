@@ -1772,14 +1772,10 @@ public class mainWindow {
 						if (tmpltCtrlCheck(tmpStr, 1) == true)
 						{
 							if (Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[1].length() > 40)
-							{
-							// 	adjust text length
-								//tmp = Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[1];
-								//tmp = ".." + tmp.substring(tmp.length()-20, tmp.length());								
+							{						
 							}
 							else
 							{
-								//tmp = Brick.getBrick(connectionData.BrickList,tmpBr.uid).ctrlTmplPath[1];
 							}
 						}
 					}
