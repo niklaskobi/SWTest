@@ -17,6 +17,9 @@ toDO:
 -	disabling simple control, doesn't turn out the red light
 -	name of the template file doesn't fit the boundaries
 -	xz exceptions
+-	make graph flowing in the middle of the chart
+-	port number and localhost textfields same size
+-	writing to file enable
 
 done:
 +	stop functionality for auto update template values
@@ -46,6 +49,3 @@ done:
 
 +	template window is opening even if click outside of the graph(19.06.2015)
 +	scrolling to 100% satisfying(19.06.2015)
-
-
-14.07.2015	9:00-
