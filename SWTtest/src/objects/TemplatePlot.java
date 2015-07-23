@@ -47,6 +47,14 @@ public class TemplatePlot {
 		normalizeTimestamps();
 	}
 	
+	/**
+	 * copy constructor
+	 * @param p
+	 */
+	public TemplatePlot(TemplatePlot p)
+	{
+		this(p.allPoints);
+	}
 	
 	/**
 	 * 1st timetamp will become 0:00:00, 
@@ -89,8 +97,10 @@ public class TemplatePlot {
 	public double getYValue(long currentMs, long startMs)
 	{
 		long msTmp = currentMs - startMs;
-		//msTmp = msTmp- lapCnt*this.getLapLength();		
-		msTmp = msTmp % this.getLapLength();
+		//msTmp = msTmp- lapCnt*this.getLapLength();
+		long lapLength = this.getLapLength();
+		if (lapLength == 0) return 0;
+		msTmp = msTmp % lapLength;
 		double y1 = 0;
 		double y2 = 0;
 		long x1 = 0;
@@ -153,9 +163,17 @@ public class TemplatePlot {
 	 * returns the length of the measured plot in milliseconds 
 	 * @return milliseconds
 	 */
-	public Long getLapLength()
+	public long getLapLength()
 	{
-		return this.allPoints.get(allPoints.size()-1).value1;
+		if (!this.allPoints.isEmpty())
+		{
+			return this.allPoints.get(allPoints.size()-1).value1;
+		}
+		else 
+		{
+			System.out.println("ERROR: template array is empty");
+			return 0;
+		}
 	}
 	
 	
@@ -234,9 +252,9 @@ public class TemplatePlot {
 	 * structure of the future file:
 	 * 
 	 * 1st line: date of creation("yyyy-MM-dd HH:mm:ss"); 
-	 * 2nd line: doubleValueX,doubleValueY;
+	 * 2nd line: "value1;value2;"
 	 * 3rd line: doubleValueX,doubleValueY;
-	 * ...
+	 * ... same as 3rd
 	 * 
 	 * @param uid
 	 * @param value

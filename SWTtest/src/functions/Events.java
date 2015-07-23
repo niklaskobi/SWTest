@@ -286,8 +286,9 @@ public class Events {
 	public static void disconnectDevice()
 	{
 		try {
-			connection.disconnect();
+			//connection.disconnect();
 			connection.stopAllSensors();
+			connection.disconnect();
 		} catch (AlreadyConnectedException | NotConnectedException
 				| IOException e) {
 			System.out.println("catched exception");

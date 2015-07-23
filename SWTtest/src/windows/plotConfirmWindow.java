@@ -60,8 +60,12 @@ public class plotConfirmWindow {
 
 
     public plotConfirmWindow(TemplatePlot p, int index) {
+    	
+    	// return if no measurements values are available
+    	if (p.allPoints.isEmpty()) return;
+    	
     	this.myIndex = index;
-    	this.tPlot=p;
+    	this.tPlot = new TemplatePlot(p);
     	this.tPlot.normalizeTimestamps();
     	this.title = tPlot.fileName;
     	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
@@ -142,7 +146,6 @@ public class plotConfirmWindow {
         });
     }
 
-    
     
 
     private JComboBox<String> createTrace() {

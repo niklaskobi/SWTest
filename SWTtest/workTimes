@@ -2,7 +2,7 @@ toDO:
 -	warning max depends on warning min what causes an anomaly behavior by having warning min on 0     
 -	set better colors for template control graph (green must be lighter)
 -	same colors for markers for each control case
--	main window objects dynamic by changing the size of window
+
 -	BUG! template window for second chart (temporary solution 05.05.2015), now dividing by 2, line 1290, sonsorWindow
 -	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
 -	template plot window: title smaller
@@ -11,7 +11,7 @@ toDO:
 -	test: on tablet 
 -	setting window: enable disable 1 sensor by double sensor brick 
 -	template control button is hiding the scale after enabling (still)
-!-	scroll bar for case if the setting window does not fit the size of the screen
+
 -	average labels (min->current min, max...,)
 -	template start button label changes after stop
 -	disabling simple control, doesn't turn out the red light
@@ -20,6 +20,7 @@ toDO:
 -	make graph flowing in the middle of the chart
 -	port number and localhost textfields same size
 -	writing to file enable
+-	overwriting a template file, creates a new file with +".tmp" filename 
 
 done:
 +	stop functionality for auto update template values
@@ -49,4 +50,10 @@ done:
 
 +	template window is opening even if click outside of the graph(19.06.2015)
 +	scrolling to 100% satisfying(19.06.2015)
-asd
+
++	scroll bar for case if the setting window does not fit the size of the screen (22.07.2015)
++	main window objects dynamic by changing the size of window
+
+
+22.07.2015	19:00 - 21:00
+23.07.2015	10:00 - 12:00, 13:00 - 14:00
