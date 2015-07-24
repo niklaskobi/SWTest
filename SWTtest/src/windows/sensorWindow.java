@@ -122,7 +122,7 @@ import functions.connection;
 @SuppressWarnings("serial")
 public class sensorWindow extends ApplicationFrame implements ActionListener {
 
-	final static double warningPercentage = 100; 	//
+	final static double warningPercentage = 10; 	//
 	//final static int sliderValuesNumber = 4800; 	// how many x values are visible
 	public final static int sliderValuesNumber = 100; 	// how many x values are visible
 													// at the scroll bar
@@ -446,7 +446,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 			// create min1 warning map value
 			ValueMarker vm6 = new ValueMarker(newBrick.tresholdMin2
-					+ newBrick.tresholdMin2 * warningPercentage / 100);
+					+ (newBrick.tresholdMax2 - newBrick.tresholdMin2) * warningPercentage / 100);
 			markerMapMin2Warning.put(newBrick.uid, vm6);
 			// set warning line
 			markerMapMin2Warning.get(newBrick.uid).setPaint(Color.orange);
@@ -478,7 +478,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 			// create max1 warning map value
 			ValueMarker vm8 = new ValueMarker(newBrick.tresholdMax2
-					+ newBrick.tresholdMax2 * warningPercentage / 100);
+					- (newBrick.tresholdMax2-newBrick.tresholdMin2) * warningPercentage / 100);
 			markerMapMax2Warning.put(newBrick.uid, vm8);
 			// set warning line
 			markerMapMax2Warning.get(newBrick.uid).setPaint(Color.orange);
@@ -593,7 +593,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 		// create min1 warning map value
 		ValueMarker vm2 = new ValueMarker(newBrick.tresholdMin1
-				+ newBrick.tresholdMin1 * warningPercentage / 100);
+				+ (newBrick.tresholdMax1 - newBrick.tresholdMin1) * warningPercentage / 100);
 		markerMapMin1Warning.put(newBrick.uid, vm2);
 		// set warning line
 		markerMapMin1Warning.get(newBrick.uid).setPaint(Color.orange);
@@ -628,7 +628,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 		// create max1 warning map value
 		ValueMarker vm4 = new ValueMarker(newBrick.tresholdMax1
-				+ newBrick.tresholdMax1 * warningPercentage / 100);
+				- (newBrick.tresholdMax1-newBrick.tresholdMin1) * warningPercentage / 100);
 		markerMapMax1Warning.put(newBrick.uid, vm4);
 		// set warning line
 		markerMapMax1Warning.get(newBrick.uid).setPaint(Color.orange);
@@ -1543,27 +1543,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					try 
 					{
 						Thread.sleep(100);
-					} catch (Exception e) {}					
-					cnt++;
-					Millisecond ms = new Millisecond();
+					} catch (Exception e) {}
 					
-					// ==================================================================================
-					// 19.06.2015
-					// add timestamp to slider
+					cnt++;
+					Millisecond ms = new Millisecond();					
 					sliderData.addMS(ms);
-
 					// if we have moved slider at least once, but now it is on it's
 					// start position which means we want let the charts auto update again
 					if (sliderUpdate == true)
 					{
-						/*
-						DateRange range = new DateRange(sliderData.getMilliseconds(0).getFirstMillisecond(), 
-														sliderData.getMilliseconds(sliderValuesNumber).getFirstMillisecond());
-						plot.getDomainAxis().setRange(range);
-						*/
 						plot.getDomainAxis().setAutoRange(true);
 					}
-					// ==================================================================================
 					
 					for (int i = 0; i < connectionData.presentedBrickList.size(); i++) 
 					{						
@@ -1640,9 +1630,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		tempMeArray[0].value1 = ms.getMillisecond();
 		tempMeArray[0].value2 = value;
 		lastValuesMap.put(sensorUID, tempMeArray);
-
-		// add timestamp to slider
-		//sliderData.addMS(ms);
 
 		// if we have moved slider at least once, but now it is on it's
 		// start position which means we want let the charts auto update again
@@ -1729,7 +1716,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 */
 	public static void enableSimpleCtrl(Brick br, int index)
 	{
-		System.out.println("ENABLE SIMPLE CNTRL");
 		if (index == 0)
 		{
 			plotMap.get(br.uid).addRangeMarker(markerMapMin1Critical.get(br.uid));
@@ -1748,31 +1734,39 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	
 	/**
-	 * hides control elements (critical and warning lines for both max and min)
+	 * hides control elements (critical and warning lines for both max and min of simple use case)
 	 * for simple case 
 	 * @param br
 	 * @param index
 	 */
 	public static void disableSimpleCtrl(Brick br, int index)
-	{
-		System.out.println("DISABLE SIMPLE CNTRL");		
+	{		
 		if (index == 0)
 		{
 			plotMap.get(br.uid).removeRangeMarker(markerMapMin1Critical.get(br.uid));
 			plotMap.get(br.uid).removeRangeMarker(markerMapMin1Warning.get(br.uid));
 			plotMap.get(br.uid).removeRangeMarker(markerMapMax1Critical.get(br.uid));
 			plotMap.get(br.uid).removeRangeMarker(markerMapMax1Warning.get(br.uid));
+			
+			// set idle state
+			Integer[] tmpArray = plot1ControlMap.get(br.uid);
+			tmpArray[0] = 0;
+			plot1ControlMap.put(br.uid, tmpArray);
 		}
 		else if (index == 1)
 		{
 			plotMap.get(br.uid).removeRangeMarker(markerMapMin2Critical.get(br.uid));
 			plotMap.get(br.uid).removeRangeMarker(markerMapMin2Warning.get(br.uid));
 			plotMap.get(br.uid).removeRangeMarker(markerMapMax2Critical.get(br.uid));
-			plotMap.get(br.uid).removeRangeMarker(markerMapMax2Warning.get(br.uid));			
+			plotMap.get(br.uid).removeRangeMarker(markerMapMax2Warning.get(br.uid));
+			
+			// set idle state
+			Integer[] tmpArray = plot2ControlMap.get(br.uid);
+			tmpArray[0] = 0;
+			plot2ControlMap.put(br.uid, tmpArray);
 		}	
 	}
-		
-	
+			
 	
 	/**
 	 * hide or show average control elements (depending on previous state)
@@ -1807,14 +1801,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				plotMap.get(br.uid).removeRangeMarker(markerMaxima.get(br.uid));
 				plotMap.get(br.uid).removeRangeMarker(markerMinima.get(br.uid));
 				plotMap.get(br.uid).removeRangeMarker(markerAverage.get(br.uid));
-				/*
-				// set background color
-				if (plot1StateMap.get(br.uid) == 1) 
-				{
-					plotMap.get(br.uid).setBackgroundPaint(Color.GRAY);
-					plot1StateMap.put(br.uid, 0);
-				}
-				*/
+				
 				Integer[] tmpArray = plot1ControlMap.get(br.uid);
 				tmpArray[1] = 0;
 				plot1ControlMap.put(br.uid, tmpArray);
@@ -1944,17 +1931,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpArray[2] = 0;
 			plot2ControlMap.put(br.uid, tmpArray);
 			rendererMap4.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
-		}
-		
+		}		
 		updateButtonPanel();
-
 	}
 	
 
-	public static void updateButtonPanel() {
-		
+	public static void updateButtonPanel() 
+	{	
 		buttonPanel.removeAll();
-
 		for (Map.Entry<String, JButton> entry : tmplButtonsVisible.entrySet()) 
 		{
 			// String uid = entry.getKey();
@@ -1963,13 +1947,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			{
 				buttonPanel.add(button);
 			}
-		}
-		
+		}		
 		content.updateUI();
 	}
 
 	
-	@Override
+	/**
+	 * stop/start template control button clicked
+	 */
 	public void actionPerformed(ActionEvent e) {
 		for (int i = 0; i < connectionData.presentedBrickList.size(); i++) 
 		{
@@ -2233,8 +2218,10 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 */
 	private void simpleTresholdCtrlUpdate(String sensorUID, double value, int index)
 	{
-		if (index == 0)
+		if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlSimple[index] == true)
 		{
+		if (index == 0)
+		{			
 			// check whether the value is below the threshold
 			if (markerMapMin1Critical.containsKey(sensorUID)) 
 			{
@@ -2298,6 +2285,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					plot2ControlMap.put(sensorUID, tmpArray);
 				}
 			}
+		}
 		}
 	}
 	

@@ -697,14 +697,22 @@ public class mainWindow {
 	 */
 	public static void settingsMenu_addName(Group firstContent, Group secondContent, int i)
 	{
-
-		firstContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
-					String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+		
+		if (secondContent == null)
+		{
+			firstContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
+					String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));			
+		}
 		
 		if (secondContent != null)
 		{
+			firstContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
+					String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier()))+" - "+
+					String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+
 			secondContent.setText(connectionData.presentedBrickList.get(i).uid +" - "+
-				String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
+				String.valueOf(constants.brickIdMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier()))+" - "+
+				String.valueOf(constants.brick2ndUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
 		}
 	}
 	
@@ -842,7 +850,15 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1min = new Text(firstContent, SWT.BORDER);
-			int min = (int)((double)constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
+			int min = 0;
+			if (tmpBr.tresholdMin1 == 0)
+			{
+				min = (int)((double)constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			}
+			else
+			{
+				min = (int) tmpBr.tresholdMin1;
+			}
 			txtL1min.setText(""+min);
 			txtL1min.addListener(SWT.FocusOut , new Listener() {
 			      public void handleEvent(Event event) {
@@ -914,7 +930,15 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1max = new Text(firstContent, SWT.BORDER);
-			int max = (int)((double)constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;				
+			int max = 0;
+			if (tmpBr.tresholdMax1 == 0)
+			{
+				max = (int)((double)constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			}
+			else
+			{
+				max = (int) tmpBr.tresholdMax1;
+			}
 			txtL1max.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL1max.addListener(SWT.FocusOut , new Listener() {
@@ -990,8 +1014,16 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL2min = new Text(secondContent, SWT.BORDER);
-			int min = (int)((double)constants.brickMinValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
-			txtL2min.setText(""+min);
+			int min2 = 0;
+			if (tmpBr.tresholdMin2 == 0)
+			{
+				min2 = (int)((double)constants.brickMinValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			}
+			else
+			{
+				min2 = (int) tmpBr.tresholdMin2;
+			}
+			txtL2min.setText(""+min2);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));	
 			txtL2min.addListener(SWT.FocusOut , new Listener() {
 			      public void handleEvent(Event event) {
@@ -1062,8 +1094,17 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL2max = new Text(secondContent, SWT.BORDER);
-			int max = (int)((double)constants.brickMaxValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
-			txtL2max.setText(""+max);
+			int max2 = 0;
+			if (tmpBr.tresholdMax2 == 0)
+			{
+				max2 = (int)((double)constants.brickMaxValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			}
+			else
+			{
+				max2 = (int) tmpBr.tresholdMax2;
+			}
+			
+			txtL2max.setText(""+max2);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL2max.addListener(SWT.FocusOut , new Listener() {
 			      public void handleEvent(Event event) {
@@ -1831,7 +1872,7 @@ public class mainWindow {
 		Button btnCheckButton = new Button(firstContent, SWT.CHECK);
 		//btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		// "disable" + unit 
-		btnCheckButton.setText("hide "+String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
+		btnCheckButton.setText("hide");
 		btnCheckButton.setSelection(!Brick.getBrick(connectionData.BrickList,tmpStr).checked2);
 		btnCheckButton.addSelectionListener(new SelectionListener()
 		{
@@ -1860,7 +1901,7 @@ public class mainWindow {
 								
 			Button btnCheckButton3 = new Button(secondContent, SWT.CHECK);
 			//btnCheckButton3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			btnCheckButton3.setText("hide "+String.valueOf(constants.brick2ndUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
+			btnCheckButton3.setText("hide");
 			btnCheckButton3.setSelection(!Brick.getBrick(connectionData.BrickList,tmpStr).checked3);
 			btnCheckButton3.addSelectionListener(new SelectionListener(){
 				@Override

@@ -1,0 +1,4 @@
+
+
+-	sensorWindow (line 247)
+	static final int plotControlMapNum = 3;			// 3 states -> array of 3 integers, increase this number for more control cases

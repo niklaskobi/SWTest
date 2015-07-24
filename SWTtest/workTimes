@@ -9,18 +9,18 @@ toDO:
 -	collapsing main brick causes program close
 -	test: what happens when all control parts do not fit in to the setting window
 -	test: on tablet 
--	setting window: enable disable 1 sensor by double sensor brick 
 -	template control button is hiding the scale after enabling (still)
 
 -	average labels (min->current min, max...,)
 -	template start button label changes after stop
--	disabling simple control, doesn't turn out the red light
+!-	disabling simple control, doesn't turn out the red light
 -	name of the template file doesn't fit the boundaries
 -	xz exceptions
 -	make graph flowing in the middle of the chart
 -	port number and localhost textfields same size
 -	writing to file enable
 -	overwriting a template file, creates a new file with +".tmp" filename 
+-	ampere critical min does not disable after unchecking the simple control case
 
 done:
 +	stop functionality for auto update template values
@@ -54,6 +54,6 @@ done:
 +	scroll bar for case if the setting window does not fit the size of the screen (22.07.2015)
 +	main window objects dynamic by changing the size of window
 
++	setting window: enable disable 1 sensor by double sensor brick (24.07.2015)
 
-22.07.2015	19:00 - 21:00
-23.07.2015	10:00 - 12:00, 13:00 - 14:00
++	disabling simple control, doesn't turn out the red light (24.07.2015)
