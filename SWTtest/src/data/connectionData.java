@@ -35,7 +35,7 @@ public class connectionData {
 	/**
 	 * true if user allowed storing data from the sensors
 	 */
-	public static boolean storeData = false;
+	public static boolean storeData = true;
 	
 	
 	/**

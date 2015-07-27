@@ -41,6 +41,7 @@ public class constants {
 	 */
 	public static int updateFrequency = 100;
 		
+	
 	public enum brickIds
 	{
 		// add new brick ID's here---------------------
@@ -70,7 +71,6 @@ public class constants {
 		public double getMax() {return max;}
 		//-----------------------------------------------						
 	}
-	
 	
 	/**
 	 * all the init methods are wrapped in this method
@@ -143,7 +143,7 @@ public class constants {
 	{
 		brickMinValue.put(13, 0.0);
 		brickMinValue.put(21, 0.0);
-		brickMinValue.put(227, 0.0);
+		brickMinValue.put(227, 1.0);
 	}	
 
 	/**
@@ -153,7 +153,7 @@ public class constants {
 	{
 		brickMaxValue.put(13, 0.0);
 		brickMaxValue.put(21, 100.0);
-		brickMaxValue.put(227, 10.0);
+		brickMaxValue.put(227, 5.0);
 	}	
 	
 	/**
@@ -163,7 +163,7 @@ public class constants {
 	{
 		brickMinValue2nd.put(13, 0.0);
 		brickMinValue2nd.put(21, 0.0);
-		brickMinValue2nd.put(227, 0.0);
+		brickMinValue2nd.put(227, 0.5);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class constants {
 	{
 		brickMaxValue2nd.put(13, 0.0);
 		brickMaxValue2nd.put(21, 100.0);
-		brickMaxValue2nd.put(227, 10.0);
+		brickMaxValue2nd.put(227, 1.0);
 	}	
 	
 	/**
@@ -182,8 +182,8 @@ public class constants {
 	private static void fillAvgLow1st()
 	{
 		brickAvgLow1.put(13, 0.0);
-		brickAvgLow1.put(21, 1.0);
-		brickAvgLow1.put(227, 1.0);
+		brickAvgLow1.put(21, 40.0);
+		brickAvgLow1.put(227, 3.5);
 	}
 	
 	/**
@@ -192,8 +192,8 @@ public class constants {
 	private static void fillAvgLow2nd()
 	{
 		brickAvgLow2.put(13, 0.0);
-		brickAvgLow2.put(21, 1.0);
-		brickAvgLow2.put(227, 1.0);
+		brickAvgLow2.put(21, 70.0);
+		brickAvgLow2.put(227, 0.5);
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class constants {
 	private static void fillAvgHigh1st()
 	{
 		brickAvgHigh1.put(13, 0.0);
-		brickAvgHigh1.put(21, 1.0);
+		brickAvgHigh1.put(21, 70.0);
 		brickAvgHigh1.put(227, 1.0);
 	}
 		

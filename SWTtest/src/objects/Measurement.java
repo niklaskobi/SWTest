@@ -2,22 +2,26 @@ package objects;
 
 import java.util.Iterator;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
+/*
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
+*/
 
 public class Measurement {
 	
 	final static int 	cycleOffset	  	  =	1000;	// 1 sec offset
 	final static int	valueOffset		  = 10;		// 10 ms
 	
-	private Buffer 		allValues;
-	private Buffer		maximaBuffer;
+	private CircularFifoQueue 		allValues;
+	private CircularFifoQueue		maximaBuffer;
 	private double		max;
-	private Buffer		minimaBuffer;
+	private CircularFifoQueue		minimaBuffer;
 	private double		min;
 	private String		uid;
 	private int 		valuesPerLastCycle;
-	private Buffer		valuesCnt;
+	private CircularFifoQueue		valuesCnt;
 	private int 		index;						// 0 = primary sensor, 1 = secondary
 	private double[]	lastValues = new double[3];
 	/**
@@ -26,14 +30,14 @@ public class Measurement {
 	 */
 	public Measurement(int maxValues, int maxCycles, String uid, int i)
 	{
-		this.allValues 			= new CircularFifoBuffer(maxValues);
-		this.maximaBuffer 		= new CircularFifoBuffer(maxCycles);
-		this.minimaBuffer 		= new CircularFifoBuffer(maxCycles);
+		this.allValues 			= new CircularFifoQueue(maxValues);
+		this.maximaBuffer 		= new CircularFifoQueue(maxCycles);
+		this.minimaBuffer 		= new CircularFifoQueue(maxCycles);
 		this.uid				= uid;
 		max 					= 0;
 		min 					= 999; 
 		valuesPerLastCycle		= 0;
-		this.valuesCnt			= new CircularFifoBuffer(maxCycles);
+		this.valuesCnt			= new CircularFifoQueue(maxCycles);
 		this.index 				= i;
 		for (int k=0; k<lastValues.length; k++) lastValues[k] = 0;
 	}
@@ -59,7 +63,10 @@ public class Measurement {
 			valuesCnt.add(valuesPerLastCycle);
 			valuesPerLastCycle = 0;						
 		}
-		else if (detectExtrema() == -1) addMin(lastValues[1]);
+		else if (detectExtrema() == -1)
+		{
+			addMin(lastValues[1]);
+		}
 				
 		updateAverage();		
 	}

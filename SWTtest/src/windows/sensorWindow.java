@@ -128,7 +128,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 													// at the scroll bar
 	public final static int chartRangeSec = 120;
 
-	final static int maxValues = 1000; 				// max number of values which will be
+	final static int maxValues = chartRangeSec*10+1;	// max number of values which will be
 													// stored in object - measurement
 	final static int maxCycles = 10; 				// max number of cycles which will ne taken
 													// into account computing extrema and
@@ -432,7 +432,6 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create min1 critical map value
 			ValueMarker vm5 = new ValueMarker(newBrick.tresholdMin2);
 			markerMapMin2Critical.put(newBrick.uid, vm5);
-			// set critical line
 			markerMapMin2Critical.get(newBrick.uid).setPaint(Color.red);
 			markerMapMin2Critical.get(newBrick.uid).setLabel(
 					String.valueOf(constants.brick2ndUnitMap
@@ -787,12 +786,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		case 1:
 			if (high == true) {
 				ValueMarker vm = avrg1High.get(UID);
-				vm.setValue(value);
+				if (vm != null) vm.setValue(value);
 				avrg1High.put(UID, vm);
 			}
 			if (high == false) {
 				ValueMarker vm = avrg1Low.get(UID);
-				vm.setValue(value);
+				if (vm != null) vm.setValue(value);
 				avrg1Low.put(UID, vm);
 			}
 			break;
@@ -800,12 +799,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		case 2:
 			if (high == true) {
 				ValueMarker vm = avrg2High.get(UID);
-				vm.setValue(value);
+				if (vm != null) vm.setValue(value);
 				avrg2High.put(UID, vm);
 			}
 			if (high == false) {
 				ValueMarker vm = avrg2Low.get(UID);
-				vm.setValue(value);
+				if (vm != null) vm.setValue(value);
 				avrg2Low.put(UID, vm);
 			}
 			break;
@@ -1609,10 +1608,18 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	{	
 		Millisecond ms = new Millisecond();
 		
+		if (ms == null)
+		{
+			System.out.println("ms fail");
+			return;
+		}
+		
 		if (seriesCollectionMap.containsKey(sensorUID)) 
 		{
 			if (seriesCollectionMap.get(sensorUID).getSeries(0) != null)
 			{
+				seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+				/*
 				try 
 				{
 					seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
@@ -1622,6 +1629,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 					System.out.println("xz exception");
 					return;
 				}
+				*/
 			}
 		}
 		

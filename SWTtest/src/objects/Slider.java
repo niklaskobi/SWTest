@@ -2,8 +2,11 @@ package objects;
 
 import java.util.Iterator;
 
+/*
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
+*/
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
 
@@ -14,7 +17,7 @@ public class Slider {
 	public boolean sliderActive;
 	public boolean sliderEnabled;
 	public int sliderSteps = 0;
-	private Buffer sliderBuffer;
+	private CircularFifoQueue sliderBuffer;
 		
 	/**
 	 * constructor
@@ -25,7 +28,7 @@ public class Slider {
 		sliderActive = false;
 		sliderEnabled = false;
 		lastMSarray = new Millisecond[sliderSteps];
-		sliderBuffer = new CircularFifoBuffer(600*5);
+		sliderBuffer = new CircularFifoQueue(600*5);
 		initMSarray();
 	}
 	

@@ -108,7 +108,7 @@ public class mainWindow {
 	// flags
 	static boolean buttonConnect = true;	
 	static boolean buttonStart = true;
-	public static boolean allowDataStore = false;		// !!! must be equal with storeData in data.connectionData
+	public static boolean allowDataStore = true;		// !!! must be equal with storeData in data.connectionData
 	
 	// events
 	CheckStateChangedEvent event;
@@ -723,15 +723,7 @@ public class mainWindow {
 
 		//btn1 ---------------------------------------------------------------------------
 		Button btnCheckButton = new Button(firstContent, SWT.CHECK);
-		/*
-		btnCheckButton.setBounds(settingOffsetX, 
-								 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber
-								 +settingRegionLineHeight*lineNumber+heightSum, 
-								 width_one_fourth, 
-								 settingRegionLineHeight);
-		*/
 		//btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		//btnCheckButton.setText(USECASE_SIMPLE+String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(i).getDeviceIdentifier())));
 		btnCheckButton.setText(USECASE_SIMPLE);
 		btnCheckButton.setSelection(tmpBr.ctrlSimple[0]);
 		btnCheckButton.addSelectionListener(new SelectionListener(){
@@ -755,51 +747,10 @@ public class mainWindow {
 		
 		//if (quant == 2)
 		if (secondContent != null)
-		{
-			/*
-			//btn1 ---------------------------------------------------------------------------
-			Button btnCheckButton = new Button(firstContent, SWT.CHECK);
-			//Button btnCheckButton = new Button(group, SWT.CHECK);
-			btnCheckButton.setBounds(settingOffsetX, 
-									 settingRegionBorderLineHeight+settingRegionBetweenLineHeight*lineNumber
-									 +settingRegionLineHeight*lineNumber+heightSum, 
-									 width_one_fourth, 
-									 settingRegionLineHeight);
-			//btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			btnCheckButton.setText(USECASE_SIMPLE);
-			btnCheckButton.setSelection(tmpBr.ctrlSimple[0]);
-			btnCheckButton.addSelectionListener(new SelectionListener(){
-				@Override
-				public void widgetSelected(SelectionEvent e) {						
-					simpleControlChecked(tmpStr, 0);
-				}
-	
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {				
-					
-				}			
-			});
-			
-			GridData tmpGridData = new GridData();
-			tmpGridData.verticalAlignment = GridData.FILL;
-			tmpGridData.horizontalSpan = 3;
-			//tmpGridData.grabExcessVerticalSpace = true;
-			tmpGridData.horizontalAlignment = GridData.FILL;
-			tmpGridData.grabExcessHorizontalSpace = true;
-			btnCheckButton.setLayoutData(tmpGridData);
-			//btn1 ---------------------------------------------------------------------------
-			*/
-			
+		{			
 			//btn2 ---------------------------------------------------------------------------
 			//Button btnCheckButton2 = new Button(group, SWT.CHECK);
 			Button btnCheckButton2 = new Button(secondContent, SWT.CHECK);
-			/*
-			btnCheckButton2.setBounds(settingOffsetX+settingRegionWidth/2, 
-								  settingRegionBorderLineHeight+settingRegionLineHeight*lineNumber
-								  +settingRegionBetweenLineHeight*lineNumber+heightSum,  
-								  width_one_fourth, 
-								  settingRegionLineHeight);
-			*/
 			//btnCheckButton2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			btnCheckButton2.setText(USECASE_SIMPLE);
 			btnCheckButton2.setSelection(tmpBr.ctrlSimple[1]);
@@ -1242,7 +1193,19 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1min2 = new Text(firstContent, SWT.BORDER);
-			int min = (int)((double)constants.brickAvgHigh1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
+			//int min = (int)((double)constants.brickAvgHigh1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			
+			double min = 0;
+			double def = constants.brickAvgHigh1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier());
+			if (tmpBr.getAvg1high() == def)
+			{
+				min = def;
+			}
+			else
+			{
+				min = tmpBr.getAvg1high();
+			}
+			
 			txtL1min2.setText(""+min);		
 			txtL1min2.addListener(SWT.FocusOut , new Listener() {
 			      public void handleEvent(Event event) {
@@ -1316,7 +1279,17 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1max4 = new Text(firstContent, SWT.BORDER);
-			int max = (int)((double)constants.brickAvgLow1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;				
+			//int max = (int)((double)constants.brickAvgLow1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			double max = 0;
+			double def2 = constants.brickAvgLow1.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier());
+			if (tmpBr.getAvg1low() == def2)
+			{
+				max = def2;
+			}
+			else
+			{
+				max = tmpBr.getAvg1low();
+			}
 			txtL1max4.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL1max4.addListener(SWT.FocusOut , new Listener() {
@@ -1392,7 +1365,18 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1min5 = new Text(secondContent, SWT.BORDER);
-			int min = (int)((double)constants.brickAvgHigh2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;						
+			//int min = (int)((double)constants.brickAvgHigh2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			double min = 0;
+			double def = constants.brickAvgHigh2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier()) ;
+			if (tmpBr.getAvg2high() == def)
+			{
+				min = def;
+			}
+			else
+			{
+				min = tmpBr.getAvg2high();
+			}
+			
 			txtL1min5.setText(""+min);
 			txtL1min5.addListener(SWT.FocusOut , new Listener() {
 			      public void handleEvent(Event event) {
@@ -1464,7 +1448,17 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1max5 = new Text(secondContent, SWT.BORDER);
-			int max = (int)((double)constants.brickAvgLow2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;				
+			//int max = (int)((double)constants.brickAvgLow2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+			double max = 0;
+			double def2 = constants.brickAvgLow2.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier());
+			if (tmpBr.getAvg2low() == def2)
+			{
+				max = def2;
+			}
+			else
+			{
+				max = tmpBr.getAvg2low();
+			}
 			txtL1max5.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL1max5.addListener(SWT.FocusOut , new Listener() {
@@ -1865,7 +1859,7 @@ public class mainWindow {
 	}
 	
 	
-	public static void settingMenu_addDisableCheckbox(Group firstContent, Group secondContent, Brick tmpBr, int index) //, int lineNumber, int quant, int index)
+	public static void settingMenu_addDisableCheckbox(Group firstContent, Group secondContent, Brick tmpBr, int index)
 	{
 		final String tmpStr = tmpBr.uid;
 		
@@ -1924,11 +1918,10 @@ public class mainWindow {
 		}
 	}
 	
+	
 	/**
 	 * removes previous scroll content and creates a new one 
 	 */
-	
-	
 	public static void redrawSettingGroup()
 	{	
 		if ((firstScroll != null) && (!firstScroll.isDisposed()))
@@ -1949,13 +1942,13 @@ public class mainWindow {
 		setttingsContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	    
 	}
 	
+	
 	/**
 	 * 	updates all the groups corresponding to checked bricklets in the tree view.
 	 * 
 	 *  bricklet with two sensors will create a 2 groups side by side.
 	 *  
-	 */
-	
+	 */	
 	public static void updateSettingTabs()
 	{	
 		// remove previous content
