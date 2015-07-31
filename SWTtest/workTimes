@@ -7,7 +7,6 @@ toDO:
 -	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
 -	template plot window: title smaller
 -	collapsing main brick causes program close
--	test: what happens when all control parts do not fit in to the setting window
 -	test: on tablet 
 -	template control button is hiding the scale after enabling (still)
 
@@ -62,3 +61,8 @@ done:
 
 +	warning max depends on warning min what causes an anomaly behavior by having warning min on 0 (27.07.2015)
 +	writing to file enable (27.07.2015)
+
+28.07.2015:	10:00-12:00, 13:30-15:00, 20:00-22:00
+29.07.2015:	10:00-12:40, 18:00-20:00
+30.07.2015:	9:30-
+

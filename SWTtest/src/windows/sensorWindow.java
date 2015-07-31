@@ -99,6 +99,7 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.DateRange;
 import org.jfree.data.time.Millisecond;
@@ -114,6 +115,7 @@ import org.jfree.util.ShapeUtilities;
 
 import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 import data.connectionData;
 import data.constants;
@@ -383,7 +385,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
 
 			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
-			int width = computeTmplPlotWidth(newBrick.tmpl1Width);
+			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl1Width, 0);
 			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,
 					BasicStroke.JOIN_ROUND);// , 10.0f, dash, 0.0f);
 			renderer3.setSeriesPaint(0, Color.GREEN);
@@ -550,7 +552,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create template graph
 			tmpSubPlot.setDataset(3, tmplCollection2_1.get(newBrick.uid));
 			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
-			int width = computeTmplPlotWidth(newBrick.tmpl2Width);
+			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl2Width, 1);
 			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
 			renderer4.setSeriesPaint(1, Color.GREEN);
 			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
@@ -747,7 +749,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		if (index == 0) {
 			if (rendererMap3.containsKey(UID)) {
 				XYItemRenderer rendererTmp = rendererMap3.get(UID);
-				int width = computeTmplPlotWidth(tmpBrick.tmpl1Width);
+				int width = computeTmplPlotWidth(UID, tmpBrick.tmpl1Width, index);
 				BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 				rendererTmp.setSeriesPaint(0, Color.GREEN);
 				rendererTmp.setSeriesStroke(0, stroke);
@@ -758,7 +760,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			if (rendererMap4.containsKey(UID)) 
 			{
 				XYItemRenderer rendererTmp = rendererMap4.get(UID);
-				int width = computeTmplPlotWidth(tmpBrick.tmpl2Width);
+				int width = computeTmplPlotWidth(UID, tmpBrick.tmpl2Width, index);
 				BasicStroke stroke = new BasicStroke(width,	BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 				rendererTmp.setSeriesPaint(0, Color.GREEN);
 				rendererTmp.setSeriesStroke(0, stroke);
@@ -984,7 +986,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				vm.setValue(value);
 				marker2Average.put(UID, vm);
 
-				if (avrgCtrl1Enabled.get(UID) == true) 
+				if (avrgCtrl2Enabled.get(UID) == true) 
 				{
 					// verify whether we are between admissible average control lines
 					if ((value > Brick.getBrick(connectionData.BrickList, UID).getAvg2high())
@@ -1562,6 +1564,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							//if (tmpBrick.ctrlTmplruns[i2] == true)
 							if (tmpBrick.ctrlTmpl[i2] == true)
 							{
+								updateTmplPlotWidth(tmpBrick.uid, i2);
 								addTmplValue(tmpBrick.uid, ms, i2);
 							}
 							else 
@@ -1579,12 +1582,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 											if (i3 == 0)
 											{
 												// add a simulated value to 1st sensor 
-												 addValue(tmpBrick.uid, tempMeArray[i3].value2, 0); 
+												 addValue(tmpBrick.uid, tempMeArray[i3].value2, 0);
+												 //updateTmplPlotWidth(tmpBrick.uid, 0);
 											}
 											else if (i3 == 1)
 											{
 												// add a simulated vlaued to 2nd sensor
 												add2ndValue(tmpBrick.uid, tempMeArray[i3].value2);
+												//updateTmplPlotWidth(tmpBrick.uid, 1);
 											}
 										}
 									}
@@ -1598,6 +1603,34 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	}
 
 	
+	private void restartSensor(String sensorUID)
+	{
+		System.out.println("restart Sensor: "+sensorUID);
+		// ----------------------------------------------
+		//disconnect
+		mainWindow.deviceDisconnected();
+		//connect				
+		System.out.println("trying to connect to:");
+		System.out.println("host : " + mainWindow.text.getText());
+		System.out.println("port : " + mainWindow.txtLocalhost.getText());
+		try 
+		{
+	    	// init connections
+	    	connection.initConnections();      							
+			connection.connect(mainWindow.txtLocalhost.getText(), Integer.parseInt(mainWindow.text.getText()));
+			mainWindow.superviseConnection();
+		} 
+		catch (NumberFormatException | AlreadyConnectedException | NotConnectedException | IOException e1) 
+		{						
+			e1.printStackTrace();
+			System.out.println("cant connect!");
+			return;
+		}
+		// ----------------------------------------------
+		System.out.println("restart completed");
+	}
+	
+	
 	/**
 	 * add a value to the main field of the sensor
 	 * 
@@ -1607,32 +1640,37 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public void addValue(String sensorUID, double value, int index) 
 	{	
 		Millisecond ms = new Millisecond();
-		
-		if (ms == null)
+			
+		if (!seriesCollectionMap.containsKey(sensorUID)) 
 		{
-			System.out.println("ms fail");
+			System.out.println("1 exception");
+			return;			
+		}
+		
+		if (seriesCollectionMap.get(sensorUID).getSeries(0) == null)
+		{
+			System.out.println("2 exception");
+			return;	
+		}
+		
+		if (seriesCollectionMap.get(sensorUID) == null)
+		{
+			System.out.println("2 exception");
+			return;	
+		}
+		
+		//seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+		try 
+		{
+			seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
+		}
+			catch (Exception e)
+		{
+			restartSensor(sensorUID);
+			System.out.println("xz exception");
 			return;
 		}
-		
-		if (seriesCollectionMap.containsKey(sensorUID)) 
-		{
-			if (seriesCollectionMap.get(sensorUID).getSeries(0) != null)
-			{
-				seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
-				/*
-				try 
-				{
-					seriesCollectionMap.get(sensorUID).getSeries(0).addOrUpdate(ms, value);
-				}
-				catch (Exception e)
-				{
-					System.out.println("xz exception");
-					return;
-				}
-				*/
-			}
-		}
-		
+				
 		// add last value to the lastValuesMap
 		MeasurementEntry[] tempMeArray = lastValuesMap.get(sensorUID);
 		tempMeArray[0].value1 = ms.getMillisecond();
@@ -1678,11 +1716,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 *            value
 	 */
 	@SuppressWarnings("unchecked")
+	/*
 	private void addValueToMap(String uid, double value) {
 		if (valuesMap.containsKey(uid)) {
 			valuesMap.get(uid).addValue(value);
 		}
 	}
+	*/
 
 	/**
 	 * activate slider
@@ -2047,6 +2087,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			for (int i = 0; i < dataSet.getSeriesCount(); i++) {
 				comparable = dataSet.getSeriesKey(i);
 				indexOf = dataSet.indexOf(comparable);
+				int test = dataSet.getItemCount(indexOf);
 				for (int j = 0; j < dataSet.getItemCount(indexOf); j++) {
 					long x = (long) dataSet.getXValue(indexOf, j);
 					if (x >= x1) {
@@ -2088,7 +2129,31 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 * @param width
 	 * @return
 	 */
-	private static int computeTmplPlotWidth(double width) {
+	private static int computeTmplPlotWidth(String uid, double width, int index) 
+	{
+		/*
+		return (int) (width * 9);
+		*/
+		XYPlot tmpSubPlot = plotMap.get(uid);
+		if (tmpSubPlot != null)
+		{
+			Range range = tmpSubPlot.getDataRange(tmpSubPlot.getRangeAxis(index));
+			if (range != null)
+			{
+				/*
+				double d = 100/range.getUpperBound();
+				int tmp = (int) (d * width);
+				*/
+				//double tmp = 1/Math.tanh(range.getUpperBound());//
+				double tmp = 17 - 0.12*range.getUpperBound();
+				if (tmp<=0) tmp = 1;
+				tmp = tmp*width;
+				System.out.println("------------------------");
+				System.out.println("range : "+ range.getUpperBound());
+				System.out.println("width : "+ tmp);
+				return (int)tmp;
+			}
+		}
 		return (int) (width * 9);
 	}
 

@@ -36,6 +36,7 @@ import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -66,7 +67,7 @@ public class plotConfirmWindow {
     	
     	this.myIndex = index;
     	this.tPlot = new TemplatePlot(p);
-    	this.tPlot.normalizeTimestamps();
+    	//this.tPlot.normalizeTimestamps();
     	this.title = tPlot.fileName;
     	if (!tPlot.dateStr.isEmpty()) this.title += " ("+tPlot.dateStr+")";
     	chartPanel = createChart();
@@ -291,7 +292,8 @@ public class plotConfirmWindow {
         for (int i= 0; i< tPlot.allPoints.size(); i++)
         {
         	Date d = new java.sql.Date((long) tPlot.allPoints.get(i).value1);
-        	series.addOrUpdate(new Second(d), tPlot.allPoints.get(i).value2);
+        	//series.addOrUpdate(new Second(d), tPlot.allPoints.get(i).value2);
+        	series.addOrUpdate(new Millisecond(d), tPlot.allPoints.get(i).value2);
         }
         return series;
     }

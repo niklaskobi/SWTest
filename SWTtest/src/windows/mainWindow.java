@@ -560,7 +560,7 @@ public class mainWindow {
 	/**
 	 * supervise and handle the connection setup
 	 */
-	private static void superviseConnection() 
+	static void superviseConnection() 
 	{
 		new Thread(new Runnable() {
 			public void run() 
@@ -801,14 +801,14 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1min = new Text(firstContent, SWT.BORDER);
-			int min = 0;
+			double min = 0;
 			if (tmpBr.tresholdMin1 == 0)
 			{
-				min = (int)((double)constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+				min = constants.brickMinValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier()) ;
 			}
 			else
 			{
-				min = (int) tmpBr.tresholdMin1;
+				min = tmpBr.tresholdMin1;
 			}
 			txtL1min.setText(""+min);
 			txtL1min.addListener(SWT.FocusOut , new Listener() {
@@ -881,14 +881,14 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL1max = new Text(firstContent, SWT.BORDER);
-			int max = 0;
+			double max = 0;
 			if (tmpBr.tresholdMax1 == 0)
 			{
-				max = (int)((double)constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+				max = constants.brickMaxValue.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier());
 			}
 			else
 			{
-				max = (int) tmpBr.tresholdMax1;
+				max = tmpBr.tresholdMax1;
 			}
 			txtL1max.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
@@ -965,14 +965,14 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL2min = new Text(secondContent, SWT.BORDER);
-			int min2 = 0;
+			double min2 = 0;
 			if (tmpBr.tresholdMin2 == 0)
 			{
-				min2 = (int)((double)constants.brickMinValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+				min2 = constants.brickMinValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier()) ;
 			}
 			else
 			{
-				min2 = (int) tmpBr.tresholdMin2;
+				min2 = tmpBr.tresholdMin2;
 			}
 			txtL2min.setText(""+min2);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));	
@@ -1045,14 +1045,14 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL2max = new Text(secondContent, SWT.BORDER);
-			int max2 = 0;
+			double max2 = 0;
 			if (tmpBr.tresholdMax2 == 0)
 			{
-				max2 = (int)((double)constants.brickMaxValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier())) ;
+				max2 = constants.brickMaxValue2nd.get(connectionData.presentedBrickList.get(index).getDeviceIdentifier());
 			}
 			else
 			{
-				max2 = (int) tmpBr.tresholdMax2;
+				max2 = tmpBr.tresholdMax2;
 			}
 			
 			txtL2max.setText(""+max2);
@@ -1692,7 +1692,7 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL10max = new Text(firstContent, SWT.BORDER);
-			int max = (int)(tmpBr.tmpl1Width);				
+			double max = tmpBr.tmpl1Width;				
 			txtL10max.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL10max.addListener(SWT.FocusOut , new Listener() {
@@ -1780,7 +1780,7 @@ public class mainWindow {
 			
 			// text field
 			final Text txtL11max = new Text(secondContent, SWT.BORDER);
-			int max = (int)(tmpBr.tmpl1Width);				
+			double max = tmpBr.tmpl1Width;				
 			txtL11max.setText(""+max);
 			//txtL1min.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			txtL11max.addListener(SWT.FocusOut , new Listener() 
@@ -1847,7 +1847,7 @@ public class mainWindow {
 
 			//lblUnit9.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 			//formToolkit.adapt(lblTreshold, true, true);
-			lblUnit9.setText(String.valueOf(constants.brickUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
+			lblUnit9.setText(String.valueOf(constants.brick2ndUnitMap.get( connectionData.presentedBrickList.get(index).getDeviceIdentifier())));
 			GridData gridData3 = new GridData();
 			gridData3.horizontalAlignment = GridData.BEGINNING;
 			gridData3.grabExcessHorizontalSpace = false;
@@ -2144,6 +2144,7 @@ public class mainWindow {
 		}
 	}
 		
+	
 	/**
 	 * set start button text to "start"
 	 */
@@ -2183,9 +2184,7 @@ public class mainWindow {
 		}
 	}
 	
-	
-	
-	
+		
 	public static void simpleControlChecked(String UID, int index)
 	{
 		if (Brick.getBrick(connectionData.BrickList,UID).ctrlSimple[index] == false)
