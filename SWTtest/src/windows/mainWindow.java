@@ -67,9 +67,9 @@ public class mainWindow {
 	private final static FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 
 	// setting region values
-	final static String USECASE_SIMPLE = "simple";
-	final static String USECASE_AVERAGE = "average";
-	final static String USECASE_TEMPLATE = "template";
+	final static String USECASE_SIMPLE = "global treshold";
+	final static String USECASE_AVERAGE = "average treshold";
+	final static String USECASE_TEMPLATE = "template plot";
 	static String[] useCases = { USECASE_SIMPLE, USECASE_AVERAGE, USECASE_TEMPLATE};
 	static int width_one_half;
 	static int width_one_fourth;
@@ -1122,7 +1122,7 @@ public class mainWindow {
 		final String tmpStr = tmpBr.uid;
 		Button btnCheckButton = new Button(firstContent, SWT.CHECK);
 		//btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		btnCheckButton.setText("control average");
+		btnCheckButton.setText(USECASE_AVERAGE);
 		btnCheckButton.setSelection(tmpBr.controlAverage);
 		btnCheckButton.addSelectionListener(new SelectionListener()
 		{
@@ -1152,7 +1152,7 @@ public class mainWindow {
 								
 			Button btnCheckButton3 = new Button(secondContent, SWT.CHECK);
 			//btnCheckButton3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			btnCheckButton3.setText("control average");
+			btnCheckButton3.setText(USECASE_AVERAGE);
 			btnCheckButton3.setSelection(tmpBr.controlAverage2);
 			btnCheckButton3.addSelectionListener(new SelectionListener(){
 				@Override
@@ -1529,7 +1529,7 @@ public class mainWindow {
 		// template control 1 button
 		final Button btnCheckButtonTmpl = new Button(firstContent, SWT.CHECK);
 		//btnCheckButtonTmpl.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		btnCheckButtonTmpl.setText("template control");
+		btnCheckButtonTmpl.setText(USECASE_TEMPLATE);
 		btnCheckButtonTmpl.setSelection(tmpBr.ctrlTmpl[0]);
 				
 		GridData tmpGridData2 = new GridData();
@@ -1604,7 +1604,7 @@ public class mainWindow {
 			// template control 1 button
 			final Button btnCheckButtonTmpl2 = new Button(secondContent, SWT.CHECK);
 			//btnCheckButtonTmpl2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			btnCheckButtonTmpl2.setText("template control");
+			btnCheckButtonTmpl2.setText(USECASE_TEMPLATE);
 			btnCheckButtonTmpl2.setSelection(tmpBr.ctrlTmpl[1]);
 			
 			GridData tmpGridData3 = new GridData();

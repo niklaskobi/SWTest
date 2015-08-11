@@ -162,8 +162,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, TimeSeries> seriesMap2 = new HashMap<String, TimeSeries>();
 	public static Map<String, TimeSeries> seriesMap3 = new HashMap<String, TimeSeries>();
 	public static Map<String, TimeSeries> seriesMap4 = new HashMap<String, TimeSeries>();
-	public static Map<String, TimeSeries> seriesMap5 = new HashMap<String, TimeSeries>();
-	public static Map<String, TimeSeries> seriesMap6 = new HashMap<String, TimeSeries>();
+	public static Map<String, TimeSeries> seriesMap32 = new HashMap<String, TimeSeries>();
+	public static Map<String, TimeSeries> seriesMap42 = new HashMap<String, TimeSeries>();
 
 	public static Map<String, NumberAxis> axisMap = new HashMap<String, NumberAxis>();
 	public static Map<String, NumberAxis> axisMap2 = new HashMap<String, NumberAxis>();
@@ -174,6 +174,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	public static Map<String, XYItemRenderer> rendererMap2 = new HashMap<String, XYItemRenderer>();
 	public static Map<String, XYItemRenderer> rendererMap3 = new HashMap<String, XYItemRenderer>();
 	public static Map<String, XYItemRenderer> rendererMap4 = new HashMap<String, XYItemRenderer>();
+	public static Map<String, XYItemRenderer> rendererMap32 = new HashMap<String, XYItemRenderer>();
+	public static Map<String, XYItemRenderer> rendererMap42 = new HashMap<String, XYItemRenderer>();
 
 	
 	// case simple:
@@ -272,8 +274,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		TimeSeries newSeries2 = new TimeSeries("" + 0, Millisecond.class);
 		TimeSeries newSeries3 = new TimeSeries("" + 0, Millisecond.class);
 		TimeSeries newSeries4 = new TimeSeries("" + 0, Millisecond.class);
-		TimeSeries newSeries5 = new TimeSeries("" + 0, Millisecond.class);
-		TimeSeries newSeries6 = new TimeSeries("" + 0, Millisecond.class);
+		TimeSeries newSeries32 = new TimeSeries("" + 0, Millisecond.class);
+		TimeSeries newSeries42 = new TimeSeries("" + 0, Millisecond.class);
 
 		Measurement m1 = new Measurement(maxValues, maxCycles, newBrick.uid, 0);
 		valuesMap.put(newBrick.uid, m1);
@@ -305,16 +307,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		seriesMap2.put(newBrick.uid, newSeries2);
 		seriesMap3.put(newBrick.uid, newSeries3);
 		seriesMap4.put(newBrick.uid, newSeries4);
-		seriesMap5.put(newBrick.uid, newSeries5);
-		seriesMap6.put(newBrick.uid, newSeries6);
+		seriesMap32.put(newBrick.uid, newSeries32);
+		seriesMap42.put(newBrick.uid, newSeries42);
 
 		// create collection map entry
 		seriesCollectionMap.put(newBrick.uid, new TimeSeriesCollection(newSeries));
 		seriesCollectionMap2.put(newBrick.uid, new TimeSeriesCollection(newSeries2));
 		tmplCollection1_1.put(newBrick.uid, new TimeSeriesCollection(newSeries3));
 		tmplCollection1_2.put(newBrick.uid, new TimeSeriesCollection(newSeries4));
-		tmplCollection2_1.put(newBrick.uid, new TimeSeriesCollection(newSeries5));
-		tmplCollection2_2.put(newBrick.uid, new TimeSeriesCollection(newSeries6));
+		tmplCollection2_1.put(newBrick.uid, new TimeSeriesCollection(newSeries32));
+		tmplCollection2_2.put(newBrick.uid, new TimeSeriesCollection(newSeries42));
 		
 		// create plot1ControlMap
 		Integer tmpArray1[] = new Integer[plotControlMapNum];
@@ -351,7 +353,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							.get(newBrick.deviceIdentifier)));
 			rangeAxis.setAutoRangeIncludesZero(true);
 			tmpSubPlot.setRangeAxis(0, rangeAxis);
-			rangeAxis.setLabelPaint(Color.BLUE);
+			rangeAxis.setLabelPaint(Color.BLACK);
 			rangeAxis.setVisible(newBrick.checked2);
 			tmpSubPlot.setDataset(0, seriesCollectionMap.get(newBrick.uid));
 
@@ -361,7 +363,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create and store renderer
 			XYItemRenderer renderer1 = new XYLineAndShapeRenderer();
 			renderer1 = tmpSubPlot.getRenderer();
-			renderer1.setSeriesPaint(0, Color.BLUE);
+			renderer1.setSeriesPaint(0, Color.BLACK);
 			renderer1.setSeriesStroke(0, new BasicStroke(3));
 			// line = dashes:
 			// float dash[] = {5.0f};
@@ -383,7 +385,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 			// create template graph
 			tmpSubPlot.setDataset(2, tmplCollection1_1.get(newBrick.uid));
+			tmpSubPlot.setDataset(4, tmplCollection1_2.get(newBrick.uid));
 
+			/*
 			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
 			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl1Width, 0);
 			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,
@@ -393,7 +397,27 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			renderer3.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
 			rendererMap3.put(newBrick.uid, renderer3);
 			tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));
+			*/
+			float dash[] = {5.0f};
+			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
+			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl1Width, 0);
+			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_ROUND);// , 10.0f, dash, 0.0f);
+			renderer3.setSeriesPaint(0, Color.gray);
+			renderer3.setSeriesStroke(0, stroke);
+			renderer3.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
+			rendererMap3.put(newBrick.uid, renderer3);
+			tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));
 
+			XYItemRenderer renderer32 = new XYLineAndShapeRenderer();			
+			BasicStroke stroke32 = new BasicStroke(1, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
+			renderer32.setSeriesPaint(0, Color.gray);
+			renderer32.setSeriesStroke(0, stroke32);
+			renderer32.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
+			rendererMap32.put(newBrick.uid, renderer32);
+			tmpSubPlot.setRenderer(4, rendererMap32.get(newBrick.uid));
+			
 
 			// put everything to the maps
 			rendererMap.put(newBrick.uid, renderer1);
@@ -409,7 +433,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							.get(newBrick.deviceIdentifier)));
 			secondaryAxis.setAutoRangeIncludesZero(true);
 			tmpSubPlot.setRangeAxis(1, secondaryAxis);
-			secondaryAxis.setLabelPaint(Color.RED);
+			secondaryAxis.setLabelPaint(Color.YELLOW);
 			secondaryAxis.setVisible(newBrick.checked3);
 			tmpSubPlot.setDataset(1, seriesCollectionMap2.get(newBrick.uid));
 			tmpSubPlot.mapDatasetToRangeAxis(1, 1);
@@ -527,13 +551,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create and add avrgCntrMarkers
 			// create upper marker
 			ValueMarker avrgCtrl2high = new ValueMarker(newBrick.getAvg2high());
-			avrgCtrl2high.setPaint(Color.orange);
+			avrgCtrl2high.setPaint(Color.BLUE);
 			avrgCtrl2high.setLabel("avrg high");
 			avrgCtrl2high.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2high.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create lower marker
 			ValueMarker avrgCtrl2low = new ValueMarker(newBrick.getAvg2low());
-			avrgCtrl2low.setPaint(Color.orange);
+			avrgCtrl2low.setPaint(Color.BLUE);
 			avrgCtrl2low.setLabel("avrg low");
 			avrgCtrl2low.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2low.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -551,17 +575,31 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// ----------------------------------------------------------------------------------
 			// create template graph
 			tmpSubPlot.setDataset(3, tmplCollection2_1.get(newBrick.uid));
+			tmpSubPlot.setDataset(5, tmplCollection2_2.get(newBrick.uid));
+			
 			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
 			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl2Width, 1);
-			BasicStroke stroke = new BasicStroke(width, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
-			renderer4.setSeriesPaint(1, Color.GREEN);
+			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
+			renderer4.setSeriesPaint(1, Color.cyan);
 			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
-			renderer4.setSeriesStroke(0, stroke);
-			renderer4.setSeriesVisible(0, newBrick.ctrlTmpl[1]);
+			renderer4.setSeriesStroke(1, stroke);
+			renderer4.setSeriesVisible(1, newBrick.ctrlTmpl[1]);
 			rendererMap4.put(newBrick.uid, renderer4);
 			tmpSubPlot.setRenderer(3, rendererMap4.get(newBrick.uid));
 			tmpSubPlot.mapDatasetToRangeAxis(3, 1);
+			
+			XYItemRenderer renderer42 = new XYLineAndShapeRenderer();
+			BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
+			renderer42.setSeriesPaint(1, Color.cyan);
+			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
+			renderer42.setSeriesStroke(1, stroke2);
+			renderer42.setSeriesVisible(1, newBrick.ctrlTmpl[1]);
+			rendererMap42.put(newBrick.uid, renderer42);
+			tmpSubPlot.setRenderer(5, rendererMap42.get(newBrick.uid));
+			tmpSubPlot.mapDatasetToRangeAxis(3, 1);
+
 			// ----------------------------------------------------------------------------------
+			
 
 			// put everything to the map
 			rendererMap2.put(newBrick.uid, renderer2);
@@ -746,11 +784,12 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	 */
 	public static void updateTmplPlotWidth(String UID, int index) {
 		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, UID);
+		/*
 		if (index == 0) {
 			if (rendererMap3.containsKey(UID)) {
 				XYItemRenderer rendererTmp = rendererMap3.get(UID);
 				int width = computeTmplPlotWidth(UID, tmpBrick.tmpl1Width, index);
-				BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+				BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 				rendererTmp.setSeriesPaint(0, Color.GREEN);
 				rendererTmp.setSeriesStroke(0, stroke);
 				rendererMap3.put(UID, rendererTmp);
@@ -767,6 +806,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 				rendererMap4.put(UID, rendererTmp);
 			}
 		}
+		*/
 	}
 
 	
@@ -1485,7 +1525,9 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 						if (tmplCollection1_1.get(uid).getSeries(0) != null) 
 						{
 							//System.out.println("ms= "+ms+", val = "+value1);
-							tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+							//tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+							tmplCollection1_1.get(uid).getSeries(0).addOrUpdate(ms, value1+tmpBrick.tmpl1Width);
+							tmplCollection1_2.get(uid).getSeries(0).addOrUpdate(ms, value1-tmpBrick.tmpl1Width);
 						}
 					}
 				}
@@ -1516,7 +1558,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 						if (tmplCollection2_1.get(uid).getSeries(0) != null) 
 						{
 							//System.out.println("ms= "+ms+", val = "+value1);
-							tmplCollection2_1.get(uid).getSeries(0).addOrUpdate(ms, value1);
+							tmplCollection2_1.get(uid).getSeries(0).addOrUpdate(ms, value1+tmpBrick.tmpl2Width);
+							tmplCollection2_2.get(uid).getSeries(0).addOrUpdate(ms, value1-tmpBrick.tmpl2Width);
 						}
 					}
 				}
@@ -1564,7 +1607,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							//if (tmpBrick.ctrlTmplruns[i2] == true)
 							if (tmpBrick.ctrlTmpl[i2] == true)
 							{
-								updateTmplPlotWidth(tmpBrick.uid, i2);
+								//updateTmplPlotWidth(tmpBrick.uid, i2);
 								addTmplValue(tmpBrick.uid, ms, i2);
 							}
 							else 
@@ -1944,7 +1987,17 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			plotMap.get(br.uid).setDataset(2, tmplCollection1_1.get(br.uid));
 			
 			rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+//			updateButtonPanel();
+			
+			TimeSeries newSeries32tmp = new TimeSeries("" + 0, Millisecond.class);	
+			seriesMap32.put(br.uid, newSeries32tmp);
+			tmplCollection1_2.put(br.uid, new TimeSeriesCollection(newSeries32tmp));
+			//FLAG
+			plotMap.get(br.uid).setDataset(4, tmplCollection1_2.get(br.uid));
+			
+			rendererMap32.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 			updateButtonPanel();
+
 		}
 		else if (index == 1)
 		{
@@ -1953,7 +2006,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmplCollection2_1.put(br.uid, new TimeSeriesCollection(newSeries4));
 			plotMap.get(br.uid).setDataset(3, tmplCollection2_1.get(br.uid));
 			rendererMap4.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+			//updateButtonPanel();
+			
+			TimeSeries newSeries42 = new TimeSeries("" + 0, Millisecond.class);	
+			seriesMap42.put(br.uid, newSeries42);
+			tmplCollection2_2.put(br.uid, new TimeSeriesCollection(newSeries42));
+			plotMap.get(br.uid).setDataset(5, tmplCollection2_2.get(br.uid));
+			rendererMap42.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 			updateButtonPanel();
+
 		}
 	}
 	
@@ -1972,6 +2033,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpArray[2] = 0;
 			plot1ControlMap.put(br.uid, tmpArray);
 			rendererMap3.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+			rendererMap32.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 		}
 		if (index == 1)
 		{
@@ -1979,6 +2041,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpArray[2] = 0;
 			plot2ControlMap.put(br.uid, tmpArray);
 			rendererMap4.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
+			rendererMap42.get(br.uid).setSeriesVisible(0, br.ctrlTmplruns[index]);
 		}		
 		updateButtonPanel();
 	}
@@ -2134,17 +2197,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		/*
 		return (int) (width * 9);
 		*/
+		
+		/*
 		XYPlot tmpSubPlot = plotMap.get(uid);
 		if (tmpSubPlot != null)
 		{
 			Range range = tmpSubPlot.getDataRange(tmpSubPlot.getRangeAxis(index));
 			if (range != null)
 			{
-				/*
-				double d = 100/range.getUpperBound();
-				int tmp = (int) (d * width);
-				*/
-				//double tmp = 1/Math.tanh(range.getUpperBound());//
 				double tmp = 17 - 0.12*range.getUpperBound();
 				if (tmp<=0) tmp = 1;
 				tmp = tmp*width;
@@ -2155,6 +2215,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			}
 		}
 		return (int) (width * 9);
+		*/
+		return 1;
 	}
 
 	
