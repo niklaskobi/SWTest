@@ -206,7 +206,17 @@ public class TemplatePlot {
 	{
 		String str = createTemplateString();
 		String filePath = null;
-		if (fp!=null) filePath = fp+"."+fileExtention; 
+		//if (fp!=null) filePath = fp+"."+fileExtention;
+		
+		File f = new File(fp);
+		if(f.exists() && !f.isDirectory()) 
+		{
+			filePath = fp;
+		}
+		else
+		{
+			filePath = fp+"."+fileExtention;
+		}
 			
 		if (filePath == null)
 		{
@@ -217,6 +227,7 @@ public class TemplatePlot {
 		try
 		{
 			File file = new File(filePath);
+					
 			if (!file.exists()) 
 			{
 				Path path = Paths.get(filePath);
@@ -226,7 +237,7 @@ public class TemplatePlot {
 		        } catch (FileAlreadyExistsException e) {
 		            System.err.println("already exists: " + e.getMessage());
 		        }
-			}
+			}			
 			FileWriter fw = new FileWriter(file.getAbsoluteFile(), false);		// true to append
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(str);

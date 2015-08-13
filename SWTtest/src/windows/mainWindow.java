@@ -219,19 +219,14 @@ public class mainWindow {
 	    //--------------------------------------------------------------
 	   
 	    //LABEL PORT ---------------------------------------------------
-		//Label lblPort = new Label(shell, SWT.NONE);
 	    Label lblPort = new Label(group1, SWT.PUSH);
 		lblPort.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.NORMAL));
-		//lblPort.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
-		//lblPort.setBounds(25, 13, 39, 24);
 		lblPort.setText("port");		
 		lblPort.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		settingRegionStartX = lblPort.getBounds().x;
-		//text = new Text(shell, SWT.BORDER);
 		text = new Text(group1, SWT.BORDER);
 		text.setText("4223");
-		//text.setBounds(79, 10, 76, 27);
-		text.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		text.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));// .VERTICAL_ALIGN_BEGINNING));
 		//--------------------------------------------------------------
 		
 		
@@ -356,13 +351,13 @@ public class mainWindow {
 		tree.setHeaderVisible(true);
 		TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
 		column1.setText("device");
-		column1.setWidth(200);
+		column1.setWidth(184);
 		TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
 		column2.setText("UID");
-		column2.setWidth(100);
+		column2.setWidth(80);
 		TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
 		column3.setText("status");
-		column3.setWidth(110);
+		column3.setWidth(70);
 		TreeColumn column4 = new TreeColumn(tree, SWT.RIGHT);
 		column4.setText("firmware vers.");
 		column4.setWidth(70);

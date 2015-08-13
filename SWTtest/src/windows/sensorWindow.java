@@ -524,13 +524,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create maxima marker
 			ValueMarker vmMax = new ValueMarker(0);
 			vmMax.setPaint(Color.cyan);
-			vmMax.setLabel("max");
+			vmMax.setLabel("local max");
 			vmMax.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			vmMax.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create minima marker
 			ValueMarker vmMin = new ValueMarker(0);
 			vmMin.setPaint(Color.cyan);
-			vmMin.setLabel("min");
+			vmMin.setLabel("local min");
 			vmMin.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			vmMin.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create average marker
@@ -690,13 +690,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		// create maxima marker
 		ValueMarker vmMax = new ValueMarker(0);
 		vmMax.setPaint(Color.gray);
-		vmMax.setLabel("max");
+		vmMax.setLabel("local max");
 		vmMax.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		vmMax.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create minima marker
 		ValueMarker vmMin = new ValueMarker(0);
 		vmMin.setPaint(Color.gray);
-		vmMin.setLabel("min");
+		vmMin.setLabel("local min");
 		vmMin.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		vmMin.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create average marker
@@ -1217,12 +1217,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			{
 				Brick tmpBrick = connectionData.presentedBrickList.get(i);
 				if (tmpBrick.ctrlTmpl[i2]) 
-				{				
-					JButton button = new JButton(tmpBrick.uid + " start");				
-					//button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i+ "(" + i2 + ")");
-					button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i2);
+				{
+					String brickName;
+					if (tmpBrick.getDeviceIdentifier() == 227) brickName = tmpBrick.uid+"("+i2+")";
+					else brickName = tmpBrick.uid;
+					JButton button = new JButton(brickName + " start");				
+					button.setActionCommand(buttonComAddBtn + brickName + i2);
 					button.addActionListener(this);
-					tmplButtons.put(tmpBrick.uid, button);
+					tmplButtons.put(brickName, button);
 					/*
 					if (tmpBrick.ctrlTmpl[i2]) 
 					{
@@ -1507,20 +1509,27 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	public double addTmplValue(String uid, Millisecond ms, int index) 
 	{
+		
+		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+
+		String brickName;
+		if (tmpBrick.getDeviceIdentifier() == 227) brickName = tmpBrick.uid+"("+index+")";
+		else brickName = tmpBrick.uid;
+
 		if (index == 0)
 		{
 			double value1 = 0;
 			// add next value to template plot
 			if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[index] == true)
 					&& (tmplCollection1_1.containsKey(uid))
-					&& (tmplStartMs.containsKey(uid))) 
+					&& (tmplStartMs.containsKey(brickName))) 
 			{
-				Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+				//Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
 	
 				long timeNow = System.currentTimeMillis();
 	
 				value1 = tmpBrick.tmplPlot[index].getYValue(timeNow,
-						tmplStartMs.get(uid));
+						tmplStartMs.get(brickName));
 	
 				// add value to the plot
 				if (tmplCollection1_1 != null) 
@@ -1546,14 +1555,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// add next value to template plot
 			if ((Brick.getBrick(connectionData.BrickList, uid).ctrlTmpl[index] == true)
 					&& (tmplCollection2_1.containsKey(uid))
-					&& (tmplStartMs.containsKey(uid))) 
+					&& (tmplStartMs.containsKey(brickName))) 
 			{
-				Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
+				//Brick tmpBrick = Brick.getBrick(connectionData.BrickList, uid);
 	
 				long timeNow = System.currentTimeMillis();
 	
 				value1 = tmpBrick.tmplPlot[index].getYValue(timeNow,
-						tmplStartMs.get(uid));
+						tmplStartMs.get(brickName));
 	
 				// add value to the plot
 				if (tmplCollection2_1 != null) 
@@ -1943,16 +1952,15 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	}
 
 	
-	private void addButtonToContent(Brick br, int index )
+	private void addButtonToContent(String brickName, int index )
 	{
-		if (!tmplButtons.containsKey(br.uid))
+		if (!tmplButtons.containsKey(brickName))
 		{
-			JButton button = new JButton(br.uid + " start");				
-			//button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i+ "(" + i2 + ")");
-			button.setActionCommand(buttonComAddBtn + br.uid + index);
+			JButton button = new JButton(brickName + " start");
+
+			button.setActionCommand(buttonComAddBtn + brickName + index);
 			button.addActionListener(this);
-			if (index != 0) tmplButtons.put(br.uid+"("+index+")", button); 
-			else tmplButtons.put(br.uid, button);
+			tmplButtons.put(brickName, button); 
 			//changeTmplCntrl(br, index);
 		}
 	}
@@ -1969,10 +1977,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		
 	public void enableTmplCtrl(Brick br, int index)
 	{
+		String brickName;
+		if (br.getDeviceIdentifier() == 227) brickName = br.uid+"("+index+")";
+		else brickName = br.uid;
+
 		// make button visible
-		addButtonToContent(br, index); 
-		if (index != 0) tmplButtonsVisible.put(br.uid+"("+index+")", tmplButtons.get(br.uid));
-		else tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
+		addButtonToContent(brickName, index); 
+		if (br.getDeviceIdentifier() == 227) tmplButtonsVisible.put(brickName, tmplButtons.get(brickName));
+		else tmplButtonsVisible.put(brickName, tmplButtons.get(brickName));
 
 		updateButtonPanel();		
 	}
@@ -1980,9 +1992,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			
 	public static void startTmplControl(Brick br, int index)
 	{
+		String brickName;
+		if (br.getDeviceIdentifier() == 227) brickName = br.uid+"("+index+")";
+		else brickName = br.uid;
+		
 		// start template control, update button	
-		tmplButtons.get(br.uid).setText(br.uid + " template stop");
-		tmplButtonsVisible.get(br.uid).setText(br.uid + " template stop");
+		tmplButtons.get(brickName).setText(brickName + " stop");
+		tmplButtonsVisible.get(brickName).setText(brickName + " stop");
 		br.ctrlTmplruns[index] = true;
 		
 		// add data set to plot
@@ -2028,9 +2044,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	
 	public static void stopTmplControl(Brick br, int index)
 	{
+		String brickName;
+		if (br.getDeviceIdentifier() == 227) brickName = br.uid+"("+index+")";
+		else brickName = br.uid;
+
 		// stop template control
-		if (tmplButtons.containsKey(br.uid)) tmplButtons.get(br.uid).setText(br.uid + " template start");
-		if (tmplButtonsVisible.containsKey(br.uid)) tmplButtonsVisible.get(br.uid).setText(br.uid + " template start");
+		if (tmplButtons.containsKey(brickName)) tmplButtons.get(brickName).setText(brickName + " start");
+		if (tmplButtonsVisible.containsKey(brickName)) tmplButtonsVisible.get(brickName).setText(brickName + " start");
 		br.ctrlTmplruns[index] = false;
 		
 		// set states to 0's
@@ -2080,31 +2100,65 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 
 			String command = e.getActionCommand().substring(0,e.getActionCommand().length() - 1);
 			String indexStr = e.getActionCommand().substring(e.getActionCommand().length() - 1,	e.getActionCommand().length());
+			//command = command.substring(0, command.indexOf("("));
 			
-			int index = Integer.valueOf(indexStr);
-
-			// start template control
-			if ((command.equals(buttonComAddBtn + tmpBrick.uid))
-					&& (!tmpBrick.ctrlTmplruns[index])) 
+			int index = Integer.valueOf(indexStr);						
+			
+			if (tmpBrick.getDeviceIdentifier() == 227)
 			{
-				System.out.println("set new template start time");
-				long timeNow = System.currentTimeMillis();
-				tmplStartMs.put(tmpBrick.uid, timeNow);
-				tmplLapCnt.put(tmpBrick.uid, 0);
+				for (int i2 = 0; i2 < 2; i2++) 
+				{		
+					// start template control
+					if ((command.equals(buttonComAddBtn + tmpBrick.uid+"("+i2+")"))
+							&& (!tmpBrick.ctrlTmplruns[index])) 
+					{
+						System.out.println("set new template start time");
+						long timeNow = System.currentTimeMillis();
+						tmplStartMs.put(tmpBrick.uid+"("+i2+")", timeNow);
+						tmplLapCnt.put(tmpBrick.uid+"("+i2+")", 0);
+						
+						// start template comtrol
+						//startStopTmplCntrl(tmpBrick, index);
+						startTmplControl(tmpBrick, index);
+					}
+		
+					// stop template control
+					else if ((command.equals(buttonComAddBtn + tmpBrick.uid+"("+i2+")"))
+							&& (tmpBrick.ctrlTmplruns[index])) 
+					{
+						//startStopTmplCntrl(tmpBrick, index);
+						// stop template comtrol
+						stopTmplControl(tmpBrick, index);
+					}
+				}
+			}
+			else
+			{
+				// start template control
+				if ((command.equals(buttonComAddBtn + tmpBrick.uid))
+						&& (!tmpBrick.ctrlTmplruns[index])) 
+				{
+					System.out.println("set new template start time");
+					long timeNow = System.currentTimeMillis();
+					tmplStartMs.put(tmpBrick.uid, timeNow);
+					tmplLapCnt.put(tmpBrick.uid, 0);
+					
+					// start template comtrol
+					//startStopTmplCntrl(tmpBrick, index);
+					startTmplControl(tmpBrick, index);
+				}
+	
+				// stop template control
+				else if ((command.equals(buttonComAddBtn + tmpBrick.uid))
+						&& (tmpBrick.ctrlTmplruns[index])) 
+				{
+					//startStopTmplCntrl(tmpBrick, index);
+					// stop template comtrol
+					stopTmplControl(tmpBrick, index);
+				}
+
+			}
 				
-				// start template comtrol
-				//startStopTmplCntrl(tmpBrick, index);
-				startTmplControl(tmpBrick, index);
-			}
-
-			// stop template control
-			else if ((command.equals(buttonComAddBtn + tmpBrick.uid))
-					&& (tmpBrick.ctrlTmplruns[index])) 
-			{
-				//startStopTmplCntrl(tmpBrick, index);
-				// stop template comtrol
-				stopTmplControl(tmpBrick, index);
-			}
 		}
 
 	}
@@ -2239,15 +2293,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	{		
 		Brick tmpBrick = Brick.getBrick(connectionData.BrickList, sensorUID);
 
+		String brickName;
+		if (tmpBrick.getDeviceIdentifier() == 227) brickName = tmpBrick.uid+"("+index+")";
+		else brickName = tmpBrick.uid;
+
 		if (index == 0)
 		{
 			if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[index] == true)
 				if (tmplCollection1_1.containsKey(sensorUID))
-					if (tmplStartMs.containsKey(sensorUID))
+					if (tmplStartMs.containsKey(brickName))
 						if ((tmpBrick.ctrlTmplruns[index] == true))
 			{
 				long timeNow 		= System.currentTimeMillis();
-				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(sensorUID));
+				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(brickName));
 			
 				if (((tmplValue + tmpBrick.tmpl1Width) < value)|| ((tmplValue - tmpBrick.tmpl1Width) > value)) 
 				{
@@ -2269,11 +2327,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		{
 			if (Brick.getBrick(connectionData.BrickList, sensorUID).ctrlTmpl[index] == true)
 				if (tmplCollection2_1.containsKey(sensorUID))
-					if (tmplStartMs.containsKey(sensorUID))
+					if (tmplStartMs.containsKey(brickName))
 						if ((tmpBrick.ctrlTmplruns[index] == true))
 			{
 				long timeNow 		= System.currentTimeMillis();
-				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(sensorUID));
+				double tmplValue 	= tmpBrick.tmplPlot[index].getYValue(timeNow, tmplStartMs.get(brickName));
 			
 				if (((tmplValue + tmpBrick.tmpl2Width) < value)|| ((tmplValue - tmpBrick.tmpl2Width) > value)) 
 				{

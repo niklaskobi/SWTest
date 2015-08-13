@@ -1,24 +1,11 @@
 toDO:
-     
--	set better colors for template control graph (green must be lighter)
--	same colors for markers for each control case
-
+    
 -	BUG! template window for second chart (temporary solution 05.05.2015), now dividing by 2, line 1290, sonsorWindow
--	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
--	template plot window: title smaller
 -	collapsing main brick causes program close
 -	test: on tablet 
 -	template control button is hiding the scale after enabling (still)
-
--	average labels (min->current min, max...,)
--	template start button label changes after stop
--	name of the template file doesn't fit the boundaries
-!-	xz exceptions
+-	xz exceptions
 -	make graph flowing in the middle of the chart
--	port number and localhost textfields same size
--	overwriting a template file, creates a new file with +".tmp" filename
--	average anomality 
-
 
 
 
@@ -62,7 +49,12 @@ done:
 +	warning max depends on warning min what causes an anomaly behavior by having warning min on 0 (27.07.2015)
 +	writing to file enable (27.07.2015)
 
-28.07.2015:	10:00-12:00, 13:30-15:00, 20:00-22:00
-29.07.2015:	10:00-12:40, 18:00-20:00
-30.07.2015:	9:30-12:00
-
++	set better colors for template control graph (green must be lighter)
++	same colors for markers for each control case
++	colors: left plot blue, template: light blue; 	right plot green, template right plot light green
++	average labels (min->current min, max...,)
++	name of the template file doesn't fit the boundaries
++	average anomality 
++	overwriting a template file, creates a new file with +".tmp" filename
++	template start button label changes after stop
++	port number and localhost textfields same size
