@@ -29,17 +29,21 @@ public class de extends ApplicationFrame
 	private static TableXYDataset createDataset() 
 	{
 		CategoryTableXYDataset categorytablexydataset = new CategoryTableXYDataset();
+		
 		categorytablexydataset.add(0.0D, 0.0D, "Series 1");
 		categorytablexydataset.add(10D, 20D, "Series 1");
 		categorytablexydataset.add(20D, 15D, "Series 1");
 		categorytablexydataset.add(30D, 25D, "Series 1");
 		categorytablexydataset.add(40D, 21D, "Series 1");
+	
+		/*
 		categorytablexydataset.add(10D, 9D, "Series 2");
 		categorytablexydataset.add(20D, -7D, "Series 2");
 		categorytablexydataset.add(30D, 15D, "Series 2");
 		categorytablexydataset.add(40D, 11D, "Series 2");
 		categorytablexydataset.add(45D, -10D, "Series 2");
 		categorytablexydataset.add(50D, 0.0D, "Series 2");
+		*/
 		return categorytablexydataset;
 	}
 

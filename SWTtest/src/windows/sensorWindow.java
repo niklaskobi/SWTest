@@ -399,21 +399,24 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));
 			*/
 			float dash[] = {5.0f};
-			XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
-			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl1Width, 0);
+			//XYItemRenderer renderer3 = new XYLineAndShapeRenderer();
+			XYItemRenderer renderer3 = new StandardXYItemRenderer();
 			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_ROUND);// , 10.0f, dash, 0.0f);
 			renderer3.setSeriesPaint(0, Color.gray);
-			renderer3.setSeriesStroke(0, stroke);
+			//renderer3.setSeriesStroke(0, stroke);
+			renderer3.setSeriesStroke(0, new BasicStroke(1));
 			renderer3.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
 			rendererMap3.put(newBrick.uid, renderer3);
 			tmpSubPlot.setRenderer(2, rendererMap3.get(newBrick.uid));
 
-			XYItemRenderer renderer32 = new XYLineAndShapeRenderer();			
+			//XYItemRenderer renderer32 = new XYLineAndShapeRenderer();
+			XYItemRenderer renderer32 = new StandardXYItemRenderer();
 			BasicStroke stroke32 = new BasicStroke(1, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_ROUND);//, 10.0f, dash, 0.0f);
 			renderer32.setSeriesPaint(0, Color.gray);
-			renderer32.setSeriesStroke(0, stroke32);
+			//renderer32.setSeriesStroke(0, stroke32);
+			renderer32.setSeriesStroke(0, new BasicStroke(1));
 			renderer32.setSeriesVisible(0, newBrick.ctrlTmpl[0]);
 			rendererMap32.put(newBrick.uid, renderer32);
 			tmpSubPlot.setRenderer(4, rendererMap32.get(newBrick.uid));
@@ -433,7 +436,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 							.get(newBrick.deviceIdentifier)));
 			secondaryAxis.setAutoRangeIncludesZero(true);
 			tmpSubPlot.setRangeAxis(1, secondaryAxis);
-			secondaryAxis.setLabelPaint(Color.YELLOW);
+			secondaryAxis.setLabelPaint(Color.BLUE);
 			secondaryAxis.setVisible(newBrick.checked3);
 			tmpSubPlot.setDataset(1, seriesCollectionMap2.get(newBrick.uid));
 			tmpSubPlot.mapDatasetToRangeAxis(1, 1);
@@ -445,7 +448,7 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create and store renderer
 			XYItemRenderer renderer2 = new StandardXYItemRenderer();
 			// renderer2 = tmpSubPlot.getRenderer();
-			renderer2.setSeriesPaint(1, Color.RED);
+			renderer2.setSeriesPaint(0, Color.BLUE);
 			renderer2.setSeriesStroke(0, new BasicStroke(3));
 			tmpSubPlot.setRenderer(1, renderer2);
 
@@ -520,19 +523,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create and add min, max and average markers
 			// create maxima marker
 			ValueMarker vmMax = new ValueMarker(0);
-			vmMax.setPaint(Color.orange);
+			vmMax.setPaint(Color.cyan);
 			vmMax.setLabel("max");
 			vmMax.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			vmMax.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create minima marker
 			ValueMarker vmMin = new ValueMarker(0);
-			vmMin.setPaint(Color.orange);
+			vmMin.setPaint(Color.cyan);
 			vmMin.setLabel("min");
 			vmMin.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			vmMin.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create average marker
 			ValueMarker vmAvg = new ValueMarker(0);
-			vmAvg.setPaint(Color.red);
+			vmAvg.setPaint(Color.blue);
 			vmAvg.setLabel("average");
 			vmAvg.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			vmAvg.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -551,14 +554,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create and add avrgCntrMarkers
 			// create upper marker
 			ValueMarker avrgCtrl2high = new ValueMarker(newBrick.getAvg2high());
-			avrgCtrl2high.setPaint(Color.BLUE);
-			avrgCtrl2high.setLabel("avrg high");
+			avrgCtrl2high.setPaint(Color.RED);
+			avrgCtrl2high.setLabel("avrg max");
 			avrgCtrl2high.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2high.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create lower marker
 			ValueMarker avrgCtrl2low = new ValueMarker(newBrick.getAvg2low());
-			avrgCtrl2low.setPaint(Color.BLUE);
-			avrgCtrl2low.setLabel("avrg low");
+			avrgCtrl2low.setPaint(Color.RED);
+			avrgCtrl2low.setLabel("avrg min");
 			avrgCtrl2low.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2low.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// add both markers
@@ -577,10 +580,11 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.setDataset(3, tmplCollection2_1.get(newBrick.uid));
 			tmpSubPlot.setDataset(5, tmplCollection2_2.get(newBrick.uid));
 			
-			XYItemRenderer renderer4 = new XYLineAndShapeRenderer();
+			XYItemRenderer renderer4 = new StandardXYItemRenderer();
 			int width = computeTmplPlotWidth(newBrick.uid, newBrick.tmpl2Width, 1);
-			BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
-			renderer4.setSeriesPaint(1, Color.cyan);
+			//BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND);
+			BasicStroke stroke = new BasicStroke(1);
+			renderer4.setSeriesPaint(0, Color.CYAN);
 			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 			renderer4.setSeriesStroke(1, stroke);
 			renderer4.setSeriesVisible(1, newBrick.ctrlTmpl[1]);
@@ -588,15 +592,16 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			tmpSubPlot.setRenderer(3, rendererMap4.get(newBrick.uid));
 			tmpSubPlot.mapDatasetToRangeAxis(3, 1);
 			
-			XYItemRenderer renderer42 = new XYLineAndShapeRenderer();
-			BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND);
-			renderer42.setSeriesPaint(1, Color.cyan);
+			XYItemRenderer renderer42 = new StandardXYItemRenderer();
+			//BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND);
+			BasicStroke stroke2 = new BasicStroke(1);
+			renderer42.setSeriesPaint(0, Color.CYAN);
 			// renderer3.setSeriesStroke( 0, new BasicStroke( 1 ) );
 			renderer42.setSeriesStroke(1, stroke2);
 			renderer42.setSeriesVisible(1, newBrick.ctrlTmpl[1]);
 			rendererMap42.put(newBrick.uid, renderer42);
 			tmpSubPlot.setRenderer(5, rendererMap42.get(newBrick.uid));
-			tmpSubPlot.mapDatasetToRangeAxis(3, 1);
+			tmpSubPlot.mapDatasetToRangeAxis(5, 1);
 
 			// ----------------------------------------------------------------------------------
 			
@@ -684,19 +689,19 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		// create and add min, max and average markers
 		// create maxima marker
 		ValueMarker vmMax = new ValueMarker(0);
-		vmMax.setPaint(Color.cyan);
+		vmMax.setPaint(Color.gray);
 		vmMax.setLabel("max");
 		vmMax.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		vmMax.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create minima marker
 		ValueMarker vmMin = new ValueMarker(0);
-		vmMin.setPaint(Color.cyan);
+		vmMin.setPaint(Color.gray);
 		vmMin.setLabel("min");
 		vmMin.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		vmMin.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create average marker
 		ValueMarker vmAvg = new ValueMarker(0);
-		vmAvg.setPaint(Color.blue);
+		vmAvg.setPaint(Color.black);
 		vmAvg.setLabel("average");
 		vmAvg.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		vmAvg.setLabelTextAnchor(TextAnchor.TOP_LEFT);
@@ -715,14 +720,14 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		// create and add avrgCntrMarkers
 		// create upper marker
 		ValueMarker avrgCtrl1high = new ValueMarker(newBrick.getAvg1high());
-		avrgCtrl1high.setPaint(Color.orange);
-		avrgCtrl1high.setLabel("avrg high");
+		avrgCtrl1high.setPaint(Color.red);
+		avrgCtrl1high.setLabel("avrg max");
 		avrgCtrl1high.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		avrgCtrl1high.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create lower marker
 		ValueMarker avrgCtrl1low = new ValueMarker(newBrick.getAvg1low());
-		avrgCtrl1low.setPaint(Color.orange);
-		avrgCtrl1low.setLabel("avrg low");
+		avrgCtrl1low.setPaint(Color.red);
+		avrgCtrl1low.setLabel("avrg min");
 		avrgCtrl1low.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		avrgCtrl1low.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// add both markers
@@ -1946,7 +1951,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			//button.setActionCommand(buttonComAddBtn + tmpBrick.uid + i+ "(" + i2 + ")");
 			button.setActionCommand(buttonComAddBtn + br.uid + index);
 			button.addActionListener(this);
-			tmplButtons.put(br.uid, button);
+			if (index != 0) tmplButtons.put(br.uid+"("+index+")", button); 
+			else tmplButtons.put(br.uid, button);
 			//changeTmplCntrl(br, index);
 		}
 	}
@@ -1965,7 +1971,8 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 	{
 		// make button visible
 		addButtonToContent(br, index); 
-		tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
+		if (index != 0) tmplButtonsVisible.put(br.uid+"("+index+")", tmplButtons.get(br.uid));
+		else tmplButtonsVisible.put(br.uid, tmplButtons.get(br.uid));
 
 		updateButtonPanel();		
 	}

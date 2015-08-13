@@ -1184,7 +1184,7 @@ public class mainWindow {
 			// label control average bottom high ----------
 			Label lblMin3 = new Label(firstContent, SWT.NONE);
 			//lblMin3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			lblMin3.setText("high");
+			lblMin3.setText("max");
 			
 			GridData gridData = new GridData();
 	 		gridData.horizontalAlignment = GridData.BEGINNING;
@@ -1271,7 +1271,7 @@ public class mainWindow {
 			// label control average bottom  max -----------------------------------------------------------------------------------
 			Label lblMax4 = new Label(firstContent, SWT.NONE);
 			//lblMax4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			lblMax4.setText("low");
+			lblMax4.setText("min");
 			GridData gridData4 = new GridData();
 	 		gridData4.horizontalAlignment = GridData.BEGINNING;
 	 		gridData4.grabExcessHorizontalSpace = false;
@@ -1357,7 +1357,7 @@ public class mainWindow {
 			// label control average bottom min -----------------------------------------------------------------------------------
 			Label lblMin5 = new Label(secondContent, SWT.NONE);
 			//lblMin5.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			lblMin5.setText("high");
+			lblMin5.setText("max");
 			GridData gridData = new GridData();
 			gridData.horizontalAlignment = GridData.BEGINNING;
 			gridData.grabExcessHorizontalSpace = false;
@@ -1440,7 +1440,7 @@ public class mainWindow {
 			Label lblMax7 = new Label(secondContent, SWT.NONE);
 
 			//lblMax7.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-			lblMax7.setText("low");
+			lblMax7.setText("min");
 			GridData gridData4 = new GridData();
 	 		gridData4.horizontalAlignment = GridData.BEGINNING;
 	 		gridData4.grabExcessHorizontalSpace = false;
