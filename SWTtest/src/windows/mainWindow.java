@@ -67,8 +67,8 @@ public class mainWindow {
 	private final static FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 
 	// setting region values
-	final static String USECASE_SIMPLE = "global treshold";
-	final static String USECASE_AVERAGE = "average treshold";
+	final static String USECASE_SIMPLE = "global threshold";
+	final static String USECASE_AVERAGE = "average threshold";
 	final static String USECASE_TEMPLATE = "template plot";
 	static String[] useCases = { USECASE_SIMPLE, USECASE_AVERAGE, USECASE_TEMPLATE};
 	static int width_one_half;

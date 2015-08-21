@@ -555,13 +555,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 			// create upper marker
 			ValueMarker avrgCtrl2high = new ValueMarker(newBrick.getAvg2high());
 			avrgCtrl2high.setPaint(Color.RED);
-			avrgCtrl2high.setLabel("avrg max");
+			avrgCtrl2high.setLabel("set max");
 			avrgCtrl2high.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2high.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// create lower marker
 			ValueMarker avrgCtrl2low = new ValueMarker(newBrick.getAvg2low());
 			avrgCtrl2low.setPaint(Color.RED);
-			avrgCtrl2low.setLabel("avrg min");
+			avrgCtrl2low.setLabel("set min");
 			avrgCtrl2low.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 			avrgCtrl2low.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 			// add both markers
@@ -721,13 +721,13 @@ public class sensorWindow extends ApplicationFrame implements ActionListener {
 		// create upper marker
 		ValueMarker avrgCtrl1high = new ValueMarker(newBrick.getAvg1high());
 		avrgCtrl1high.setPaint(Color.red);
-		avrgCtrl1high.setLabel("avrg max");
+		avrgCtrl1high.setLabel("set max");
 		avrgCtrl1high.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		avrgCtrl1high.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// create lower marker
 		ValueMarker avrgCtrl1low = new ValueMarker(newBrick.getAvg1low());
 		avrgCtrl1low.setPaint(Color.red);
-		avrgCtrl1low.setLabel("avrg min");
+		avrgCtrl1low.setLabel("set min");
 		avrgCtrl1low.setLabelAnchor(RectangleAnchor.TOP_LEFT);
 		avrgCtrl1low.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		// add both markers
